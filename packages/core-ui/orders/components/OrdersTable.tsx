@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useMemo, useCallback, FC } from "react";
 import { useNavigate } from "react-router-dom";
-import i18next from "i18next";
 import { useSnackbar } from "notistack";
 import { Box, Card, CardHeader, CardContent } from "@mui/material";
 import ordersQuery from "../graphql/queries/orders";
@@ -8,8 +7,8 @@ import OrderDateCell from "./DataTable/OrderDateCell";
 import OrderIdCell from "./DataTable/OrderIdCell";
 import OrderTotalCell from "./DataTable/OrderTotalCell";
 import {useTranslation} from "react-i18next";
-import {useApolloClient} from "@apollo/client";
-import {Table} from "@platform/components/ui";
+// import {useApolloClient} from "@apollo/client";
+import {Table} from "ui";
 
 /**
  * @name OrdersTable

@@ -1,8 +1,7 @@
-import React, {FC} from 'react'
-import TextField from '@mui/material/TextField'
+import {FC} from 'react'
 import {Control, Controller} from 'react-hook-form'
-import {TextFieldProps} from '@mui/material/TextField/TextField'
-import {InputAdornment} from '@mui/material'
+import TextField, {TextFieldProps} from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
 import Error from '@mui/icons-material/Error'
 import Tooltip from '@mui/material/Tooltip'
 

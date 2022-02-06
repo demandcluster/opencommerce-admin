@@ -1,8 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import './styles/base.css';
-import 'platform/config/i18n';
-import App from 'platform/App';
+import {App} from 'platform';
+import {registerRoutes, registerOperatorRoutes} from 'platform/router';
+import {globalRoutes} from 'platform';
+import {operatorRoutes} from 'core-ui';
+
+registerRoutes(globalRoutes);
+registerOperatorRoutes(operatorRoutes);
 
 ReactDOM.render(
   <React.StrictMode>

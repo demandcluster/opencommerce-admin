@@ -1,14 +1,12 @@
-import {registerOperatorRoute} from "@platform/router";
-import OperatorLanding from "@plugins/core/shop/components/OperatorLanding";
+import OperatorLanding from "./components/OperatorLanding";
 
-registerOperatorRoute({
-  Component: OperatorLanding,
-  path: "/"
-});
-
-registerOperatorRoute({
-  Component: OperatorLanding,
-  path: "/:shopId",
-});
-
-export {};
+export const operatorRoutes = [
+  {
+    Component: OperatorLanding,
+    path: "/"
+  },
+  {
+    Component: OperatorLanding,
+    path: "/:shopId",
+  }
+]

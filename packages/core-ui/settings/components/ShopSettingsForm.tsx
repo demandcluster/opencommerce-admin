@@ -10,10 +10,9 @@ import {useQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
 import shopQuery from "../graphql/queries/shop";
 import {UnpackNestedValue, useForm} from "react-hook-form";
-import ControlledTextField from "@platform/components/ui/ControlledTextField";
-// @ts-ignore
-import {Shop} from "@types/gql-types";
-import useShopId from "@platform/hooks/useShopId";
+import {ControlledTextField} from "ui";
+import useShopId from "platform/hooks/useShopId";
+import {Shop} from "platform/types/gql-types";
 
 type ShopSettingsFieldValues = {
   name: string;

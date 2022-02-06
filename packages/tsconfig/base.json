@@ -20,15 +20,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-  },
-  "include": [
-    "src"
-  ],
-  "ts-node": {
-    "transpileOnly": true,
-    "compilerOptions": {
-      "module": "commonjs"
-    }
+    "noEmit": true
   }
 }

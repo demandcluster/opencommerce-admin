@@ -1,8 +1,8 @@
 import {List, Theme} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import ListItemLink from "@platform/components/ui/ListLink";
-import useOperatorRoutes from "@platform/hooks/useOperatorRoutes";
-import {resolvePath, useResolvedPath} from "react-router-dom";
+import {ListItemLink} from "ui";
+import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
+import {useResolvedPath} from "react-router-dom";
 
 const sidebarWidth = 280;
 

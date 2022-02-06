@@ -1,12 +1,12 @@
 import React, {FC} from 'react';
-import useShopId from "@platform/hooks/useShopId";
-import {Account} from "../../../../types/gql-types";
 import {Link, Navigate} from "react-router-dom";
-import useAuth from "@platform/hooks/useAuth";
 import { Helmet } from 'react-helmet-async';
 import Grid from '@mui/material/Grid';
 import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
+
+import {useShopId, useAuth} from "platform/hooks";
+import {Account} from "platform/types/gql-types";
 
 const OperatorLanding: FC = () => {
   const shopId = useShopId();

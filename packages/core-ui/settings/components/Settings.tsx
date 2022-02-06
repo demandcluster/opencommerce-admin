@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import SettingsSidebar from "./SettingsSidebar";
 import Box from "@mui/material/Box";
-import useOperatorRoutes from "@platform/hooks/useOperatorRoutes";
+import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
 import Container from "@mui/material/Container";
 import {Routes, Route, useParams, Navigate, useResolvedPath} from "react-router-dom";
 

@@ -1,5 +1,5 @@
 {
-  "name": "opencommerce-admin",
+  "name": "admin",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -16,6 +16,7 @@
     "@mui/material": "^5.3.1",
     "@reactioncommerce/logger": "^1.1.4",
     "chalk": "^5.0.0",
+    "core-ui": "workspace:*",
     "crypto-js": "^4.1.1",
     "envalid": "^7.2.2",
     "graphql": "^16.3.0",
@@ -26,7 +27,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "notistack": "^2.0.3",
-    "platform": "workspaces:*",
+    "platform": "workspace:*",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -59,7 +60,7 @@
     "vite": "^2.7.13"
   },
   "scripts": {
-    "start": "vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "generate-gql-types": "graphql-codegen"

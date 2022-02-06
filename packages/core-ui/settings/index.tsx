@@ -1,10 +1,13 @@
-import SettingIcon from '@mui/icons-material/Settings';
-import {OperatorViewNoopLayout, registerBlock} from "@platform/components/layout";
-import {registerOperatorRoute} from "@platform/router";
-import ShopSettingsForm from "./components/ShopSettingsForm";
 import {lazy} from "react";
+import SettingIcon from '@mui/icons-material/Settings';
 
-registerOperatorRoute({
+import {OperatorViewNoopLayout, registerBlock} from "platform/components/layout";
+import {registerOperatorRoute} from "platform/router";
+import ShopSettingsForm from "./components/ShopSettingsForm";
+
+export const operatorRoutes = []
+
+  registerOperatorRoute({
   group: "navigation",
   priority: 80,
   path: "settings/*",
