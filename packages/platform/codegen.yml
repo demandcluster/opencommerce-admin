@@ -1,0 +1,9 @@
+schema: http://localhost:3000/graphql
+documents: src/**/*.ts
+generates:
+  ./src/types/gql-types.d.ts: # Typescript types (output generated file)
+    plugins: # List of needed plugins (installed as devDeps)
+      - typescript
+    config:
+      avoidOptionals: true
+      maybeValue: T
