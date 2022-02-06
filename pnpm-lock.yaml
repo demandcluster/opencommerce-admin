@@ -59,6 +59,7 @@ importers:
       react-i18next: ^11.15.3
       react-router-dom: ^6.2.1
       react-table: ^7.7.0
+      reaction-merchant-ui: workspace:*
       snyk: ^1.217.3
       ts-node: ^10.4.0
       tsconfig: workspace:*
@@ -99,6 +100,7 @@ importers:
       react-i18next: 11.15.3_f9635d5d32d7f130f7fe8a33cbdb7283
       react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
       react-table: 7.7.0_react@17.0.2
+      reaction-merchant-ui: link:../../packages/reaction-merchant-ui
       web-vitals: 1.1.2
     devDependencies:
       '@testing-library/dom': 8.11.3
@@ -267,6 +269,47 @@ importers:
       typescript: 4.5.5
       vite: 2.7.13
 
+  packages/reaction-merchant-ui:
+    specifiers:
+      '@apollo/client': ^3.5.8
+      '@emotion/react': ^11.7.1
+      '@emotion/styled': ^11.6.0
+      '@hookform/resolvers': ^2.8.8
+      '@mui/icons-material': ^5.3.1
+      '@mui/lab': ^5.0.0-alpha.67
+      '@mui/material': ^5.4.0
+      i18next: ^21.6.10
+      lodash.debounce: ^4.0.8
+      notistack: ^2.0.3
+      platform: workspace:*
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-hook-form: ^7.25.3
+      react-i18next: ^11.15.3
+      react-router-dom: ^6.2.1
+      tsconfig: workspace:*
+      yup: ^0.32.11
+    dependencies:
+      '@apollo/client': 3.5.8_react@17.0.2
+      '@emotion/react': 11.7.1_react@17.0.2
+      '@emotion/styled': 11.6.0_79c1490562c3c65ef55eb132a37e39b4
+      '@hookform/resolvers': 2.8.8_react-hook-form@7.26.0
+      '@mui/icons-material': 5.3.1_@mui+material@5.4.0+react@17.0.2
+      '@mui/lab': 5.0.0-alpha.67_2f871dd2b8d69d8cbc4214b97c3d4d81
+      '@mui/material': 5.4.0_c84e354a724f4213aa6539fdea9d08aa
+      i18next: 21.6.10
+      lodash.debounce: 4.0.8
+      notistack: 2.0.3_2f871dd2b8d69d8cbc4214b97c3d4d81
+      platform: link:../platform
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-hook-form: 7.26.0_react@17.0.2
+      react-i18next: 11.15.3_f9635d5d32d7f130f7fe8a33cbdb7283
+      react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
+      yup: 0.32.11
+    devDependencies:
+      tsconfig: link:../tsconfig
+
   packages/tsconfig:
     specifiers: {}
 
@@ -280,6 +323,7 @@ importers:
       react-dom: ^17.0.2
       react-hook-form: ^7.25.3
       react-router-dom: ^6.2.1
+      react-table: ^7.7.0
       tsconfig: workspace:*
     dependencies:
       '@emotion/react': 11.7.1_react@17.0.2
@@ -290,6 +334,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-hook-form: 7.26.0_react@17.0.2
       react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
+      react-table: 7.7.0_react@17.0.2
     devDependencies:
       tsconfig: link:../tsconfig
 
@@ -988,6 +1033,54 @@ packages:
       '@cspotcode/source-map-consumer': 0.8.0
     dev: true
 
+  /@date-io/core/2.13.1:
+    resolution: {integrity: sha512-pVI9nfkf2qClb2Cxdq0Q4zJhdawMG4ybWZUVGifT78FDwzRMX2SwXBb55s5NRJk0HcIicDuxktmCtemZqMH1Zg==}
+    dev: false
+
+  /@date-io/date-fns/2.13.1:
+    resolution: {integrity: sha512-8fmfwjiLMpFLD+t4NBwDx0eblWnNcgt4NgfT/uiiQTGI81fnPu9tpBMYdAcuWxaV7LLpXgzLBx1SYWAMDVUDQQ==}
+    peerDependencies:
+      date-fns: ^2.0.0
+    peerDependenciesMeta:
+      date-fns:
+        optional: true
+    dependencies:
+      '@date-io/core': 2.13.1
+    dev: false
+
+  /@date-io/dayjs/2.13.1:
+    resolution: {integrity: sha512-5bL4WWWmlI4uGZVScANhHJV7Mjp93ec2gNeUHDqqLaMZhp51S0NgD25oqj/k0LqBn1cdU2MvzNpk/ObMmVv5cQ==}
+    peerDependencies:
+      dayjs: ^1.8.17
+    peerDependenciesMeta:
+      dayjs:
+        optional: true
+    dependencies:
+      '@date-io/core': 2.13.1
+    dev: false
+
+  /@date-io/luxon/2.13.1:
+    resolution: {integrity: sha512-yG+uM7lXfwLyKKEwjvP8oZ7qblpmfl9gxQYae55ifbwiTs0CoCTkYkxEaQHGkYtTqGTzLqcb0O9Pzx6vgWg+yg==}
+    peerDependencies:
+      luxon: ^1.21.3 || ^2.x
+    peerDependenciesMeta:
+      luxon:
+        optional: true
+    dependencies:
+      '@date-io/core': 2.13.1
+    dev: false
+
+  /@date-io/moment/2.13.1:
+    resolution: {integrity: sha512-XX1X/Tlvl3TdqQy2j0ZUtEJV6Rl8tOyc5WOS3ki52He28Uzme4Ro/JuPWTMBDH63weSWIZDlbR7zBgp3ZA2y1A==}
+    peerDependencies:
+      moment: ^2.24.0
+    peerDependenciesMeta:
+      moment:
+        optional: true
+    dependencies:
+      '@date-io/core': 2.13.1
+    dev: false
+
   /@emotion/babel-plugin/11.7.2:
     resolution: {integrity: sha512-6mGSCWi9UzXut/ZAN6lGFu33wGR3SJisNl3c0tvlmb8XChH1b2SUvxvnOh7hvLpqyRdHHU9AiazV3Cwbk5SXKQ==}
     peerDependencies:
@@ -1598,6 +1691,14 @@ packages:
       graphql: 16.3.0
     dev: false
 
+  /@hookform/resolvers/2.8.8_react-hook-form@7.26.0:
+    resolution: {integrity: sha512-meAEDur1IJBfKyTo9yPYAuzjIfrxA7m9Ov+1nxaW/YupsqMeseWifoUjWK03+hz/RJizsVQAaUjVxFEkyu0GWg==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.26.0_react@17.0.2
+    dev: false
+
   /@iarna/toml/2.2.5:
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
     dev: false
@@ -1702,6 +1803,51 @@ packages:
       '@babel/runtime': 7.17.0
       '@mui/material': 5.4.0_c84e354a724f4213aa6539fdea9d08aa
       react: 17.0.2
+    dev: false
+
+  /@mui/lab/5.0.0-alpha.67_2f871dd2b8d69d8cbc4214b97c3d4d81:
+    resolution: {integrity: sha512-pL6O2teso3tpAv38FXiFNWGcXjakgO66/Os5p2KX4QbkPKvzzeSxNU7hI02Ye8BIEYqTR5Oaz8njcdQgcNI7Cg==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+      '@types/react': ^16.8.6 || ^17.0.0
+      date-fns: ^2.25.0
+      dayjs: ^1.10.7
+      luxon: ^1.28.0 || ^2.0.0
+      moment: ^2.29.1
+      react: ^17.0.0
+      react-dom: ^17.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      date-fns:
+        optional: true
+      dayjs:
+        optional: true
+      luxon:
+        optional: true
+      moment:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.17.0
+      '@date-io/date-fns': 2.13.1
+      '@date-io/dayjs': 2.13.1
+      '@date-io/luxon': 2.13.1
+      '@date-io/moment': 2.13.1
+      '@mui/base': 5.0.0-alpha.67_react-dom@17.0.2+react@17.0.2
+      '@mui/material': 5.4.0_c84e354a724f4213aa6539fdea9d08aa
+      '@mui/system': 5.4.0_922a85da57e3646a57465b7970b0de85
+      '@mui/utils': 5.3.0_react@17.0.2
+      clsx: 1.1.1
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-is: 17.0.2
+      react-transition-group: 4.4.2_react-dom@17.0.2+react@17.0.2
+      rifm: 0.12.1_react@17.0.2
+    transitivePeerDependencies:
+      - '@emotion/react'
+      - '@emotion/styled'
     dev: false
 
   /@mui/material/5.4.0_6226f8758b5b21b5515ad844c1caeb22:
@@ -2140,7 +2286,6 @@ packages:
 
   /@types/lodash/4.14.178:
     resolution: {integrity: sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==}
-    dev: true
 
   /@types/node/12.20.43:
     resolution: {integrity: sha512-HCfJdaYqJX3BCzeihgZrD7b85Cu05OC/GVJ4kEYIflwUs4jbnUlLLWoq7hw1LBcdvUyehO+gr6P5JQ895/2ZfA==}
@@ -4189,6 +4334,14 @@ packages:
       p-locate: 4.1.0
     dev: false
 
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
+  /lodash.debounce/4.0.8:
+    resolution: {integrity: sha1-gteb/zCmfEAF/9XiUVMArZyk168=}
+    dev: false
+
   /lodash.get/4.4.2:
     resolution: {integrity: sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=}
     dev: false
@@ -4396,6 +4549,10 @@ packages:
     resolution: {integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==}
     dev: false
     optional: true
+
+  /nanoclone/0.2.1:
+    resolution: {integrity: sha512-wynEP02LmIbLpcYw8uBKpcfF6dmg2vcpKqxeH5UcoKEYdExslsdUA4ugFauuaeYdTB76ez6gJW8XAZ6CgkXYxA==}
+    dev: false
 
   /nanoid/3.2.0:
     resolution: {integrity: sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==}
@@ -4760,6 +4917,10 @@ packages:
       react-is: 16.13.1
     dev: false
 
+  /property-expr/2.0.5:
+    resolution: {integrity: sha512-IJUkICM5dP5znhCckHSv30Q4b5/JA5enCtkRHYaOVOAocnH/1BQEYTC5NMfT3AVl/iXKdr3aqQbQn9DxyWknwA==}
+    dev: false
+
   /psl/1.8.0:
     resolution: {integrity: sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==}
     dev: false
@@ -5093,6 +5254,14 @@ packages:
   /reusify/1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+    dev: false
+
+  /rifm/0.12.1_react@17.0.2:
+    resolution: {integrity: sha512-OGA1Bitg/dSJtI/c4dh90svzaUPt228kzFsUkJbtA2c964IqEAwWXeL9ZJi86xWv3j5SMqRvGULl7bA6cK0Bvg==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      react: 17.0.2
     dev: false
 
   /rimraf/2.4.5:
@@ -5440,6 +5609,10 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+    dev: false
+
+  /toposort/2.0.2:
+    resolution: {integrity: sha1-riF2gXXRVZ1IvvNUILL0li8JwzA=}
     dev: false
 
   /tough-cookie/2.5.0:
@@ -5932,6 +6105,19 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: false
+
+  /yup/0.32.11:
+    resolution: {integrity: sha512-Z2Fe1bn+eLstG8DRR6FTavGD+MeAwyfmouhHsIUgaADz8jvFKbO/fXc2trJKZg+5EBjh4gGm3iU/t3onKlXHIg==}
+    engines: {node: '>=10'}
+    dependencies:
+      '@babel/runtime': 7.17.0
+      '@types/lodash': 4.14.178
+      lodash: 4.17.21
+      lodash-es: 4.17.21
+      nanoclone: 0.2.1
+      property-expr: 2.0.5
+      toposort: 2.0.2
     dev: false
 
   /zen-observable-ts/1.2.3:

@@ -1,3 +1,4 @@
+// @ts-ignore
 import React, {FC} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";

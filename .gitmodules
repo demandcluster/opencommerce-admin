@@ -1,0 +1,3 @@
+[submodule "packages/reaction-merchant-ui"]
+	path = packages/reaction-merchant-ui
+	url = git@github.com:demandcluster/reaction-merchant-ui.git

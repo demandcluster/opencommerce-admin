@@ -3,12 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './styles/base.css';
 import {App} from 'platform';
-import {registerRoutes, registerOperatorRoutes} from 'platform/router';
-import {globalRoutes} from 'platform';
-import {operatorRoutes} from 'core-ui';
-
-registerRoutes(globalRoutes);
-registerOperatorRoutes(operatorRoutes);
+import "./util/prepareRoutes";
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,7 +1,9 @@
 {
   "extends": "tsconfig/base.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "typeRoots": ["./src/types"],
+    "types": ["react-table"]
   },
   "include": [
     "src"

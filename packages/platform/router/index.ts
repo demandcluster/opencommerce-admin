@@ -4,12 +4,12 @@ import {OperatorLayout} from "../components/layout";
 import {OperatorRouteProps} from "./OperatorRoute";
 import {IndexRouteProps, LayoutRouteProps, PathRouteProps} from "react-router-dom";
 
-type GlobalRouteDefinition = {
+export type GlobalRouteDefinition = {
   Component: FC
 } & GlobalRouteProps
   & (PathRouteProps | LayoutRouteProps | IndexRouteProps)
 
-type OperatorRouteDefinition = {
+export type OperatorRouteDefinition = {
   Component: FC,
   LayoutComponent?: OperatorLayout,
   priority?: number,

@@ -19,14 +19,14 @@ const apolloClient = initApollo();
 
 const App: FC = () => {
   return (
-    <ApolloProvider client={apolloClient}>
-      <BrowserRouter>
-        <HelmetProvider>
-          <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <ApolloProvider client={apolloClient}>
+        <BrowserRouter>
+          <HelmetProvider>
             <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
               <AuthProvider>
                 <UIProvider>
-                  <CssBaseline />
+                  <CssBaseline/>
                   <Routes>
                     {globalRoutesDefinitions.map((
                       {
@@ -55,10 +55,10 @@ const App: FC = () => {
                 </UIProvider>
               </AuthProvider>
             </SnackbarProvider>
-          </ThemeProvider>
-        </HelmetProvider>
-      </BrowserRouter>
-    </ApolloProvider>
+          </HelmetProvider>
+        </BrowserRouter>
+      </ApolloProvider>
+    </ThemeProvider>
   );
 }
 

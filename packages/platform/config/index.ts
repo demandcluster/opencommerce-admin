@@ -1,5 +1,6 @@
 import {cleanEnv, str} from "envalid";
 
+// @ts-ignore
 export default cleanEnv(import.meta.env, {
   VITE_PUBLIC_GRAPHQL_API_URL_HTTP: str({
     desc: "A URL that is accessible from browsers and accepts GraphQL POST requests over HTTP",
