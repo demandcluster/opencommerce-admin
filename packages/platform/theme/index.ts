@@ -1,4 +1,4 @@
-import {createTheme, ThemeOptions} from "@mui/material";
+import {alpha, createTheme, ThemeOptions} from "@mui/material";
 import { blueGrey } from "@mui/material/colors";
 
 const themeOptions: ThemeOptions = {
@@ -58,11 +58,30 @@ theme.shadows[20] = "0 25px 50px -12px rgb(0 0 0 / 0.25)";
 
 theme = createTheme(theme, {
   components: {
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          "& th": {
+            fontWeight: "bold"
+          }
+        }
+      }
+    },
     MuiTableBody: {
       styleOverrides: {
         root: {
-          "& tr:nth-of-type(odd)": {
-            backgroundColor: blueGrey[50]
+          [`& tr:nth-of-type(odd)`]: {
+            backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)
+          },
+          '& tr:hover': {
+            textDecoration: 'none',
+            backgroundColor: alpha(
+              theme.palette.primary.main,
+              theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity,
+            ),
+            '@media (hover: none)': {
+              backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+            },
           }
         }
       }

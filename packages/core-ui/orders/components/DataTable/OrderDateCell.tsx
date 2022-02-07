@@ -1,12 +1,10 @@
-import React, {FC} from "react";
-import moment from "moment";
+import {FC} from "react";
+import * as moment from "moment";
+import {Row} from "react-table";
+import {Order} from "platform/types/gql-types";
 
 type OrderDateCellProps = {
-  row: {
-    values:{
-      createdAt: string
-    }
-  }
+  row: Row<Order>
 }
 
 const OrderDateCell: FC<OrderDateCellProps> = ({ row }) => {

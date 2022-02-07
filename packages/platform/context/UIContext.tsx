@@ -73,7 +73,8 @@ function uiReducer(state: State, action: Action) {
 
 export const UIProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(uiReducer, initialState as State)
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  // const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const isMobile = false;
 
   const openPrimarySidebar = useCallback(
     () => dispatch({type: 'OPEN_PRIMARY_SIDEBAR'}),

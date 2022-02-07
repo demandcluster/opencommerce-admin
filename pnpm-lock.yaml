@@ -131,6 +131,7 @@ importers:
       '@mui/icons-material': ^5.3.1
       '@mui/material': ^5.4.0
       i18next: ^21.6.10
+      moment: ^2.29.1
       notistack: ^2.0.3
       platform: workspace:*
       react: ^17.0.2
@@ -148,6 +149,7 @@ importers:
       '@mui/icons-material': 5.3.1_@mui+material@5.4.0+react@17.0.2
       '@mui/material': 5.4.0_c84e354a724f4213aa6539fdea9d08aa
       i18next: 21.6.10
+      moment: 2.29.1
       notistack: 2.0.3_2f871dd2b8d69d8cbc4214b97c3d4d81
       platform: link:../platform
       react: 17.0.2

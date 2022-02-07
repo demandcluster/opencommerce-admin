@@ -1,16 +1,10 @@
-import React, {FC} from "react";
+import {FC} from "react";
 import Box from "@mui/material/Box";
+import {Order} from "platform/types/gql-types";
+import {Row} from "react-table";
 
 type OrderTotalCellProps = {
-  row: {
-    values: {
-      summary: {
-        total: {
-          displayAmount: string
-        }
-      }
-    }
-  }
+  row: Row<Order>
 }
 
 /**
@@ -21,7 +15,7 @@ type OrderTotalCellProps = {
 const OrderTotalCell: FC<OrderTotalCellProps> = ({ row }) => {
   return (
     <Box textAlign="right">
-      {row.values.summary.total.displayAmount}
+      {row.values.totalAmount}
     </Box>
   );
 }

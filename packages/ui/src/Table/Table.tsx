@@ -1,8 +1,6 @@
 import {MouseEvent, ChangeEventHandler, ReactNode} from "react";
-import {Column, TableState, usePagination, useTable} from "react-table";
-import Backdrop from "@mui/material/Backdrop";
+import {Column, TableState, useFilters, usePagination, useTable} from "react-table";
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import MuiTable from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,7 +13,7 @@ export type FetchDataHandler<T extends object> = (
   {pageIndex, pageSize}: TableState<T>
 ) => Promise<void>
 
-export type RowClickHandler<T extends object> = ({row: T}) => void | Promise<void>
+export type RowClickHandler<T extends object> = (row: T) => void | Promise<void>
 
 type TableProps<T extends object> = {
   data: T[];
@@ -40,6 +38,7 @@ const Table = <T extends object>(
     onRowClick,
     loading
   }: TableProps<T>) => {
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -58,7 +57,9 @@ const Table = <T extends object>(
     },
     manualPagination: true,
     pageCount: Math.ceil(count / queryPageSize)
-  }, usePagination);
+  },
+    usePagination
+  );
 
   const generateFillerRows = () => {
     if (data.length >= pageSize || loading) return;
@@ -89,8 +90,7 @@ const Table = <T extends object>(
     };
 
   const handleRowClick = (row: T) => {
-    console.log(row)
-    return onRowClick({row})
+    return onRowClick(row)
   }
 
   return (
@@ -101,9 +101,7 @@ const Table = <T extends object>(
             {headerGroups.map(headerGroup => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => (
-                  <TableCell
-                    {...column.getHeaderProps()}
-                  >
+                  <TableCell {...column.getHeaderProps()}>
                     {column.render('Header')}
                   </TableCell>
                 ))}
