@@ -1,6 +1,6 @@
 import {List, Theme} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import {ListItemLink} from "ui";
+import ListItemLink from "ui/ListItemLink";
 import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
 import {useResolvedPath} from "react-router-dom";
 

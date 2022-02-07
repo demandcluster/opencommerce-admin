@@ -5,7 +5,7 @@ import {
   useMemo,
   useReducer
 } from "react";
-import {Theme, useMediaQuery} from "@mui/material";
+import {Theme, useMediaQuery, useTheme} from "@mui/material";
 
 export interface State {
   isDetailDrawerOpen: boolean
@@ -73,8 +73,8 @@ function uiReducer(state: State, action: Action) {
 
 export const UIProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(uiReducer, initialState as State)
-  // const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const isMobile = false;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const openPrimarySidebar = useCallback(
     () => dispatch({type: 'OPEN_PRIMARY_SIDEBAR'}),

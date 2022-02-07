@@ -2,18 +2,16 @@ import {useMemo, FC} from "react";
 import {Card, CardHeader, CardContent} from "@mui/material";
 import ordersQuery from "../graphql/queries/orders";
 import {useTranslation} from "react-i18next";
-import {Table} from "ui";
+import Table, {FetchDataHandler, MultipleSelectColumnFilter, RowClickHandler, SelectColumnFilter} from "ui/Table";
 import {useQuery} from "@apollo/client";
 import {useShopId} from "platform/hooks";
 import {Order, OrderConnection, OrderFilterInput} from "platform/types/gql-types";
-import {Column} from "react-table";
-import {FetchDataHandler, RowClickHandler} from "ui/src/Table";
 import {useNavigate} from "react-router-dom";
 import OrderStatusCell from "./DataTable/OrderStatusCell";
 import OrderDateCell from "./DataTable/OrderDateCell";
 import Box from "@mui/material/Box";
 import OrderTotalCell from "./DataTable/OrderTotalCell";
-import {defaultOrderStatusTranslation, defaultPaymentStatusTranslation} from "../helpers/defaultTranslation";
+import {defaultPaymentStatusTranslation} from "../helpers/defaultTranslation";
 
 type OrdersQueryVariables = {
   shopIds: string[];
@@ -32,28 +30,24 @@ const OrdersTable: FC = () => {
     }
   });
 
-  const columns = useMemo((): Column<Order>[] => [
+  const columns = useMemo(() => [
     {
       Header: t("admin.table.headers.id", "Id"),
-      accessor: "referenceId"
+      accessor: "referenceId",
+      disableFilters: true
     },
     {
       Header: t("admin.table.headers.status", "Status"),
       accessor: (row) => row.status,
       id: "status",
       Cell: ({row}) => <OrderStatusCell row={row}/>,
-      // Filter: makeDataTableColumnFilter({
-      //   // `title` can be omitted if the Header is a string
-      //   // title: "Order Status",
-      //   options: [
-      //     // { label: "All", value: "" },
-      //     {label: t("admin.table.orderStatus.coreOrderWorkflow/canceled"), value: "canceled"},
-      //     {label: t("admin.table.orderStatus.coreOrderWorkflow/completed"), value: "completed"},
-      //     {label: t("admin.table.orderStatus.new"), value: "new"},
-      //     {label: t("admin.table.orderStatus.coreOrderWorkflow/processing"), value: "processing"}
-      //   ]
-      // }),
-      // show: false
+      Filter: SelectColumnFilter,
+      filter: "equals",
+      options: [
+        {label: t("admin.table.fulfillmentStatus.coreOrderWorkflow/completed", "Completed"), value: "completed"},
+        {label: t("admin.table.fulfillmentStatus.new", "New"), value: "new"},
+        {label: t("admin.table.fulfillmentStatus.coreOrderWorkflow/processing", "Processing"), value: "processing"}
+      ]
     },
     {
       Header: t("admin.table.headers.date", "Date"),
@@ -68,34 +62,18 @@ const OrdersTable: FC = () => {
         <>{t(`admin.table.paymentStatus.${row.values.paymentStatus}`,
           defaultPaymentStatusTranslation(row.values.paymentStatus))}</>
       ),
-      // Filter: makeDataTableColumnFilter({
-      //   isMulti: true,
-      //   options: [
-      //     {label: t("admin.table.paymentStatus.completed"), value: "completed"},
-      //     {label: t("admin.table.paymentStatus.created"), value: "created"}
-      //   ]
-      // })
-    },
-    {
-      Header: t("admin.table.headers.fulfillment", "Fulfillment"),
-      accessor: (row) => row.fulfillmentGroups[0].status,
-      id: "fulfillmentStatus",
-      Cell: ({row}) => (
-        <>{t(`admin.table.orderStatus.${row.values.status}`, defaultOrderStatusTranslation(row.values.status))}</>
-      ),
-      // Filter: makeDataTableColumnFilter({
-      //   isMulti: true,
-      //   options: [
-      //     {label: t("admin.table.fulfillmentStatus.coreOrderWorkflow/completed"), value: "completed"},
-      //     {label: t("admin.table.fulfillmentStatus.new"), value: "new"},
-      //     {label: t("admin.table.fulfillmentStatus.coreOrderWorkflow/processing"), value: "processing"}
-      //   ]
-      // })
+      Filter: MultipleSelectColumnFilter,
+      filter: "includesAll",
+      options: [
+        {label: t("admin.table.paymentStatus.completed"), value: "completed"},
+        {label: t("admin.table.paymentStatus.created"), value: "created"}
+      ]
     },
     {
       Header: t("admin.table.headers.customer", "Customer"),
       accessor: (row) => row.payments[0]?.billingAddress.fullName,
-      id: "customer"
+      id: "customer",
+      disableFilters: true
     },
     {
       Header: () => (
@@ -108,11 +86,20 @@ const OrdersTable: FC = () => {
   ], [t]);
 
   // @ts-ignore
-  const handleFetchData: FetchDataHandler<Order> = async ({pageSize, pageIndex}) => {
+  const handleFetchData: FetchDataHandler<Order> = async ({pageSize, pageIndex, filters}) => {
+    const filtersByKey: Partial<OrderFilterInput> = {}
+    filters.forEach(filter => filtersByKey[filter.id] = filter.value)
+
+    console.log(filtersByKey)
+
     await refetch({
       shopIds: [shopId],
       first: pageSize,
-      offset: pageIndex * pageSize
+      offset: pageIndex * pageSize,
+      // @ts-ignore
+      filters: {
+        ...filtersByKey
+      }
     });
   }
 

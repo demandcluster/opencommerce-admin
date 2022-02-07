@@ -7,7 +7,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import List from "@mui/material/List";
 
-import {ListItemLink} from "ui";
+import ListItemLink from "ui/ListItemLink";
 import {
   drawerWidthExpanded,
   drawerWidthCollapsed

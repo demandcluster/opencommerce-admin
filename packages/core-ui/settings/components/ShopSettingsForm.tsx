@@ -11,7 +11,7 @@ import {useQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
 import shopQuery from "../graphql/queries/shop";
 import {UnpackNestedValue, useForm} from "react-hook-form";
-import {ControlledTextField} from "ui";
+import ControlledTextField from "ui/ControlledTextField";
 import useShopId from "platform/hooks/useShopId";
 import {Shop} from "platform/types/gql-types";
 
