@@ -24,7 +24,6 @@ type ShopSettingsFieldValues = {
 }
 
 const ShopSettingsForm: FC = () => {
-  // const [isSaving, setIsSaving] = useState(false);
   const {t} = useTranslation();
   const shopId = useShopId();
   const {loading, data} = useQuery<{shop: Shop}>(shopQuery, {
@@ -63,6 +62,7 @@ const ShopSettingsForm: FC = () => {
                   <ControlledTextField
                     control={control}
                     name="email"
+                    size="small"
                     defaultValue={data?.shop.emails[0]?.address || ""}
                     label={t("admin.settings.shop.emailLabel", "Email")}
                     placeholder={t("admin.settings.shop.emailPlaceholder", "Email")}

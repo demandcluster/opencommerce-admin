@@ -16,8 +16,9 @@ import {
 } from "react-table";
 
 declare module 'react-table' {
-  export interface UseMultiselectFilterColumnProps<D extends object> {
-    options: {label: string, value: string}[]
+  export interface UseCustomFilterColumnProps<D extends object> {
+    filterOptions: {label: string, value: string}[]
+    filterLabel: string
   }
 
   export interface TableOptions<D extends object>
@@ -48,6 +49,6 @@ declare module 'react-table' {
   export interface ColumnInstance<D extends object = {}>
     extends UseFiltersColumnProps<D>,
       UseSortByColumnProps<D>,
-      UseMultiselectFilterColumnProps<D> {
+      UseCustomFilterColumnProps<D> {
   }
 }

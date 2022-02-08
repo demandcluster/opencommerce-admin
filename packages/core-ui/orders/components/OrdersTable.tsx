@@ -3,6 +3,7 @@ import {Card, CardHeader, CardContent} from "@mui/material";
 import ordersQuery from "../graphql/queries/orders";
 import {useTranslation} from "react-i18next";
 import Table, {FetchDataHandler, MultipleSelectColumnFilter, RowClickHandler, SelectColumnFilter} from "ui/Table";
+import {Column} from "react-table";
 import {useQuery} from "@apollo/client";
 import {useShopId} from "platform/hooks";
 import {Order, OrderConnection, OrderFilterInput} from "platform/types/gql-types";
@@ -30,7 +31,7 @@ const OrdersTable: FC = () => {
     }
   });
 
-  const columns = useMemo(() => [
+  const columns = useMemo<Column<Order>[]>(() => [
     {
       Header: t("admin.table.headers.id", "Id"),
       accessor: "referenceId",
@@ -42,8 +43,8 @@ const OrdersTable: FC = () => {
       id: "status",
       Cell: ({row}) => <OrderStatusCell row={row}/>,
       Filter: SelectColumnFilter,
-      filter: "equals",
-      options: [
+      filterLabel: t("admin.table.headers.status", "Status"),
+      filterOptions: [
         {label: t("admin.table.fulfillmentStatus.coreOrderWorkflow/completed", "Completed"), value: "completed"},
         {label: t("admin.table.fulfillmentStatus.new", "New"), value: "new"},
         {label: t("admin.table.fulfillmentStatus.coreOrderWorkflow/processing", "Processing"), value: "processing"}
@@ -52,7 +53,8 @@ const OrdersTable: FC = () => {
     {
       Header: t("admin.table.headers.date", "Date"),
       accessor: "createdAt",
-      Cell: ({row}) => <OrderDateCell row={row}/>
+      Cell: ({row}) => <OrderDateCell row={row}/>,
+      disableFilters: true
     },
     {
       Header: t("admin.table.headers.payment", "Payment"),
@@ -63,10 +65,12 @@ const OrdersTable: FC = () => {
           defaultPaymentStatusTranslation(row.values.paymentStatus))}</>
       ),
       Filter: MultipleSelectColumnFilter,
-      filter: "includesAll",
-      options: [
-        {label: t("admin.table.paymentStatus.completed"), value: "completed"},
-        {label: t("admin.table.paymentStatus.created"), value: "created"}
+      filterLabel: t("admin.table.headers.payment", "Payment"),
+      filterOptions: [
+        {label: t("admin.table.paymentStatus.completed", "Completed"), value: "completed"},
+        {label: t("admin.table.paymentStatus.created", "Created"), value: "created"},
+        {label: t("admin.table.paymentStatus.partialRefund", "Partial refund"), value: "partialRefund"},
+        {label: t("admin.table.paymentStatus.pending", "Pending"), value: "pending"}
       ]
     },
     {
@@ -81,7 +85,8 @@ const OrdersTable: FC = () => {
       ),
       accessor: (row) => row.summary.total.displayAmount,
       id: "totalAmount",
-      Cell: ({row}) => <OrderTotalCell row={row}/>
+      Cell: ({row}) => <OrderTotalCell row={row}/>,
+      disableFilters: true
     }
   ], [t]);
 
@@ -89,8 +94,6 @@ const OrdersTable: FC = () => {
   const handleFetchData: FetchDataHandler<Order> = async ({pageSize, pageIndex, filters}) => {
     const filtersByKey: Partial<OrderFilterInput> = {}
     filters.forEach(filter => filtersByKey[filter.id] = filter.value)
-
-    console.log(filtersByKey)
 
     await refetch({
       shopIds: [shopId],

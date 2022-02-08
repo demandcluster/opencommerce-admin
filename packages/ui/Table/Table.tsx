@@ -7,16 +7,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import ClearIcon from '@mui/icons-material/Clear';
 import {
   Checkbox,
-  FormControl, IconButton,
+  FormControl, FormLabel,
   ListItemText,
-  MenuItem,
+  MenuItem, OutlinedInput,
   Select,
   SelectChangeEvent,
-  Skeleton,
-  TextField
+  Skeleton
 } from "@mui/material";
 import {Column, ColumnInstance, TableState, useFilters, usePagination, useTable} from "react-table";
 
@@ -38,13 +36,19 @@ type TableProps<T extends object> = {
 
 const DefaultColumnFilter = <T extends object>({column}: { column: ColumnInstance<T> }) => {
   return (
-    <TextField
-      size="small"
-      value={column.filterValue || ''}
-      onChange={e => {
-        column.setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
-      }}
-    />
+    <FormControl>
+      <FormLabel
+        id={`defaultFilter-${column.filterLabel}-label`}
+      >{column.filterLabel}
+      </FormLabel>
+      <OutlinedInput
+        size="small"
+        value={column.filterValue || ''}
+        onChange={e => {
+          column.setFilter(e.target.value || undefined)
+        }}
+      />
+    </FormControl>
   )
 }
 
@@ -54,22 +58,27 @@ export const MultipleSelectColumnFilter = <T extends object>({column}: { column:
   const handleChange = ({target: {value}}: SelectChangeEvent<typeof selectedFilters>) => {
     const newFilters = typeof value === 'string' ? value.split(',') : value;
     setSelectedFilters(newFilters);
-    column.setFilter(value);
+    column.setFilter(newFilters.length ? newFilters : undefined);
   }
 
   return (
     <FormControl fullWidth sx={{maxWidth: "200px"}}>
+      <FormLabel
+        id={`filter-selection-${column.filterLabel}-label`}
+      >{column.filterLabel}
+      </FormLabel>
       <Select
         multiple
         size="small"
-        id="tableFilterMultipleSelection"
+        id={`filter-selection-${column.filterLabel}`}
+        labelId={`filter-selection-${column.filterLabel}-label`}
         value={selectedFilters}
         onChange={handleChange}
         renderValue={(selected) => (
           <span>{selected.join(", ")}</span>
         )}
       >
-        {column.options.map(({label, value}) => (
+        {column.filterOptions.map(({label, value}) => (
           <MenuItem key={value} value={value}>
             <Checkbox checked={selectedFilters.includes(value)}/>
             <ListItemText primary={label}/>
@@ -85,35 +94,33 @@ export const SelectColumnFilter = <T extends object>({column}: { column: ColumnI
 
   const handleChange = ({target: {value}}: SelectChangeEvent<typeof selectedFilter>) => {
     setSelectedFilter(value);
-    column.setFilter(value);
+    column.setFilter(value || undefined);
   }
 
   return (
-    <Box display="flex" gap={0.5}>
-      <FormControl fullWidth sx={{maxWidth: "200px"}}>
-        <Select
-          size="small"
-          id="tableFilterSelection"
-          value={selectedFilter}
-          onChange={handleChange}
-          renderValue={(selected) => (
-            selected && (<span>{selected}</span>)
-          )}
-        >
-          {column.options.map(({label, value}) => (
-            <MenuItem key={value} value={value}>
-              <ListItemText primary={label}/>
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      {selectedFilter && (
-        // @ts-ignore
-        <IconButton size="small" onClick={() => handleChange({target: {value: undefined}})}>
-          <ClearIcon/>
-        </IconButton>
-      )}
-    </Box>
+    <FormControl sx={{maxWidth: "200px", minWidth: "100px"}}>
+      <FormLabel
+        id={`filter-selection-${column.filterLabel}-label`}
+      >{column.filterLabel}
+      </FormLabel>
+      <Select
+        size="small"
+        id={`filter-selection-${column.filterLabel}`}
+        labelId={`filter-selection-${column.filterLabel}-label`}
+        value={selectedFilter}
+        onChange={handleChange}
+        defaultValue={""}
+      >
+        <MenuItem value={""}>
+          <ListItemText primary={"\u00A0"}/>
+        </MenuItem>
+        {column.filterOptions.map(({label, value}) => (
+          <MenuItem key={value} value={value}>
+            <ListItemText primary={label}/>
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
 
@@ -128,7 +135,6 @@ const Table = <T extends object>(
     onRowClick,
     loading
   }: TableProps<T>) => {
-
   const defaultColumn: Partial<Column<T>> = useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -145,6 +151,7 @@ const Table = <T extends object>(
     state: {pageSize, pageIndex, filters},
     setPageSize,
     gotoPage,
+    allColumns
   } = useTable<T>({
       columns,
       data,
@@ -165,7 +172,6 @@ const Table = <T extends object>(
     onFetchData({pageIndex: 0, pageSize, sortBy: [], filters}).then();
   }, [filters]);
 
-
   const preloadRows = useMemo(() => Array(pageSize).fill(0)
       .map((_, key) => (
         <TableRow key={`preload-empty-${key}`}>
@@ -179,7 +185,7 @@ const Table = <T extends object>(
   const generateFillerRows = () => {
     if (data.length >= pageSize || loading) return;
     return Array(pageSize - data.length).fill(0)
-      .map((key) => (
+      .map((_, key) => (
         <TableRow key={`empty-${key}`}>
           {columns.map((column, cellKey) => (
               <TableCell
@@ -210,6 +216,11 @@ const Table = <T extends object>(
 
   return (
     <Box sx={{width: '100%'}}>
+      <Box display="flex" gap={1} px={1} pb={1}>
+        {allColumns
+          .filter(column => column.canFilter)
+          .map(column => column.render("Filter", {key: `filter-${column.id}`}))}
+      </Box>
       <TableContainer>
         <MuiTable {...getTableProps()} size="small">
           <TableHead>
@@ -218,15 +229,6 @@ const Table = <T extends object>(
                 {headerGroup.headers.map(column => (
                   <TableCell {...column.getHeaderProps()}>
                     {column.render('Header')}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-            {headerGroups.map(headerGroup => (
-              <TableRow {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <TableCell {...column.getHeaderProps()} sx={{p: 1}}>
-                    {column.canFilter && column.render('Filter')}
                   </TableCell>
                 ))}
               </TableRow>

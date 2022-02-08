@@ -1,5 +1,5 @@
-import {alpha, createTheme, ThemeOptions} from "@mui/material";
-import { blueGrey } from "@mui/material/colors";
+import {alpha, createTheme, Theme, ThemeOptions} from "@mui/material";
+import {blueGrey} from "@mui/material/colors";
 
 const themeOptions: ThemeOptions = {
   palette: {
@@ -43,6 +43,20 @@ const themeOptions: ThemeOptions = {
           borderRight: "none"
         }
       }
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        sizeSmall: {
+          maxHeight: "40px"
+        }
+      }
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          marginLeft: "6px"
+        }
+      }
     }
   }
 };
@@ -70,22 +84,25 @@ theme = createTheme(theme, {
     MuiTableBody: {
       styleOverrides: {
         root: {
-          [`& tr:nth-of-type(odd)`]: {
-            backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity)
-          },
           '& tr:hover': {
             textDecoration: 'none',
-            backgroundColor: alpha(
-              theme.palette.primary.main,
-              theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity,
-            ),
+            backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
             '@media (hover: none)': {
               backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
             },
           }
         }
       }
-    }
+    },
+    // MuiInputLabel: {
+    //   styleOverrides: {
+    //     root: {
+    //       "& + *": {
+    //         marginTop: theme.spacing(3)
+    //       }
+    //     }
+    //   }
+    // },
   }
 })
 
