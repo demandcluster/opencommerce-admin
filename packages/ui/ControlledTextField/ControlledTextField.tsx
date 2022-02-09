@@ -27,7 +27,6 @@ const ControlledTextField: FC<ControlledTextFieldProps> = (
       defaultValue={defaultValue}
       render={({field, fieldState: {error, invalid}}) => {
         return (
-
           <FormControl
             error={invalid}
             fullWidth
