@@ -43,7 +43,7 @@ export const ShopProvider: FC = ({children}) => {
   // When the viewer changes, the new viewer might not have access to the currently selected shop.
   // This effect ensures the current shop state is valid for the new viewer
   useEffect(() => {
-    if (!getShopByIdFromViewer(viewer, currentShop._id)) {
+    if (!getShopByIdFromViewer(viewer, currentShop?._id)) {
       return setCurrentShop(getInitialShop())
     }
   }, [viewer]);
