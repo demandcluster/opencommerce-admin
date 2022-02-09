@@ -5,6 +5,8 @@ import {
 import config from "./index";
 import getAccountsClient from "./accountsClient";
 import {accountsLink} from "@accounts/apollo-link";
+import {getOperationAST} from "graphql";
+import {WebSocketLink} from "@apollo/client/link/ws";
 
 const { accountsClient } = getAccountsClient();
 const authLink = accountsLink(() => accountsClient);
@@ -16,6 +18,27 @@ const apiLink = ApolloLink.from([
   httpLink
 ]);
 
+let linkWithSubscriptions: ApolloLink | undefined;
+
+if (Boolean(config.VITE_PUBLIC_GRAPHQL_API_URL_WS)) {
+  linkWithSubscriptions = ApolloLink.split(
+    (operation) => {
+      const operationAST = getOperationAST(operation.query, operation.operationName);
+      return !!operationAST && operationAST.operation === "subscription";
+    },
+    new WebSocketLink({
+      uri: config.VITE_PUBLIC_GRAPHQL_API_URL_WS,
+      options: {
+        reconnect: true, // auto-reconnect
+        connectionParams: {
+          authToken: localStorage.getItem("accounts:accessToken")
+        }
+      }
+    }),
+    apiLink
+  );
+}
+
 /**
  * @name initApollo
  * @summary Initializes Apollo Client
@@ -23,7 +46,7 @@ const apiLink = ApolloLink.from([
  */
 export default function initApollo() {
   return new ApolloClient({
-    link: apiLink,
+    link: linkWithSubscriptions || apiLink,
     cache: new InMemoryCache()
   });
 }
