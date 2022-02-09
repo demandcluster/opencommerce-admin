@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {Link, Navigate} from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
 import Grid from '@mui/material/Grid';
@@ -10,17 +10,6 @@ import {Account} from "platform/types/gql-types";
 
 const OperatorLanding: FC = () => {
   const shopId = useShopId();
-  const {viewer} = useAuth();
-
-  const getShopIdFromViewer = (viewer: Account | null) => {
-    return viewer?.adminUIShops?.find(shop => shop.shopType === "primary")?._id
-      || viewer?.adminUIShops[0]?._id
-  }
-
-  if (!shopId) {
-    const shopId = getShopIdFromViewer(viewer);
-    return <Navigate to={`${shopId}`}/>
-  }
 
   return (
     <>
@@ -36,11 +25,11 @@ const OperatorLanding: FC = () => {
 
         <Grid item>
           <Typography align="center" variant="body1">
-            Use Demandcluster Admin to manage <Link to={`/${shopId}/orders`}>Orders</Link>,
-            <Link to={`/${shopId}/products`}>Products</Link>,
-            <Link to={`/${shopId}/tags`}>Tags</Link>,
-            <Link to={`/${shopId}/accounts`}>Accounts</Link>,
-            and <Link to={`/${shopId}/navigation`}>Navigation</Link>,
+            Use Demandcluster Admin to manage <Link to={`/orders`}>Orders</Link>,
+            <Link to={`/products`}>Products</Link>,
+            <Link to={`/tags`}>Tags</Link>,
+            <Link to={`/accounts`}>Accounts</Link>,
+            and <Link to={`/navigation`}>Navigation</Link>,
             or change shop settings.
           </Typography>
         </Grid>

@@ -90,11 +90,11 @@ export const MultipleSelectColumnFilter = <T extends object>({column}: { column:
 }
 
 export const SelectColumnFilter = <T extends object>({column}: { column: ColumnInstance<T> }) => {
-  const [selectedFilter, setSelectedFilter] = useState<string | undefined>(column.filterValue);
+  const [selectedFilter, setSelectedFilter] = useState<string | boolean | undefined>(column.filterValue);
 
   const handleChange = ({target: {value}}: SelectChangeEvent<typeof selectedFilter>) => {
     setSelectedFilter(value);
-    column.setFilter(value || undefined);
+    column.setFilter((value || value === false) ? value : undefined);
   }
 
   return (
@@ -107,7 +107,6 @@ export const SelectColumnFilter = <T extends object>({column}: { column: ColumnI
         size="small"
         id={`filter-selection-${column.filterLabel}`}
         labelId={`filter-selection-${column.filterLabel}-label`}
-        value={selectedFilter}
         onChange={handleChange}
         defaultValue={""}
       >

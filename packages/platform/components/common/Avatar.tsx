@@ -6,33 +6,39 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
-import Box from "@mui/material/Box";
+import PersonIcon from '@mui/icons-material/Person';
 
 import useAuth from "../../hooks/useAuth";
+import {useMenu} from "ui/hooks";
+import {alpha} from "@mui/material";
+import theme from "../../theme";
 
 const Avatar: FC = () => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const {logout} = useAuth();
+  const {open, handleClick, handleClose, anchorEl} = useMenu();
+  const {viewer, logout} = useAuth();
 
   return (
-    <Box>
+    <>
       <Tooltip title="Account settings">
         <IconButton
+          sx={{
+            p: 0,
+            "&:active": {
+              backgroundColor: alpha(theme.palette.primary.light, theme.palette.action.selectedOpacity),
+            },
+            "&:hover": {
+              boxShadow: theme.outline.focus
+            },
+            "&:focus": {
+              boxShadow: theme.outline.focus
+            },
+          }}
           onClick={handleClick}
-          size="small"
-          sx={{ml: 2}}
           aria-controls={open ? 'account-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
         >
-          <MuiAvatar sx={{width: 32, height: 32}}>M</MuiAvatar>
+            <MuiAvatar><PersonIcon/></MuiAvatar>
         </IconButton>
       </Tooltip>
       <Menu
@@ -42,17 +48,10 @@ const Avatar: FC = () => {
         onClose={handleClose}
         onClick={handleClose}
         PaperProps={{
-          elevation: 0,
+          elevation: 10,
           sx: {
             overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
             mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
             '&:before': {
               content: '""',
               display: 'block',
@@ -77,7 +76,7 @@ const Avatar: FC = () => {
           Logout
         </MenuItem>
       </Menu>
-    </Box>
+    </>
   )
 }
 

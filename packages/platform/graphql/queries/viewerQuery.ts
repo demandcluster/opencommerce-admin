@@ -16,6 +16,7 @@ export default gql`
       adminUIShops {
         _id
         shopType
+        name
       }
     }
   }

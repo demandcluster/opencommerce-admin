@@ -1,6 +1,20 @@
 import {alpha, createTheme, Theme, ThemeOptions} from "@mui/material";
 import {blueGrey} from "@mui/material/colors";
 
+declare module '@mui/material/styles' {
+  interface Theme {
+    outline: {
+      focus: string
+    };
+  }
+
+  interface ThemeOptions {
+    outline?: {
+      focus?: string
+    }
+  }
+}
+
 const themeOptions: ThemeOptions = {
   palette: {
     primary: {
@@ -44,17 +58,25 @@ const themeOptions: ThemeOptions = {
         }
       }
     },
-    MuiInputBase: {
-      styleOverrides: {
-        sizeSmall: {
-          maxHeight: "40px"
-        }
-      }
-    },
     MuiFormLabel: {
       styleOverrides: {
         root: {
           marginLeft: "6px"
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontWeight: 700,
+          textTransform: "none"
+        }
+      }
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          margin: 0
         }
       }
     }
@@ -70,7 +92,10 @@ theme.shadows[10] = "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0
 theme.shadows[15] = "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)";
 theme.shadows[20] = "0 25px 50px -12px rgb(0 0 0 / 0.25)";
 
-theme = createTheme(theme, {
+theme = createTheme(theme, <ThemeOptions>{
+  outline: {
+    focus: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+  },
   components: {
     MuiTableHead: {
       styleOverrides: {
@@ -94,15 +119,31 @@ theme = createTheme(theme, {
         }
       }
     },
-    // MuiInputLabel: {
-    //   styleOverrides: {
-    //     root: {
-    //       "& + *": {
-    //         marginTop: theme.spacing(3)
-    //       }
-    //     }
-    //   }
-    // },
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+
+        }
+      }
+    },
+    MuiCardActions: {
+      styleOverrides: {
+        root: {
+          paddingBottom: theme.spacing(3),
+          paddingLeft: theme.spacing(2)
+        }
+      }
+    },
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          minHeight: "64px",
+          [theme.breakpoints.up("sm")]: {
+            minHeight: "80px"
+          }
+        }
+      }
+    }
   }
 })
 

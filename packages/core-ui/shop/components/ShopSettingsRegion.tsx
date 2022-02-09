@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import {FC} from "react";
 import Typography from "@mui/material/Typography";
 import {useTranslation} from "react-i18next";
 import Box from "@mui/material/Box";

@@ -1,16 +1,16 @@
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 import {OperatorViewStandardLayout} from "platform/components/layout";
+import {registerOperatorRoute} from "platform/router";
 
-export const operatorRoutes = [
-  {
-    group: "navigation",
-    priority: 30,
-    LayoutComponent: OperatorViewStandardLayout,
-    Component: () => <>Not implemented</>,
-    NavigationIcon: () => (<LocalOfferIcon/>),
-    path: "tags",
-    withShop: true,
-    navigationLabel: ["admin.tags.tags", "Tags"]
-  }
-];
+registerOperatorRoute({
+  group: "navigation",
+  priority: 30,
+  LayoutComponent: OperatorViewStandardLayout,
+  Component: () => <>Not implemented</>,
+  NavigationIcon: () => (<LocalOfferIcon/>),
+  path: "tags",
+  navigationLabel: ["admin.tags.tags", "Tags"]
+})
+
+export {}

@@ -1,11 +1,11 @@
 import {FC} from 'react'
 import {Control, Controller} from 'react-hook-form'
-import TextField, {TextFieldProps} from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
 import Error from '@mui/icons-material/Error'
 import Tooltip from '@mui/material/Tooltip'
+import {FormControl, FormLabel, OutlinedInput, OutlinedInputProps} from "@mui/material";
 
-type ControlledTextFieldProps = TextFieldProps & {
+type ControlledTextFieldProps = OutlinedInputProps & {
   name: string
   defaultValue: string
   label: string
@@ -27,26 +27,30 @@ const ControlledTextField: FC<ControlledTextFieldProps> = (
       defaultValue={defaultValue}
       render={({field, fieldState: {error, invalid}}) => {
         return (
-          <TextField
-            label={label}
+
+          <FormControl
             error={invalid}
             fullWidth
-            InputProps={{
-              endAdornment: invalid && (
+          >
+            <FormLabel
+              htmlFor={`controlled-input-${name}`}
+            >{label}</FormLabel>
+            <OutlinedInput
+              id={`controlled-input-${name}`}
+              {...field}
+              {...rest}
+              endAdornment={invalid && (
                 <InputAdornment position="end">
                   <Tooltip
-                    title={error?.message ?? 'Грешка'}
+                    title={error?.message ?? 'Error'}
                     arrow
                     placement="bottom-end"
                   >
                     <Error color="error"/>
                   </Tooltip>
                 </InputAdornment>
-              ),
-            }}
-            {...field}
-            {...rest}
-          />
+              )}/>
+          </FormControl>
         )
       }}
     />

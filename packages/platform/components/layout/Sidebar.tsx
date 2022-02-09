@@ -16,6 +16,9 @@ import useUI from "../../hooks/useUI";
 import {useTranslation} from "react-i18next";
 import useShopId from "../../hooks/useShopId";
 import useOperatorRoutes from "../../hooks/useOperatorRoutes";
+import ShopSelector from "../common/ShopSelector";
+import Box from "@mui/material/Box";
+import {Button} from "@mui/material";
 
 const DesktopDrawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
   ({theme, open}) => ({
@@ -104,17 +107,23 @@ const SidebarContent = memo(() => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'flex-end',
           px: [1]
         }}
       >
-        <IconButton onClick={togglePrimarySidebar}>
+        <Button
+          sx={{
+            borderRadius: 0.5,
+            height: "48px",
+            minWidth: "56px"
+          }}
+          onClick={togglePrimarySidebar}
+        >
           {isPrimarySidebarOpen ? (
             <ChevronLeftIcon/>
           ) : (
             <ChevronRightIcon/>
           )}
-        </IconButton>
+        </Button>
       </Toolbar>
       <List sx={{display: "flex", flexDirection: "column", gap: 1, paddingX: 1}}>
         {

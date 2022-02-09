@@ -188,6 +188,7 @@ importers:
       '@types/react-dom': ^17.0.0
       '@types/react-helmet': ^6.1.5
       '@types/react-table': ^7.7.9
+      '@types/react-window': ^1.8.5
       '@types/styled-components': ^5.1.14
       '@vitejs/plugin-react': ^1.1.4
       chalk: ^5.0.0
@@ -209,6 +210,7 @@ importers:
       react-i18next: ^11.15.3
       react-router-dom: ^6.2.1
       react-table: ^7.7.0
+      react-window: ^1.8.6
       snyk: ^1.217.3
       ts-node: ^10.4.0
       tsconfig: workspace:*
@@ -248,6 +250,7 @@ importers:
       react-i18next: 11.15.3_f9635d5d32d7f130f7fe8a33cbdb7283
       react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
       react-table: 7.7.0_react@17.0.2
+      react-window: 1.8.6_react-dom@17.0.2+react@17.0.2
       ui: link:../ui
       web-vitals: 1.1.2
     devDependencies:
@@ -263,6 +266,7 @@ importers:
       '@types/react-dom': 17.0.11
       '@types/react-helmet': 6.1.5
       '@types/react-table': 7.7.9
+      '@types/react-window': 1.8.5
       '@types/styled-components': 5.1.22
       '@vitejs/plugin-react': 1.1.4
       snyk: 1.848.0
@@ -416,7 +420,7 @@ packages:
       '@wry/equality': 0.5.2
       '@wry/trie': 0.3.1
       graphql: 16.3.0
-      graphql-tag: 2.12.6_graphql@16.3.0
+      @apollo/client: 2.12.6_graphql@16.3.0
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.8.1
@@ -443,7 +447,7 @@ packages:
       '@wry/context': 0.6.1
       '@wry/equality': 0.5.2
       '@wry/trie': 0.3.1
-      graphql-tag: 2.12.6
+      @apollo/client: 2.12.6
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.8.1
@@ -1388,7 +1392,7 @@ packages:
       change-case-all: 1.0.14
       dependency-graph: 0.11.0
       graphql: 16.3.0
-      graphql-tag: 2.12.6_graphql@16.3.0
+      @apollo/client: 2.12.6_graphql@16.3.0
       parse-filepath: 1.0.2
       tslib: 2.3.1
     transitivePeerDependencies:
@@ -1427,7 +1431,7 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
-      '@graphql-tools/graphql-tag-pluck': 7.1.5_graphql@16.3.0
+      '@graphql-tools/@apollo/client-pluck': 7.1.5_graphql@16.3.0
       '@graphql-tools/utils': 8.6.1_graphql@16.3.0
       globby: 11.1.0
       graphql: 16.3.0
@@ -1456,7 +1460,7 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
-      '@graphql-tools/graphql-tag-pluck': 7.1.5_graphql@16.3.0
+      '@graphql-tools/@apollo/client-pluck': 7.1.5_graphql@16.3.0
       '@graphql-tools/utils': 8.6.1_graphql@16.3.0
       graphql: 16.3.0
       is-glob: 4.0.3
@@ -1472,7 +1476,7 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
-      '@graphql-tools/graphql-tag-pluck': 7.1.5_graphql@16.3.0
+      '@graphql-tools/@apollo/client-pluck': 7.1.5_graphql@16.3.0
       '@graphql-tools/utils': 8.6.1_graphql@16.3.0
       cross-undici-fetch: 0.1.23
       graphql: 16.3.0
@@ -1496,7 +1500,7 @@ packages:
       unixify: 1.0.0
     dev: false
 
-  /@graphql-tools/graphql-tag-pluck/7.1.5_graphql@16.3.0:
+  /@graphql-tools/@apollo/client-pluck/7.1.5_graphql@16.3.0:
     resolution: {integrity: sha512-NKbFcjlg7cbK+scLXc6eVxXIhX4k8QL6lZ/y5Ju7yrpIN18k2vA78dI6W3Qb5qdftxbDNuC+kDmScZfzzxVPjQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -1979,8 +1983,8 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.0
       '@emotion/cache': 11.7.1
-      '@emotion/react': 11.7.1_react@17.0.2
-      '@emotion/styled': 11.6.0_79c1490562c3c65ef55eb132a37e39b4
+      '@emotion/react': 11.7.1_a0c521d4794c7ad97f5f4c1c4a7d5818
+      '@emotion/styled': 11.6.0_6051c8b70bfa52211d6f419a3c4413f0
       prop-types: 15.8.1
       react: 17.0.2
     dev: false
@@ -2336,6 +2340,12 @@ packages:
     dependencies:
       '@types/react': 17.0.39
     dev: false
+
+  /@types/react-window/1.8.5:
+    resolution: {integrity: sha512-V9q3CvhC9Jk9bWBOysPGaWy/Z0lxYcTXLtLipkt2cnRj1JOSFNF7wqGpkScSXMgBwC+fnVRg/7shwgddBG5ICw==}
+    dependencies:
+      '@types/react': 17.0.39
+    dev: true
 
   /@types/react/17.0.39:
     resolution: {integrity: sha512-UVavlfAxDd/AgAacMa60Azl7ygyQNRwC/DsHZmKgNvPmRR5p70AJ5Q9EAmL2NWOJmeV+vVUI4IAP7GZrN8h8Ug==}
@@ -3760,7 +3770,7 @@ packages:
       graphql: 16.3.0
     dev: false
 
-  /graphql-tag/2.12.6:
+  /@apollo/client/2.12.6:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -3769,7 +3779,7 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /graphql-tag/2.12.6_graphql@16.3.0:
+  /@apollo/client/2.12.6_graphql@16.3.0:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
     engines: {node: '>=10'}
     peerDependencies:
@@ -4453,6 +4463,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /memoize-one/5.2.1:
+    resolution: {integrity: sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==}
+    dev: false
+
   /merge2/1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
@@ -5076,6 +5090,19 @@ packages:
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /react-window/1.8.6_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==}
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      '@babel/runtime': 7.17.0
+      memoize-one: 5.2.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false

@@ -1,7 +1,6 @@
 import {FC, lazy, Suspense} from 'react';
 import {HelmetProvider} from "react-helmet-async";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import CssBaseline from "@mui/material/CssBaseline";
 import {ThemeProvider} from '@mui/material/styles';
 import {ApolloProvider} from "@apollo/client";
 
@@ -13,6 +12,7 @@ import {GlobalRoute, globalRoutesDefinitions} from "./router";
 import theme from "./theme";
 import snackbarPosition from "./utils/getSnackbarPosition";
 import './config/i18n';
+import {ShopProvider} from "./context/ShopContext";
 
 const Login = lazy(() => import("./components/auth/Login"))
 const apolloClient = initApollo();
@@ -25,33 +25,35 @@ const App: FC = () => {
           <HelmetProvider>
             <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
               <AuthProvider>
-                <UIProvider>
-                  <Routes>
-                    {globalRoutesDefinitions.map((
-                      {
-                        title,
-                        Component,
-                        authenticated,
-                        ...props
-                      }, index) => (
-                      <Route
-                        key={index}
-                        {...props}
-                        element={(
-                          <GlobalRoute
-                            title={title}
-                            authenticated={authenticated}
-                            children={<Component/>}
-                          />
-                        )}/>
-                    ))}
-                    <Route path="login" element={
-                      <Suspense fallback={<></>}>
-                        <Login/>
-                      </Suspense>
-                    }/>
-                  </Routes>
-                </UIProvider>
+                <ShopProvider>
+                  <UIProvider>
+                    <Routes>
+                      {globalRoutesDefinitions.map((
+                        {
+                          title,
+                          Component,
+                          authenticated,
+                          ...props
+                        }, index) => (
+                        <Route
+                          key={index}
+                          {...props}
+                          element={(
+                            <GlobalRoute
+                              title={title}
+                              authenticated={authenticated}
+                              children={<Component/>}
+                            />
+                          )}/>
+                      ))}
+                      <Route path="login" element={
+                        <Suspense fallback={<></>}>
+                          <Login/>
+                        </Suspense>
+                      }/>
+                    </Routes>
+                  </UIProvider>
+                </ShopProvider>
               </AuthProvider>
             </SnackbarProvider>
           </HelmetProvider>

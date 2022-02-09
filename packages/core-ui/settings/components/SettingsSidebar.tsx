@@ -15,7 +15,6 @@ const SettingsSidebar = () => {
 
   return (
       <List
-        dense
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -30,7 +29,7 @@ const SettingsSidebar = () => {
         {
           operatorRoutesDefinitions.map(({path, navigationLabel, NavigationIcon}) => (
             <ListItemLink
-              to={pathname + path}
+              to={pathname + '/' + path}
               key={path}
               primary={t(navigationLabel || '')}
               NavigationIcon={NavigationIcon}

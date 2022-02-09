@@ -2,7 +2,7 @@ import {useMemo} from "react";
 import {
   BlockComponentDefinition,
   blocksRegionComponentDefinitions
-} from "../components/layout";
+} from "../layout";
 
 type BlocksRegionsHookConfig = {
   region: string

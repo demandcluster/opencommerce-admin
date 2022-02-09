@@ -1,17 +1,10 @@
-import {useMatch} from "react-router-dom";
+import useShop from "./useShop";
+import {useMemo} from "react";
 
 const useShopId = () => {
-  const match = useMatch({path: "/:shopId/*"})
+  const {currentShop} = useShop();
 
-  if (!match) return null;
-
-  const { shopId } = match.params;
-
-  if (shopId === "new-shop") {
-    return null;
-  }
-
-  return shopId;
+  return useMemo(() => currentShop?._id, [currentShop]);
 };
 
 export default useShopId;

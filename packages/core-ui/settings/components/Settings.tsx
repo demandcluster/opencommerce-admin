@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import {FC} from "react";
 import SettingsSidebar from "./SettingsSidebar";
 import Box from "@mui/material/Box";
 import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
@@ -11,7 +11,7 @@ const Settings: FC = () => {
   const descendantRoute = useParams()["*"];
 
   if (!Boolean(descendantRoute) || descendantRoute === "*") {
-    return <Navigate to={pathname + routeDefinitions[0].path}/>
+    return <Navigate to={pathname + '/' + routeDefinitions[0].path}/>
   }
 
   return (

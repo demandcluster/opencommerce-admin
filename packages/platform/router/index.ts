@@ -16,7 +16,6 @@ export type OperatorRouteDefinition = {
   navigationLabel?: string | string[],
   NavigationIcon?: FC
   group?: string,
-  withShop?: boolean,
   href?: string
 } & OperatorRouteProps
 & PathRouteProps
@@ -28,15 +27,8 @@ export const globalRoutesDefinitions: GlobalRouteDefinition[] = [];
  * @name registerOperatorRoute
  * @summary Registers new operator route in the dashboard view
  */
-export function registerOperatorRoute({path, href, ...definition}: OperatorRouteDefinition) {
-  let pathPrefix = definition.withShop ? ":shopId" : "";
-  pathPrefix += path[0] === "/" ? "" : "/";
-
-  operatorRoutesDefinitions.push({
-    path: pathPrefix + path,
-    href: href && (pathPrefix + href),
-    ...definition
-  });
+export function registerOperatorRoute(definition: OperatorRouteDefinition) {
+  operatorRoutesDefinitions.push(definition);
 }
 
 /**
