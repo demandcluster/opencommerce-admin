@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 
 const OperatorViewFullLayout: FC<PropsWithChildren<any>> = ({children}) => {
   return (
-    <Box p={3}>
+    <Box px={3}>
       {children}
     </Box>
   );

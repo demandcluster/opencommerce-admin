@@ -7,7 +7,7 @@ import {FormControl, FormLabel, OutlinedInput, OutlinedInputProps} from "@mui/ma
 
 type ControlledTextFieldProps = OutlinedInputProps & {
   name: string
-  defaultValue: string
+  defaultValue?: string
   label: string
   control: Control<any>
 }

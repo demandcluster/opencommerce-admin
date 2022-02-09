@@ -1,4 +1,4 @@
-import {MouseEvent, ChangeEventHandler, ReactNode, useMemo, useState, useEffect, useCallback} from "react";
+import {MouseEvent, ChangeEventHandler, ReactNode, useMemo, useState, useEffect} from "react";
 import Box from "@mui/material/Box";
 import MuiTable from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,15 +7,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import {
-  Checkbox,
-  FormControl, FormLabel,
-  ListItemText,
-  MenuItem, OutlinedInput,
-  Select,
-  SelectChangeEvent,
-  Skeleton
-} from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import ListItemText from "@mui/material/ListItemText";
+import MenuItem from "@mui/material/MenuItem";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Skeleton from "@mui/material/Skeleton";
 import {Column, ColumnInstance, TableState, useFilters, usePagination, useTable} from "react-table";
 
 export type FetchDataHandler<T extends object> = (state: TableState<T>) => Promise<void>
@@ -28,6 +27,7 @@ type TableProps<T extends object> = {
   count: number;
   queryPageIndex?: number;
   queryPageSize?: number;
+  queryHiddenColumns?: string[];
   onFetchData: FetchDataHandler<T>;
   onRowClick: RowClickHandler<T>;
   loading: boolean;
@@ -130,6 +130,7 @@ const Table = <T extends object>(
     count = 0,
     queryPageIndex = 0,
     queryPageSize = 10,
+    queryHiddenColumns = [],
     onFetchData,
     onRowClick,
     loading
@@ -150,14 +151,15 @@ const Table = <T extends object>(
     state: {pageSize, pageIndex, filters},
     setPageSize,
     gotoPage,
-    allColumns
+    allColumns,
   } = useTable<T>({
       columns,
       data,
       defaultColumn,
       initialState: {
         pageIndex: queryPageIndex,
-        pageSize: queryPageSize
+        pageSize: queryPageSize,
+        hiddenColumns: queryHiddenColumns
       },
       manualPagination: true,
       manualFilters: true,

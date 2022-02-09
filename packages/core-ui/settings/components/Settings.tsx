@@ -1,9 +1,10 @@
 import {FC} from "react";
-import SettingsSidebar from "./SettingsSidebar";
-import Box from "@mui/material/Box";
-import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
-import Container from "@mui/material/Container";
 import {Routes, Route, useParams, Navigate, useResolvedPath} from "react-router-dom";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+
+import SecondarySidebar from "platform/components/layout/SecondarySidebar"
+import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
 
 const Settings: FC = () => {
   const routeDefinitions = useOperatorRoutes({groups: ["settings"]});
@@ -17,7 +18,7 @@ const Settings: FC = () => {
   return (
     <>
       <Box display="flex" flex={1} mb={2}>
-        <SettingsSidebar/>
+        <SecondarySidebar groups={["settings"]}/>
         <Container maxWidth="xl">
           <Routes>
             {routeDefinitions.map((

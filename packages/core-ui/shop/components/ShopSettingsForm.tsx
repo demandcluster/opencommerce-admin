@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, {FC} from "react";
+import React, {FC, memo, useEffect, useMemo, useState} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -28,12 +28,30 @@ type ShopSettingsFieldValues = {
 const ShopSettingsForm: FC = () => {
   const {t} = useTranslation();
   const shopId = useShopId();
+
   const {loading, data} = useQuery<{ shop: Shop }>(shopQuery, {
     variables: {
       shopId
     }
   })
-  const {control, handleSubmit} = useForm<ShopSettingsFieldValues>();
+
+  const shopFieldValues = useMemo(() => ({
+    name: data?.shop.name || "",
+    email: data?.shop.emails && data?.shop.emails.find(email => !email.provides)?.address || "",
+    slug: data?.shop.slug || "",
+    description: data?.shop.description || "",
+    keywords: data?.shop.keywords || "",
+  }), [data]);
+
+  const {control, handleSubmit, reset} = useForm<ShopSettingsFieldValues>({
+    defaultValues: shopFieldValues
+  });
+
+  useEffect(() => {
+    if (!loading && Boolean(data?.shop)) {
+      reset(shopFieldValues)
+    }
+  }, [data]);
 
   const onSubmit = (data: UnpackNestedValue<ShopSettingsFieldValues>) => {
     console.log(data);
@@ -57,7 +75,6 @@ const ShopSettingsForm: FC = () => {
                       control={control}
                       name="name"
                       size="small"
-                      defaultValue={data?.shop.name || ""}
                       label={t("admin.settings.shop.nameLabel", "Name")}
                       placeholder={t("admin.settings.shop.namePlaceholder", "Shop Name")}
                     />
@@ -67,7 +84,6 @@ const ShopSettingsForm: FC = () => {
                       control={control}
                       name="email"
                       size="small"
-                      defaultValue={data?.shop.emails[0]?.address || ""}
                       label={t("admin.settings.shop.emailLabel", "Email")}
                       placeholder={t("admin.settings.shop.emailPlaceholder", "Email")}
                     />
@@ -77,7 +93,6 @@ const ShopSettingsForm: FC = () => {
                       control={control}
                       name="slug"
                       size="small"
-                      defaultValue={data?.shop.slug || ""}
                       label={t("admin.settings.shop.slugLabel", "Slug")}
                       placeholder={t("admin.settings.shop.slugPlaceholder", "Slug")}
                     />
@@ -86,7 +101,6 @@ const ShopSettingsForm: FC = () => {
                     <ControlledTextField
                       control={control}
                       name="description"
-                      defaultValue={data?.shop.description || ""}
                       multiline
                       rows={2}
                       size="small"
@@ -99,7 +113,6 @@ const ShopSettingsForm: FC = () => {
                       control={control}
                       name="keywords"
                       size="small"
-                      defaultValue={data?.shop.keywords || ""}
                       label={t("admin.settings.shop.keywordsLabel", "Keywords")}
                       placeholder={t("admin.settings.shop.keywordsPlaceholder", "Keywords")}
                     />
@@ -118,19 +131,20 @@ const ShopSettingsForm: FC = () => {
           }
         </CardContent>
         <CardActions>
-            <Button
-              disableElevation
-              color="primary"
-              variant="contained"
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-            >
-              {t("app.saveChanges", "Save")}
-            </Button>
+          <Button
+            disableElevation
+            color="primary"
+            variant="contained"
+            type="submit"
+            size="large"
+            onClick={handleSubmit(onSubmit)}
+          >
+            {t("app.saveChanges", "Save")}
+          </Button>
         </CardActions>
       </Card>
     </Container>
   );
 }
 
-export default ShopSettingsForm;
+export default memo(ShopSettingsForm);

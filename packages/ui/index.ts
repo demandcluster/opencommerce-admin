@@ -7,4 +7,11 @@ export * from "./ListItemLink";
 export {default as ControlledTextField} from "./ControlledTextField";
 export * from "./ControlledTextField";
 
-export * from "./types/react-table.config";
+export {default as ControlledSelect} from "./ControlledSelect";
+export * from "./ControlledSelect";
+
+export {default as ControlledPhoneInput} from "./ControlledPhoneInput";
+export * from "./ControlledPhoneInput";
+
+export {default as PhoneInput} from "./PhoneInput";
+export * from "./PhoneInput";

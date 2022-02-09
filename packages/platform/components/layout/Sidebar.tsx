@@ -95,7 +95,6 @@ const SidebarContent = memo(() => {
   const {isMobile, closePrimarySidebar, isPrimarySidebarOpen, togglePrimarySidebar} = useUI();
   const {t} = useTranslation();
   const operatorRoutesDefinitions = useOperatorRoutes({groups: ["navigation"]});
-  const shopId = useShopId();
 
   const handleSidebarLinkClick = () => {
     if (isMobile) closePrimarySidebar();
@@ -136,7 +135,7 @@ const SidebarContent = memo(() => {
             }) => (
             <ListItemLink
               onClick={handleSidebarLinkClick}
-              to={(href || path).replace(":shopId", shopId || "")}
+              to={(href || path)}
               key={path}
               primary={t(navigationLabel || '')}
               NavigationIcon={NavigationIcon}

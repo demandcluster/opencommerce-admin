@@ -1,5 +1,5 @@
 import {useMemo, FC} from "react";
-import {Card, CardHeader, CardContent} from "@mui/material";
+import {Card, CardContent, Typography} from "@mui/material";
 import ordersQuery from "../graphql/queries/orders";
 import {useTranslation} from "react-i18next";
 import Table, {FetchDataHandler, MultipleSelectColumnFilter, RowClickHandler, SelectColumnFilter} from "ui/Table";
@@ -109,19 +109,21 @@ const OrdersTable: FC = () => {
   const handleRowClick: RowClickHandler<Order> = (row) => navigate(row.referenceId)
 
   return (
-    <Card>
-      <CardHeader title={t("admin.dashboard.ordersTitle", "Orders")}/>
-      <CardContent>
-        <Table
-          data={data?.orders.nodes || []}
-          count={data?.orders.totalCount || 0}
-          columns={columns}
-          onFetchData={handleFetchData}
-          onRowClick={handleRowClick}
-          loading={loading}
-        />
-      </CardContent>
-    </Card>
+    <Box display="flex" flexDirection="column" gap={3}>
+      <Typography variant="h4">{t("admin.dashboard.ordersTitle", "Orders")}</Typography>
+      <Card>
+        <CardContent>
+          <Table
+            data={data?.orders.nodes || []}
+            count={data?.orders.totalCount || 0}
+            columns={columns}
+            onFetchData={handleFetchData}
+            onRowClick={handleRowClick}
+            loading={loading}
+          />
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 
