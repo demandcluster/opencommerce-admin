@@ -79,6 +79,11 @@ const themeOptions: ThemeOptions = {
           margin: 0
         }
       }
+    },
+    MuiChip: {
+      defaultProps: {
+        variant: "outlined"
+      }
     }
   }
 };

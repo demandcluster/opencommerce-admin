@@ -15,7 +15,12 @@ import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Skeleton from "@mui/material/Skeleton";
-import {Column, ColumnInstance, TableState, useFilters, usePagination, useTable} from "react-table";
+import {
+  Column,
+  ColumnInstance,
+  TableState,
+  TableOptions,
+  useFilters, usePagination, useTable} from "react-table";
 
 export type FetchDataHandler<T extends object> = (state: TableState<T>) => Promise<void>
 
@@ -29,10 +34,10 @@ type TableProps<T extends object> = {
   queryPageSize?: number;
   queryHiddenColumns?: string[];
   onFetchData: FetchDataHandler<T>;
-  onRowClick: RowClickHandler<T>;
+  onRowClick?: RowClickHandler<T>;
   loading: boolean;
   children?: ReactNode;
-}
+} & TableOptions<T>
 
 const DefaultColumnFilter = <T extends object>({column}: { column: ColumnInstance<T> }) => {
   return (
@@ -133,7 +138,8 @@ const Table = <T extends object>(
     queryHiddenColumns = [],
     onFetchData,
     onRowClick,
-    loading
+    loading,
+    ...tableOptions
   }: TableProps<T>) => {
   const defaultColumn: Partial<Column<T>> = useMemo(
     () => ({
@@ -163,7 +169,8 @@ const Table = <T extends object>(
       },
       manualPagination: true,
       manualFilters: true,
-      pageCount: Math.ceil(count / queryPageSize)
+      pageCount: Math.ceil(count / queryPageSize),
+      ...tableOptions
     },
     useFilters,
     usePagination
@@ -212,7 +219,7 @@ const Table = <T extends object>(
     };
 
   const handleRowClick = (row: T) => {
-    return onRowClick(row)
+    return onRowClick && onRowClick(row)
   }
 
   return (

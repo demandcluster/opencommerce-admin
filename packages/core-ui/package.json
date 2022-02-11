@@ -17,9 +17,11 @@
     "react-hook-form": "^7.25.3",
     "react-i18next": "^11.15.3",
     "react-router-dom": "^6.2.1",
+    "react-table": "^7.7.0",
     "ui": "workspace:*"
   },
   "devDependencies": {
+    "@types/react-table": "^7.7.9",
     "tsconfig": "workspace:*"
   },
   "private": true,

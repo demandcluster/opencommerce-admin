@@ -130,6 +130,7 @@ importers:
       '@emotion/styled': ^11.6.0
       '@mui/icons-material': ^5.3.1
       '@mui/material': ^5.4.0
+      '@types/react-table': ^7.7.9
       i18next: ^21.6.10
       moment: ^2.29.1
       notistack: ^2.0.3
@@ -140,6 +141,7 @@ importers:
       react-hook-form: ^7.25.3
       react-i18next: ^11.15.3
       react-router-dom: ^6.2.1
+      react-table: ^7.7.0
       tsconfig: workspace:*
       ui: workspace:*
     dependencies:
@@ -158,8 +160,10 @@ importers:
       react-hook-form: 7.26.1_react@17.0.2
       react-i18next: 11.15.4_3fb644aa30122a07f960d67fa51d6dc1
       react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
+      react-table: 7.7.0_react@17.0.2
       ui: link:../ui
     devDependencies:
+      '@types/react-table': 7.7.9
       tsconfig: link:../tsconfig
 
   packages/demandcluster-merchant-ui:
@@ -4709,9 +4713,9 @@ packages:
       '@emotion/styled':
         optional: true
     dependencies:
-      '@emotion/react': 11.7.1_a0c521d4794c7ad97f5f4c1c4a7d5818
-      '@emotion/styled': 11.6.0_6051c8b70bfa52211d6f419a3c4413f0
-      '@mui/material': 5.4.1_6226f8758b5b21b5515ad844c1caeb22
+      '@emotion/react': 11.7.1_react@17.0.2
+      '@emotion/styled': 11.6.0_79c1490562c3c65ef55eb132a37e39b4
+      '@mui/material': 5.4.1_c84e354a724f4213aa6539fdea9d08aa
       clsx: 1.1.1
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
