@@ -5,8 +5,10 @@ import Container from "@mui/material/Container";
 
 import SecondarySidebar from "platform/components/layout/SecondarySidebar"
 import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
+import useUI from "platform/hooks/useUI";
 
 const Settings: FC = () => {
+  const {isMobile} = useUI();
   const routeDefinitions = useOperatorRoutes({groups: ["settings"]});
   const {pathname} = useResolvedPath("");
   const descendantRoute = useParams()["*"];
@@ -17,7 +19,7 @@ const Settings: FC = () => {
 
   return (
     <>
-      <Box display="flex" flex={1} mb={2}>
+      <Box display="flex" flexDirection={isMobile ? "column" : "row"} flex={1} mb={2}>
         <SecondarySidebar groups={["settings"]}/>
         <Container maxWidth="xl">
           <Routes>

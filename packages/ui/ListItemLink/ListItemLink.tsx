@@ -5,20 +5,22 @@ import {
   useResolvedPath
 } from 'react-router-dom';
 import {FC, forwardRef, MouseEventHandler, useMemo} from "react";
-import {ListItem, ListItemIcon, ListItemText} from "@mui/material";
+import {ListItem, ListItemIcon, ListItemProps, ListItemText, SxProps} from "@mui/material";
 
 type ListItemLinkProps = {
   NavigationIcon?: FC;
   primary: string;
   onClick?: MouseEventHandler;
   to: To;
-}
+  sx?: SxProps
+};
 
 const ListItemLink: FC<ListItemLinkProps> = (
   { NavigationIcon,
     onClick,
     primary,
-    to
+    to,
+    sx
   }) => {
   const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname});
@@ -39,7 +41,10 @@ const ListItemLink: FC<ListItemLinkProps> = (
         selected={Boolean(match)}
         button
         component={renderLink}
-        sx={{borderRadius: "6px"}}
+        sx={{
+          ...sx,
+          borderRadius: "6px"
+      }}
       >
         {NavigationIcon && (
           <ListItemIcon>
