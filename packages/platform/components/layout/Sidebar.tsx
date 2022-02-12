@@ -9,8 +9,8 @@ import List from "@mui/material/List";
 
 import ListItemLink from "ui/ListItemLink";
 import {
-  drawerWidthExpanded,
-  drawerWidthCollapsed
+  sidebarWidthExpanded,
+  sidebarWidthCollapsed
 } from "./index";
 import useUI from "../../hooks/useUI";
 import {useTranslation} from "react-i18next";
@@ -25,7 +25,7 @@ const DesktopDrawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== '
     '& .MuiDrawer-paper': {
       position: 'relative',
       whiteSpace: 'nowrap',
-      width: drawerWidthExpanded,
+      width: sidebarWidthExpanded,
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -37,7 +37,7 @@ const DesktopDrawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== '
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.leavingScreen,
         }),
-        width: drawerWidthCollapsed
+        width: sidebarWidthCollapsed
       }),
     },
   }),
@@ -69,7 +69,7 @@ const MobileSidebar = ({content}: { content: ReactElement }) => {
       sx={{
         '& .MuiDrawer-paper': {
           boxSizing: 'border-box',
-          width: drawerWidthExpanded
+          width: sidebarWidthExpanded
         }
       }}
     >

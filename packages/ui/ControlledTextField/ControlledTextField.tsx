@@ -15,7 +15,7 @@ type ControlledTextFieldProps = OutlinedInputProps & {
 const ControlledTextField: FC<ControlledTextFieldProps> = (
   {
     name,
-    defaultValue,
+    defaultValue= "",
     label,
     control,
     ...rest

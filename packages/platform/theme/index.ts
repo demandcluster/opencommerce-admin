@@ -1,5 +1,4 @@
-import {alpha, createTheme, Theme, ThemeOptions} from "@mui/material";
-import {blueGrey} from "@mui/material/colors";
+import {alpha, createTheme, ThemeOptions} from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -51,6 +50,11 @@ const themeOptions: ThemeOptions = {
     }
   },
   components: {
+    MuiCard: {
+      defaultProps: {
+        elevation: 10
+      }
+    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
@@ -61,15 +65,8 @@ const themeOptions: ThemeOptions = {
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          marginLeft: "6px"
-        }
-      }
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          fontWeight: 700,
-          textTransform: "none"
+          marginLeft: "6px",
+          fontSize: "14px"
         }
       }
     },
@@ -124,13 +121,6 @@ theme = createTheme(theme, <ThemeOptions>{
         }
       }
     },
-    MuiCardHeader: {
-      styleOverrides: {
-        root: {
-
-        }
-      }
-    },
     MuiCardActions: {
       styleOverrides: {
         root: {
@@ -146,6 +136,16 @@ theme = createTheme(theme, <ThemeOptions>{
           [theme.breakpoints.up("sm")]: {
             minHeight: "80px"
           }
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          fontWeight: 700,
+          textTransform: "none",
+          paddingTop: theme.spacing(1.25),
+          paddingBottom: theme.spacing(1.25)
         }
       }
     }

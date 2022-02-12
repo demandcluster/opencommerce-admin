@@ -10,5 +10,7 @@ export type OperatorLayout =
   typeof OperatorViewStandardLayout |
   typeof OperatorViewNoopLayout;
 
-export const drawerWidthExpanded = 280;
-export const drawerWidthCollapsed = 72;
+export const sidebarWidthExpanded = 280;
+export const sidebarWidthCollapsed = 72;
+
+export const detailDrawerWidth = 390;

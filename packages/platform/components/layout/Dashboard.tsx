@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 
 import Sidebar from "./Sidebar";
 import AppBar from "./AppBar";
+import DetailDrawer from "./DetailDrawer";
 import {OperatorRoute, operatorRoutesDefinitions} from "../../router";
 
 const Dashboard: FC = () => {
@@ -13,10 +14,9 @@ const Dashboard: FC = () => {
   return (
     <Box display='flex' overflow="hidden" height="100vh">
       <Sidebar/>
-      <Box display="flex" flexDirection="column" width="100%" overflow="auto">
+      <Box component="main" display="flex" flexDirection="column" width="100%" overflow="auto">
         <AppBar/>
         <Box
-          component="main"
           sx={{
             backgroundColor: (theme) => theme.palette.background.default,
             flexGrow: 1,
@@ -54,6 +54,7 @@ const Dashboard: FC = () => {
           </Routes>
         </Box>
       </Box>
+      <DetailDrawer/>
     </Box>
   );
 }

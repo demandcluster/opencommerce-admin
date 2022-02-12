@@ -1,27 +1,31 @@
 import {
   createContext,
-  FC,
+  FC, ReactNode,
   useCallback,
   useMemo,
   useReducer
 } from "react";
-import {Theme, useMediaQuery, useTheme} from "@mui/material";
+import {useMediaQuery, useTheme} from "@mui/material";
 
 export interface State {
-  isDetailDrawerOpen: boolean
-  isMobile: boolean
-  isPrimarySidebarOpen: boolean
+  isDetailDrawerOpen: boolean,
+  isDetailDrawerOpening: boolean,
+  isMobile: boolean,
+  isPrimarySidebarOpen: boolean,
+  detailDrawerContent: ReactNode,
   closeDetailDrawer: () => void,
   closePrimarySidebar: () => void,
-  openDetailDrawer: () => void,
+  openDetailDrawer: (children: ReactNode) => void,
   openPrimarySidebar: () => void,
-  togglePrimarySidebar: () => void
+  togglePrimarySidebar: () => void,
 }
 
 const initialState = {
   isDetailDrawerOpen: false,
+  isDetailDrawerOpening: false,
   isMobile: false,
-  isPrimarySidebarOpen: false
+  isPrimarySidebarOpen: false,
+  detailDrawerContent: null
 }
 
 type Action =
@@ -32,7 +36,8 @@ type Action =
   type: 'CLOSE_PRIMARY_SIDEBAR'
 }
   | {
-  type: 'OPEN_DETAIL_DRAWER'
+  type: 'OPEN_DETAIL_DRAWER',
+  payload: ReactNode
 }
   | {
   type: 'CLOSE_DETAIL_DRAWER'
@@ -60,12 +65,15 @@ function uiReducer(state: State, action: Action) {
       return {
         ...state,
         isDetailDrawerOpen: true,
+        isDetailDrawerOpening: true,
+        detailDrawerContent: action.payload
       }
     }
     case 'CLOSE_DETAIL_DRAWER': {
       return {
         ...state,
         isDetailDrawerOpen: false,
+        detailDrawerContent: null
       }
     }
   }
@@ -93,7 +101,7 @@ export const UIProvider: FC = ({children}) => {
   )
 
   const openDetailDrawer = useCallback(
-    () => dispatch({type: 'OPEN_DETAIL_DRAWER'}),
+    (children: ReactNode) => dispatch({type: 'OPEN_DETAIL_DRAWER', payload: children}),
     [dispatch]
   )
   const closeDetailDrawer = useCallback(

@@ -1,17 +1,20 @@
 import {FC, useCallback, useMemo, useState} from "react";
 import {Column} from "react-table";
 import {useTranslation} from "react-i18next";
+import {useLazyQuery} from "@apollo/client";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import {useLazyQuery} from "@apollo/client";
+import CardHeader from "@mui/material/CardHeader";
 
-import {useShopId} from "platform/hooks";
-import {FlatRateFulfillmentMethod, FlatRateFulfillmentMethodConnection, Order, Shop} from "platform/types/gql-types";
+import {useShopId, useUI} from "platform/hooks";
+import {
+  FlatRateFulfillmentMethod,
+  FlatRateFulfillmentMethodConnection,
+} from "platform/types/gql-types";
 import {FetchDataHandler, Table} from "ui";
 import flatRateFulfillmentMethodsQuery from "../graphql/queries/flatRateFulfillmentMethods";
-import CardHeader from "@mui/material/CardHeader";
-import Chip from "@mui/material/Chip";
 import EnabledCell from "./common/EnabledCell";
+import FulfillmentMethod from "./FulfillmentMethod";
 
 type FlatRateFulfillmentMethodsResponse ={
   flatRateFulfillmentMethods: FlatRateFulfillmentMethodConnection
@@ -19,6 +22,7 @@ type FlatRateFulfillmentMethodsResponse ={
 
 const FulfillmentMethodsTable: FC = () => {
   const {t} = useTranslation();
+  const {openDetailDrawer} = useUI();
   const shopId = useShopId();
   const [getFlatRateFulfillmentMethods] =
     useLazyQuery<FlatRateFulfillmentMethodsResponse>(flatRateFulfillmentMethodsQuery);
@@ -58,7 +62,7 @@ const FulfillmentMethodsTable: FC = () => {
     }
   ], []);
 
-  const handleFetchData: FetchDataHandler<Order> = async ({pageSize, pageIndex}) => {
+  const handleFetchData: FetchDataHandler<FlatRateFulfillmentMethod> = async ({pageSize, pageIndex}) => {
     setLoading(true);
 
     const {data} = await getFlatRateFulfillmentMethods(
@@ -78,7 +82,7 @@ const FulfillmentMethodsTable: FC = () => {
   }
 
   const onRowClick = useCallback((row) => {
-
+    openDetailDrawer(<FulfillmentMethod id={row._id}/>);
   }, []);
 
   return (

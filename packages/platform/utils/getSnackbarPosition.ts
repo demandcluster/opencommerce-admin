@@ -2,7 +2,7 @@ import {SnackbarOrigin} from "notistack";
 
 const snackbarOrigin: SnackbarOrigin = {
   vertical: "bottom",
-  horizontal: "center"
+  horizontal: "left"
 };
 
 export default snackbarOrigin

@@ -36,7 +36,12 @@ const SecondarySidebarMobile: FC<SecondarySidebarProps> = memo(({groups}) => {
         gap: 2,
         width: "100%",
         mb: 2,
-        overflowX: "scroll"
+        overflowX: "scroll",
+        "&::-webkit-scrollbar": {
+          display: "none"
+        },
+        scrollbarWidth: "none",
+        msOverflowStyle: "none"
       }}>
       {
         operatorRoutesDefinitions.map(({path, navigationLabel, NavigationIcon}, index) => (
@@ -89,9 +94,7 @@ const SecondarySidebarDesktop: FC<SecondarySidebarProps> = memo(({groups}) => {
 const SecondarySidebar: FC<SecondarySidebarProps> = ({groups}) => {
   const {isMobile} = useUI();
 
-  return isMobile ?
-    <SecondarySidebarMobile groups={groups}/> :
-    <SecondarySidebarDesktop groups={groups}/>
+  return <SecondarySidebarMobile groups={groups}/>;
 }
 
 export default SecondarySidebar;
