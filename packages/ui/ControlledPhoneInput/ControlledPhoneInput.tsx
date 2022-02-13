@@ -13,7 +13,7 @@ const ControlledPhoneInput: FC<ControlledPhoneInputProps> = (
   {
     control,
     name,
-    defaultValue,
+    defaultValue= "",
     label,
     ...props
   }) => {
@@ -21,7 +21,7 @@ const ControlledPhoneInput: FC<ControlledPhoneInputProps> = (
     <Controller
       name={name}
       control={control}
-      defaultValue={defaultValue || ""}
+      defaultValue={defaultValue}
       render={({
                  field: {ref, ...field},
                  fieldState

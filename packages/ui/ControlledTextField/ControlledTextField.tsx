@@ -5,12 +5,12 @@ import Error from '@mui/icons-material/Error'
 import Tooltip from '@mui/material/Tooltip'
 import {FormControl, FormLabel, OutlinedInput, OutlinedInputProps} from "@mui/material";
 
-type ControlledTextFieldProps = OutlinedInputProps & {
+type ControlledTextFieldProps = {
   name: string
   defaultValue?: string
   label: string
   control: Control<any>
-}
+} & OutlinedInputProps;
 
 const ControlledTextField: FC<ControlledTextFieldProps> = (
   {

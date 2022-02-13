@@ -7,17 +7,20 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 
 import {useShopId, useUI} from "platform/hooks";
-import {
-  FlatRateFulfillmentMethod,
-  FlatRateFulfillmentMethodConnection,
-} from "platform/types/gql-types";
+import {FlatRateFulfillmentMethod, FlatRateFulfillmentMethodConnection,} from "platform/types/gql-types";
 import {FetchDataHandler, Table} from "ui";
 import flatRateFulfillmentMethodsQuery from "../graphql/queries/flatRateFulfillmentMethods";
 import EnabledCell from "./common/EnabledCell";
 import FulfillmentMethod from "./FulfillmentMethod";
 
-type FlatRateFulfillmentMethodsResponse ={
+type FlatRateFulfillmentMethodsResponse = {
   flatRateFulfillmentMethods: FlatRateFulfillmentMethodConnection
+}
+
+const updateFulfillmentMethodInList = (methodList: FlatRateFulfillmentMethod[], method: FlatRateFulfillmentMethod) => {
+  return methodList.map((oldMethod) =>
+    oldMethod._id === method._id ? method : oldMethod
+  )
 }
 
 const FulfillmentMethodsTable: FC = () => {
@@ -27,7 +30,7 @@ const FulfillmentMethodsTable: FC = () => {
   const [getFlatRateFulfillmentMethods] =
     useLazyQuery<FlatRateFulfillmentMethodsResponse>(flatRateFulfillmentMethodsQuery);
   const [loading, setLoading] = useState(true);
-  const [fulfillmentMethods, setFulfillmentMethods] = useState([]);
+  const [fulfillmentMethods, setFulfillmentMethods] = useState<FlatRateFulfillmentMethod[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
   const columns = useMemo<Column<FlatRateFulfillmentMethod>[]>(() => [
@@ -62,6 +65,7 @@ const FulfillmentMethodsTable: FC = () => {
     }
   ], []);
 
+  // @ts-ignore
   const handleFetchData: FetchDataHandler<FlatRateFulfillmentMethod> = async ({pageSize, pageIndex}) => {
     setLoading(true);
 
@@ -81,8 +85,21 @@ const FulfillmentMethodsTable: FC = () => {
     setLoading(false);
   }
 
+  const handleFulfillmentMethodUpdate = useCallback(
+    (fulfillmentMethod: FlatRateFulfillmentMethod) => {
+      setFulfillmentMethods((currentFulfillmentMethods) =>
+        updateFulfillmentMethodInList(currentFulfillmentMethods, fulfillmentMethod)
+      );
+    },
+    [fulfillmentMethods]
+  );
+
+
   const onRowClick = useCallback((row) => {
-    openDetailDrawer(<FulfillmentMethod id={row._id}/>);
+    openDetailDrawer(<FulfillmentMethod
+      id={row._id}
+      onFulfillmentMethodUpdate={handleFulfillmentMethodUpdate}
+    />);
   }, []);
 
   return (
@@ -91,6 +108,7 @@ const FulfillmentMethodsTable: FC = () => {
         <CardHeader title={t("admin.shipping.flatRateFulfillmentMethodsTitle", "Fulfillment methods")}/>
         <CardContent>
           <Table
+            // @ts-ignore
             disableFilters={true}
             onRowClick={onRowClick}
             onFetchData={handleFetchData}

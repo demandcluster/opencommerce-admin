@@ -8,10 +8,12 @@ import Button from "@mui/material/Button";
 import LoadingButton from '@mui/lab/LoadingButton';
 import {useSnackbar} from "notistack";
 
-import ControlledTextField from "ui/ControlledTextField"
+import ControlledTextField from "ui/ControlledTextField";
+import ControlledSwitch from "ui/ControlledSwitch";
 import useShopId from "platform/hooks/useShopId";
 import useUI from "platform/hooks/useUI";
 import useFlatRateFulfillmentMethod from "../hooks/useFlatRateFulfillmentMethod";
+import {FlatRateFulfillmentMethod} from "platform/types/gql-types";
 
 type FlatRateFulfillmentMethodFieldValues = {
   name: string;
@@ -20,13 +22,15 @@ type FlatRateFulfillmentMethodFieldValues = {
   group: string;
   handling: number;
   rate: number;
+  isEnabled: boolean;
 }
 
 type FulfillmentMethodProps = {
   id: string;
+  onFulfillmentMethodUpdate: (fulfillmentMethod: FlatRateFulfillmentMethod) => void
 }
 
-const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id}) => {
+const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodUpdate}) => {
   const {t} = useTranslation();
   const {enqueueSnackbar} = useSnackbar();
   const {closeDetailDrawer} = useUI();
@@ -37,7 +41,10 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id}) => {
     loading,
     updateFlatRateFulfillmentMethod,
     updateLoading
-  } = useFlatRateFulfillmentMethod(id);
+  } = useFlatRateFulfillmentMethod({
+    id,
+    fulfillmentMethodUpdateHook: onFulfillmentMethodUpdate
+  });
 
   const fulfillmentMethodFieldValues = useMemo<FlatRateFulfillmentMethodFieldValues>(() => ({
     name: fulfillmentMethod?.name,
@@ -45,10 +52,11 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id}) => {
     cost: fulfillmentMethod?.cost,
     group: fulfillmentMethod?.group,
     handling: fulfillmentMethod?.handling,
-    rate: fulfillmentMethod?.rate
+    rate: fulfillmentMethod?.rate,
+    isEnabled: fulfillmentMethod?.isEnabled
   }), [fulfillmentMethod]);
 
-  const {control, handleSubmit, reset} = useForm<FlatRateFulfillmentMethodFieldValues>({
+  const {control, handleSubmit, reset, formState: {isDirty}} = useForm<FlatRateFulfillmentMethodFieldValues>({
     defaultValues: fulfillmentMethodFieldValues
   });
 
@@ -57,7 +65,11 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id}) => {
   }, [fulfillmentMethod]);
 
 
-  const onSave = async ({name, cost, handling, rate, group, label}: FlatRateFulfillmentMethodFieldValues) => {
+  const onSave = async (
+    {
+      name, cost, handling, rate, group, label, isEnabled
+    }: FlatRateFulfillmentMethodFieldValues) => {
+    console.log(isEnabled);
     await updateFlatRateFulfillmentMethod({
       variables: {
         input: {
@@ -71,13 +83,13 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id}) => {
             rate: +rate,
             group,
             label,
-            isEnabled: true,
+            isEnabled,
             fulfillmentTypes: fulfillmentMethod.fulfillmentTypes
           }
         }
       }
     })
-    enqueueSnackbar("Updated", {variant: "success", });
+    enqueueSnackbar("Updated", {variant: "success",});
   }
 
   return (
@@ -125,12 +137,18 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id}) => {
               size="small"
               label={t("admin.table.headers.flatRateFulfillmentMethods.rate", "Rate")}
             />
+            <ControlledSwitch
+              control={control}
+              name="isEnabled"
+              label={t("admin.table.headers.flatRateFulfillmentMethods.isEnabled", "Enabled")}
+            />
           </Box>
         ) : (
           <CircularProgress/>
         )}
         <Box display="flex" gap={2} flex={1} alignItems="end">
           <LoadingButton
+            disabled={!isDirty}
             onClick={handleSubmit(onSave)}
             disableElevation
             variant="contained"
