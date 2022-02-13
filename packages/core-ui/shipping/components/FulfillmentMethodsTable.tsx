@@ -1,10 +1,11 @@
-import {FC, useCallback, useMemo, useState} from "react";
+import {FC, useCallback, useEffect, useMemo, useState} from "react";
 import {Column} from "react-table";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery} from "@apollo/client";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
+import AddIcon from '@mui/icons-material/Add';
 
 import {useShopId, useUI} from "platform/hooks";
 import {FlatRateFulfillmentMethod, FlatRateFulfillmentMethodConnection,} from "platform/types/gql-types";
@@ -12,6 +13,8 @@ import {FetchDataHandler, Table} from "ui";
 import flatRateFulfillmentMethodsQuery from "../graphql/queries/flatRateFulfillmentMethods";
 import EnabledCell from "./common/EnabledCell";
 import FulfillmentMethod from "./FulfillmentMethod";
+import Button from "@mui/material/Button";
+import {Tooltip} from "@mui/material";
 
 type FlatRateFulfillmentMethodsResponse = {
   flatRateFulfillmentMethods: FlatRateFulfillmentMethodConnection
@@ -25,11 +28,10 @@ const updateFulfillmentMethodInList = (methodList: FlatRateFulfillmentMethod[], 
 
 const FulfillmentMethodsTable: FC = () => {
   const {t} = useTranslation();
-  const {openDetailDrawer} = useUI();
+  const {openDetailDrawer, isMobile} = useUI();
   const shopId = useShopId();
-  const [getFlatRateFulfillmentMethods] =
+  const [getFlatRateFulfillmentMethods, {data, loading}] =
     useLazyQuery<FlatRateFulfillmentMethodsResponse>(flatRateFulfillmentMethodsQuery);
-  const [loading, setLoading] = useState(true);
   const [fulfillmentMethods, setFulfillmentMethods] = useState<FlatRateFulfillmentMethod[]>([]);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -67,9 +69,7 @@ const FulfillmentMethodsTable: FC = () => {
 
   // @ts-ignore
   const handleFetchData: FetchDataHandler<FlatRateFulfillmentMethod> = async ({pageSize, pageIndex}) => {
-    setLoading(true);
-
-    const {data} = await getFlatRateFulfillmentMethods(
+    await getFlatRateFulfillmentMethods(
       {
         variables: {
           shopId,
@@ -78,12 +78,16 @@ const FulfillmentMethodsTable: FC = () => {
         }
       }
     );
-
-    setFulfillmentMethods(data?.flatRateFulfillmentMethods?.nodes || []);
-    // TODO: change to totalCount when https://github.com/reactioncommerce/api-utils/pull/97 is merged
-    setTotalCount(data?.flatRateFulfillmentMethods?.nodes.length || 0);
-    setLoading(false);
   }
+
+  useEffect(() => {
+    if (!loading && data) {
+      setFulfillmentMethods(data?.flatRateFulfillmentMethods?.nodes || []);
+      // TODO: change to totalCount when https://github.com/reactioncommerce/api-utils/pull/97 is merged
+      setTotalCount(data?.flatRateFulfillmentMethods?.nodes.length || 0);
+    }
+  }, [data, loading]);
+
 
   const handleFulfillmentMethodUpdate = useCallback(
     (fulfillmentMethod: FlatRateFulfillmentMethod) => {
@@ -94,18 +98,48 @@ const FulfillmentMethodsTable: FC = () => {
     [fulfillmentMethods]
   );
 
-
-  const onRowClick = useCallback((row) => {
+  const handleOpenDetailDrawer = (methodId?: string) => {
     openDetailDrawer(<FulfillmentMethod
-      id={row._id}
+      id={methodId}
       onFulfillmentMethodUpdate={handleFulfillmentMethodUpdate}
     />);
+  }
+
+  const onRowClick = useCallback((row) => {
+    handleOpenDetailDrawer(row._id)
   }, []);
 
   return (
     <>
       <Card>
-        <CardHeader title={t("admin.shipping.flatRateFulfillmentMethodsTitle", "Fulfillment methods")}/>
+        <CardHeader
+          title={t("admin.shipping.flatRateFulfillmentMethodsTitle", "Fulfillment methods")}
+          action={
+            isMobile ? (
+              <Tooltip disableHoverListener title={t("admin.createFulfillmentMethod", "Create Fulfillment Method")}>
+                <Button
+                  onClick={() => handleOpenDetailDrawer()}
+                  size="small"
+                  disableElevation
+                  variant="contained"
+                  sx={{mr: 1}}
+                >
+                  <AddIcon fontSize="small"/>
+                </Button>
+              </Tooltip>
+            ) : (
+              <Button
+                onClick={() => handleOpenDetailDrawer()}
+                disableElevation
+                variant="contained"
+                sx={{mr: 1}}
+                startIcon={<AddIcon/>}
+              >
+                {t("admin.dashboard.createFulfillmentMethod", "New method")}
+              </Button>
+            )
+          }
+        />
         <CardContent>
           <Table
             // @ts-ignore
@@ -116,6 +150,7 @@ const FulfillmentMethodsTable: FC = () => {
             data={fulfillmentMethods}
             loading={loading}
             count={totalCount}
+            queryPageSize={5}
           />
         </CardContent>
       </Card>

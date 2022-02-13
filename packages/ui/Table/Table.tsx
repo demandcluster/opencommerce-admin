@@ -279,6 +279,7 @@ const Table = <T extends object>(
       </TableContainer>
       <TablePagination
         component="div"
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
         count={count}
         page={pageIndex}
         onPageChange={handlePageChange}
