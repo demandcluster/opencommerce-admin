@@ -12,7 +12,7 @@ import {useLocation} from "react-router-dom";
 
 
 const DetailDrawer: FC = () => {
-  const {isDetailDrawerOpen, closeDetailDrawer, detailDrawerContent} = useUI();
+  const {isMobile, isDetailDrawerOpen, closeDetailDrawer, detailDrawerContent} = useUI();
 
   const location = useLocation();
 
@@ -24,24 +24,26 @@ const DetailDrawer: FC = () => {
   return (
     <Drawer
       sx={((theme: Theme) => ({
-        width: 0,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: detailDrawerWidth,
-          borderLeft: 0,
-          boxShadow: theme.shadows[10]
-        },
-        transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        ...(isDetailDrawerOpen && {
-          width: detailDrawerWidth
+        ...(!isMobile && {
+          width: 0,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: detailDrawerWidth,
+            borderLeft: 0,
+            boxShadow: theme.shadows[10]
+          },
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          ...(isDetailDrawerOpen && {
+            width: detailDrawerWidth
+          })
         })
       }))}
-      anchor="right"
+      anchor={isMobile ? "bottom" : "right"}
       open={isDetailDrawerOpen}
-      variant="persistent"
+      variant={isMobile ? "temporary" : "persistent"}
     >
       <Toolbar>
         <IconButton onClick={() => closeDetailDrawer()}>
