@@ -3,6 +3,7 @@ import {lazy} from "react";
 import {registerOperatorRoute} from "platform/router";
 import {registerBlock} from "platform/layout";
 import FulfillmentMethodsTable from "./components/FulfillmentMethodsTable";
+import FulfillmentRestrictionsTable from "./components/FulfillmentRestrictionsTable";
 
 registerOperatorRoute({
   group: "settings",
@@ -16,6 +17,12 @@ registerBlock({
   region: "shippingSettings",
   priority: 10,
   Component: FulfillmentMethodsTable
+})
+
+registerBlock({
+  region: "shippingSettings",
+  priority: 20,
+  Component: FulfillmentRestrictionsTable
 })
 
 export {}

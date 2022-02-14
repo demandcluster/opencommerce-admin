@@ -755,26 +755,26 @@ export type ArchiveProductsPayload = {
 };
 
 /** An attribute restriction condition */
-export type AttributeRestrictions = {
-  __typename?: 'AttributeRestrictions';
+export type AttributeRestriction = {
+  __typename?: 'AttributeRestriction';
   /** The operator to use for value comparison */
-  operator: Scalars['String'];
+  operator: Operator;
   /** The property to check */
   property: Scalars['String'];
   /** The type of this property */
-  propertyType: Scalars['String'];
+  propertyType: PropertyTypeEnum;
   /** The value to check for */
   value: Scalars['String'];
 };
 
 /** Input to create an attribute restriction condition */
-export type AttributeRestrictionsInput = {
+export type AttributeRestrictionInput = {
   /** The operator to use for value comparison */
-  operator: Scalars['String'];
+  operator: Operator;
   /** The property to check */
   property: Scalars['String'];
   /** The type of this property */
-  propertyType: Scalars['String'];
+  propertyType: PropertyTypeEnum;
   /** The value to check for */
   value: Scalars['String'];
 };
@@ -3432,12 +3432,20 @@ export type FlatRateFulfillmentRestriction = Node & {
   __typename?: 'FlatRateFulfillmentRestriction';
   /** The restriction ID. */
   _id: Scalars['ID'];
-  /** Attribute restrictions. Multiple attribute restrictions are evaluated with AND. If both destination and attribute restrictions are present, they evaluate with AND. */
-  attributes: Maybe<Array<Maybe<AttributeRestrictions>>>;
-  /** Destination restrictions. If multiple destination restrictions are present, the most localized is the only one evaluated (i.e. evaluate postal if present, then region if present, then country). If both destination and attribute restrictions are present, they evaluate with AND. */
+  /**
+   * Destination restrictions. If multiple destination restrictions are present, the most localized
+   * is the only one evaluated (i.e. evaluate postal if present, then region if present, then country).
+   */
   destination: Maybe<DestinationRestrictions>;
+  /**
+   * Attribute restrictions applied on order items.
+   * Multiple attribute restrictions are evaluated with AND.
+   */
+  itemAttributes: Maybe<Array<Maybe<AttributeRestriction>>>;
   /** Method IDs to apply this restriction to. If none, applies to all methods as a universal restriction. */
   methodIds: Maybe<Array<Maybe<Scalars['ID']>>>;
+  /** Name of the restriction */
+  name: Maybe<Scalars['String']>;
   /** The shop ID */
   shopId: Scalars['ID'];
   /** The type of this restriction. Allowed types are `allow` or `deny`. */
@@ -3478,12 +3486,20 @@ export type FlatRateFulfillmentRestrictionEdge = {
 
 /** Defines the input for a flat rate fulfillment method restriction. */
 export type FlatRateFulfillmentRestrictionInput = {
-  /** Attribute restrictions. Multiple attribute restrictions are evaluated with AND. If both destination and attribute restrictions are present, they evaluate with AND. */
-  attributes: InputMaybe<Array<InputMaybe<AttributeRestrictionsInput>>>;
-  /** Destination restrictions. If multiple destination restrictions are present, the most localized is the only one evaluated (i.e. evaluate postal if present, then region if present, then country). If both destination and attribute restrictions are present, they evaluate with AND. */
+  /**
+   * Destination restrictions. If multiple destination restrictions are present, the most localized
+   * is the only one evaluated (i.e. evaluate postal if present, then region if present, then country).
+   */
   destination: InputMaybe<DestinationRestrictionsInput>;
-  /** Method IDs to apply this restriction to. If none, applies to all methods as a universal restriction. */
+  /**
+   * Attribute restrictions applied on order items.
+   * Multiple attribute restrictions are evaluated with AND.
+   */
+  itemAttributes: InputMaybe<Array<InputMaybe<AttributeRestrictionInput>>>;
+  /** Fulfillment method IDs to apply this restriction to. If none, applies to all methods as a universal restriction. */
   methodIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  /** Name of the restriction */
+  name: InputMaybe<Scalars['String']>;
   /** The type of this restriction. Allowed types are `allow` or `deny`. */
   type: RestrictionTypeEnum;
 };
@@ -3493,6 +3509,25 @@ export enum FlatRateFulfillmentRestrictionSortByField {
   /** Date the restriction was created */
   CreatedAt = 'createdAt'
 }
+
+export type FreeShippingPolicy = {
+  __typename?: 'FreeShippingPolicy';
+  /** Whether free shipping is allowed for the merchant */
+  allowed: Scalars['Boolean'];
+  /** Country */
+  country: Maybe<Scalars['String']>;
+  /** Above what price free shipping is applied. Should be null if free shipping is not allowed */
+  threshold: Maybe<Money>;
+};
+
+export type FreeShippingPolicyInput = {
+  /** Whether free shipping is allowed for the merchant */
+  allowed: Scalars['Boolean'];
+  /** Country */
+  country: InputMaybe<Scalars['String']>;
+  /** Above what price free shipping is applied. Should be null if free shipping is not allowed */
+  threshold: InputMaybe<MoneyInput>;
+};
 
 /** Information needed by the selected fulfillment method to properly fulfill the order */
 export type FulfillmentData = {
@@ -4803,6 +4838,8 @@ export type Mutation = {
   updateMerchantShop: UpdateMerchantShopPayload;
   /** Update the invoice settings for a merchant shop */
   updateMerchantShopInvoiceSettings: UpdateMerchantShopInvoiceSettingsPayload;
+  /** Update the shipping settings for a merchant shop */
+  updateMerchantShopShippingSettings: UpdateMerchantShopShippingSettingsPayload;
   /** Update an existing navigation item's draft data. Sets hasUnpublishedChanges to true */
   updateNavigationItem: Maybe<UpdateNavigationItemPayload>;
   /** Update an existing navigation tree's draft items. Sets hasUnpublishedChanges to true */
@@ -5589,6 +5626,11 @@ export type MutationUpdateMerchantShopInvoiceSettingsArgs = {
 };
 
 
+export type MutationUpdateMerchantShopShippingSettingsArgs = {
+  input: UpdateMerchantShopShippingSettingsInput;
+};
+
+
 export type MutationUpdateNavigationItemArgs = {
   input: UpdateNavigationItemInput;
 };
@@ -5901,6 +5943,22 @@ export type NodeEdge = {
   /** The node itself */
   node: Maybe<Node>;
 };
+
+/** Attribute operator */
+export enum Operator {
+  /** Equals */
+  Eq = 'eq',
+  /** Greater than */
+  Gt = 'gt',
+  /** Includes in array */
+  Includes = 'includes',
+  /** Less than */
+  Lt = 'lt',
+  /** Matches */
+  Match = 'match',
+  /** Not equal */
+  Ne = 'ne'
+}
 
 /** An order */
 export type Order = Node & {
@@ -7149,6 +7207,13 @@ export type Profile = {
   addressBook: Maybe<Array<Maybe<Address>>>;
 };
 
+export enum PropertyTypeEnum {
+  Bool = 'bool',
+  Float = 'float',
+  Int = 'int',
+  String = 'string'
+}
+
 export enum PublicationState {
   Live = 'LIVE',
   Preview = 'PREVIEW'
@@ -8329,7 +8394,6 @@ export type RemoveWishlistItemsPayload = {
 
 /** Restriction type */
 export enum RestrictionTypeEnum {
-  /** Allow */
   Allow = 'allow',
   /** Deny */
   Deny = 'deny'
@@ -9044,6 +9108,11 @@ export type Shop = Node & {
   description: Maybe<Scalars['String']>;
   /** The shop's default email record */
   emails: Maybe<Array<Maybe<EmailRecord>>>;
+  /**
+   * Defines whether the merchant is allowed to have free shipping for a specific destination country
+   * and if yes, above what threshold it's allowed
+   */
+  freeShippingPolicy: Maybe<Array<Maybe<FreeShippingPolicy>>>;
   /** Returns a list of groups for this shop, as a Relay-compatible connection. */
   groups: Maybe<GroupConnection>;
   holding: Maybe<Scalars['String']>;
@@ -9063,6 +9132,8 @@ export type Shop = Node & {
   name: Scalars['String'];
   /** Email which the system forwards new orders */
   orderEmail: Maybe<Scalars['String']>;
+  /** Defines whether the merchant uses it's own carrier for fulfilling the shipping */
+  ownCarrier: Maybe<Scalars['Boolean']>;
   /** The package plan for a merchant shop */
   packagePlan: Maybe<PackagePlan>;
   /** Email which the system forwards product returns */
@@ -10461,6 +10532,23 @@ export type UpdateMerchantShopInvoiceSettingsPayload = {
 
 export type UpdateMerchantShopPayload = {
   __typename?: 'UpdateMerchantShopPayload';
+  shop: Shop;
+};
+
+export type UpdateMerchantShopShippingSettingsInput = {
+  /**
+   * Defines whether the merchant is allowed to have free shipping for a specific destination country
+   * and if yes, above what threshold it's allowed
+   */
+  freeShippingPolicies: InputMaybe<Array<InputMaybe<FreeShippingPolicyInput>>>;
+  /** Defines whether the merchant shop uses it's own carrier for fulfilling the shipping */
+  ownCarrier: InputMaybe<Scalars['Boolean']>;
+  /** Id of the merchant shop */
+  shopId: Scalars['ID'];
+};
+
+export type UpdateMerchantShopShippingSettingsPayload = {
+  __typename?: 'UpdateMerchantShopShippingSettingsPayload';
   shop: Shop;
 };
 

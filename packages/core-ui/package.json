@@ -5,6 +5,7 @@
     "@apollo/client": "^3.5.8",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
+    "@hookform/resolvers": "^2.8.8",
     "@mui/icons-material": "^5.3.1",
     "@mui/lab": "^5.0.0-alpha.67",
     "@mui/material": "^5.4.0",
@@ -19,7 +20,8 @@
     "react-i18next": "^11.15.3",
     "react-router-dom": "^6.2.1",
     "react-table": "^7.7.0",
-    "ui": "workspace:*"
+    "ui": "workspace:*",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/react-table": "^7.7.9",

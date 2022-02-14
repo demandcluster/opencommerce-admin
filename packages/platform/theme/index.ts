@@ -1,4 +1,4 @@
-import {alpha, createTheme, ThemeOptions} from "@mui/material/styles";
+import {alpha, createTheme, lighten, ThemeOptions} from "@mui/material/styles";
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -118,6 +118,13 @@ theme = createTheme(theme, <ThemeOptions>{
               backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
             },
           }
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        sizeSmall: {
+          backgroundColor: lighten(theme.palette.background.default, 0.7)
         }
       }
     },

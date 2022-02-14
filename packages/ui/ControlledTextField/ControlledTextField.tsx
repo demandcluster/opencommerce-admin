@@ -10,14 +10,16 @@ type ControlledTextFieldProps = {
   defaultValue?: string
   label: string
   control: Control<any>
+  hideLabel?: boolean
 } & OutlinedInputProps;
 
 const ControlledTextField: FC<ControlledTextFieldProps> = (
   {
     name,
-    defaultValue= "",
+    defaultValue = "",
     label,
     control,
+    hideLabel = false,
     ...rest
   }) => {
   return (
@@ -31,9 +33,11 @@ const ControlledTextField: FC<ControlledTextFieldProps> = (
             error={invalid}
             fullWidth
           >
-            <FormLabel
-              htmlFor={`controlled-input-${name}`}
-            >{label}</FormLabel>
+            {!hideLabel && (
+              <FormLabel
+                htmlFor={`controlled-input-${name}`}
+              >{label}</FormLabel>
+            )}
             <OutlinedInput
               id={`controlled-input-${name}`}
               {...field}

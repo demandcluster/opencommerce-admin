@@ -4,7 +4,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Select, {SelectProps} from "@mui/material/Select";
-import {FormHelperText} from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import useTheme from "@mui/material/styles/useTheme";
+import NativeSelect, {NativeSelectProps} from "@mui/material/NativeSelect";
 
 type ControlledSelectProps = {
   name: string
@@ -12,6 +14,7 @@ type ControlledSelectProps = {
   label: string
   control: Control<any>
   items: { value: string, label: string }[]
+  hideLabel?: boolean
 } & SelectProps;
 
 const ControlledSelect: FC<ControlledSelectProps> = (
@@ -19,10 +22,14 @@ const ControlledSelect: FC<ControlledSelectProps> = (
     name,
     control,
     label,
-    defaultValue,
+    defaultValue = "",
     items,
+    hideLabel = false,
     ...props
   }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   return (
     <Controller
       name={name}
@@ -30,20 +37,22 @@ const ControlledSelect: FC<ControlledSelectProps> = (
       defaultValue={defaultValue || items[0].value}
       render={({field, fieldState}) => (
         <FormControl fullWidth>
-          <FormLabel>{label}</FormLabel>
+          {!hideLabel && (
+            <FormLabel htmlFor={`controlled-select-${name}`}>{label}</FormLabel>
+          )}
           <Select
+            id={`controlled-select-${name}`}
             error={fieldState.invalid}
             {...field}
             {...props}
+            native={isMobile}
           >
             {items.map(item => (
+              isMobile ?
+              <option key={item.value} value={item.value}>{item.label}</option> :
               <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
             ))}
           </Select>
-
-          <FormHelperText id={`select-helper-text-${name}`}>
-            {fieldState.error ? fieldState.error.message : " "}
-          </FormHelperText>
         </FormControl>
       )}
     />
