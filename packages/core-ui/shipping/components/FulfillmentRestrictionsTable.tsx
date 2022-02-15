@@ -23,9 +23,9 @@ type FlatRateFulfillmentRestrictionResponse = {
 
 const FulfillmentRestrictionTable: FC = () => {
   const {t} = useTranslation();
-  const {openDetailDrawer, isMobile} = useUI();
+  const {openDetailDrawer, isTablet} = useUI();
   const shopId = useShopId();
-  const [getFlatRateFulfillmentRestrictions, {data, loading}] =
+  const [getFlatRateFulfillmentRestrictions, {data, loading, refetch}] =
     useLazyQuery<FlatRateFulfillmentRestrictionResponse>(flatRateFulfillmentRestrictionsQuery);
   const [fulfillmentRestrictions, setFulfillmentRestrictions] = useState<FlatRateFulfillmentRestriction[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -55,6 +55,13 @@ const FulfillmentRestrictionTable: FC = () => {
   }
 
   useEffect(() => {
+    refetch({
+      shopId
+    }).then()
+  }, [shopId]);
+
+
+  useEffect(() => {
     if (!loading && data) {
       setFulfillmentRestrictions(data?.getFlatRateFulfillmentRestrictions?.nodes || []);
       // TODO: change to totalCount when https://github.com/reactioncommerce/api-utils/pull/97 is merged
@@ -76,9 +83,12 @@ const FulfillmentRestrictionTable: FC = () => {
         <CardHeader
           title={t("admin.shipping.flatRateFulfillmentRestrictionsTitle", "Fulfillment restrictions")}
           action={
-            isMobile ? (
-              <Tooltip disableHoverListener
-                       title={t("admin.dashboard.createFulfillmentRestriction", "New Restriction")}>
+            isTablet ? (
+              <Tooltip
+                disableHoverListener={!isTablet}
+                title={t("admin.dashboard.createFulfillmentRestriction", "New Restriction")}
+                placement="bottom-end"
+              >
                 <Button
                   onClick={() => handleOpenDetailDrawer()}
                   size="small"

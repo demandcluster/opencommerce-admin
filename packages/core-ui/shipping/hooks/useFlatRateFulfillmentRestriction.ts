@@ -2,12 +2,10 @@ import {useEffect, useState} from "react";
 
 import {useLazyQuery, useMutation} from "@apollo/client";
 import {
-  CreateFlatRateFulfillmentRestrictionInput,
   CreateFlatRateFulfillmentRestrictionPayload,
   DeleteFlatRateFulfillmentRestrictionInput,
   DeleteFlatRateFulfillmentRestrictionPayload,
   FlatRateFulfillmentRestriction,
-  UpdateFlatRateFulfillmentRestrictionInput,
   UpdateFlatRateFulfillmentRestrictionPayload
 } from "platform/types/gql-types";
 import useShopId from "platform/hooks/useShopId";
@@ -34,7 +32,7 @@ export default function useFlatRateFulfillmentRestriction({id}: FlatRateFulfillm
       data,
       loading
     }
-  ] = useLazyQuery<{ flatRateFulfillmentRestriction: FlatRateFulfillmentRestriction }>(flatRateFulfillmentRestriction);
+  ] = useLazyQuery<{ getFlatRateFulfillmentRestriction: FlatRateFulfillmentRestriction }>(flatRateFulfillmentRestriction);
 
   const [
     updateFlatRateFulfillmentRestriction,
@@ -42,8 +40,8 @@ export default function useFlatRateFulfillmentRestriction({id}: FlatRateFulfillm
       data: updateData,
       loading: updateLoading
     }
-  ] = useMutation<{ updateFlatRateFulfillmentRestriction: UpdateFlatRateFulfillmentRestrictionPayload },
-    { input: UpdateFlatRateFulfillmentRestrictionInput }>(updateFlatRateFulfillmentRestrictionMutation);
+  ] = useMutation<{ updateFlatRateFulfillmentRestriction: UpdateFlatRateFulfillmentRestrictionPayload }>(
+    updateFlatRateFulfillmentRestrictionMutation);
 
   const [
     createFlatRateFulfillmentRestriction,
@@ -51,10 +49,10 @@ export default function useFlatRateFulfillmentRestriction({id}: FlatRateFulfillm
       data: createData,
       loading: createLoading
     }
-  ] = useMutation<{ createFlatRateFulfillmentRestriction: CreateFlatRateFulfillmentRestrictionPayload },
-    { input: CreateFlatRateFulfillmentRestrictionInput }>(createFlatRateFulfillmentRestrictionMutation, {
-    refetchQueries: [flatRateFulfillmentRestrictionsQuery]
-  })
+  ] = useMutation<{ createFlatRateFulfillmentRestriction: CreateFlatRateFulfillmentRestrictionPayload }>(
+    createFlatRateFulfillmentRestrictionMutation, {
+      refetchQueries: [flatRateFulfillmentRestrictionsQuery]
+    })
 
   const [
     deleteFlatRateFulfillmentRestriction,
@@ -67,7 +65,7 @@ export default function useFlatRateFulfillmentRestriction({id}: FlatRateFulfillm
   })
 
   useEffect(() => {
-    if (!loading && data) setFulfillmentRestriction(data.flatRateFulfillmentRestriction);
+    if (!loading && data) setFulfillmentRestriction(data.getFlatRateFulfillmentRestriction);
   }, [data, loading]);
 
   useEffect(() => {
@@ -86,7 +84,7 @@ export default function useFlatRateFulfillmentRestriction({id}: FlatRateFulfillm
     if (id) {
       getFlatRateFulfillmentRestriction({
         variables: {
-          methodId: id,
+          restrictionId: id,
           shopId
         }
       }).then()

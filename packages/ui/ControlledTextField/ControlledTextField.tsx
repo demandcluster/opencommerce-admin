@@ -20,6 +20,7 @@ const ControlledTextField: FC<ControlledTextFieldProps> = (
     label,
     control,
     hideLabel = false,
+    fullWidth = true,
     ...rest
   }) => {
   return (
@@ -31,7 +32,7 @@ const ControlledTextField: FC<ControlledTextFieldProps> = (
         return (
           <FormControl
             error={invalid}
-            fullWidth
+            fullWidth={fullWidth}
           >
             {!hideLabel && (
               <FormLabel

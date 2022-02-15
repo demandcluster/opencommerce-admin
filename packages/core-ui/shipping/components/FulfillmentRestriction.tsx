@@ -18,8 +18,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import AddIcon from '@mui/icons-material/Add';
 import {useSnackbar} from "notistack";
 
 import ControlledTextField from "ui/ControlledTextField";
@@ -29,7 +27,10 @@ import useUI from "platform/hooks/useUI";
 import useFlatRateFulfillmentRestriction from "../hooks/useFlatRateFulfillmentRestriction";
 import fulfillmentRestrictionTypes from "../utils/fulfillmentRestrictionTypes";
 import fulfillmentRestrictionAttributeOperators from "../utils/fulfillmentRestrictionAttributeOperators";
-import {Theme} from "@mui/material";
+import fulfillmentRestrictionAttributePropertyTypes from "../utils/fulfillmentRestrictionAttributePropertyTypes";
+import {Theme} from "@mui/material/styles";
+import ListItemAdd from "./common/ListItemAdd";
+import flatRateFulfillmentRestriction from "../graphql/queries/flatRateFulfillmentRestriction";
 
 type ItemAttributeFieldValues = {
   operator: string;
@@ -38,10 +39,17 @@ type ItemAttributeFieldValues = {
   value: string;
 }
 
+type DestinationFieldValues = {
+  country: { value: string }[],
+  postal: { value: string }[],
+  region: { value: string }[],
+};
+
 type FlatRateFulfillmentRestrictionFieldValues = {
   name: string;
-  type: string;
-  itemAttributes: ItemAttributeFieldValues[]
+  type: "allow" | "deny";
+  itemAttributes: ItemAttributeFieldValues[];
+  destination: DestinationFieldValues;
 }
 
 const validationSchema = yup.object({
@@ -51,9 +59,21 @@ const validationSchema = yup.object({
     yup.object({
       operator: yup.string().required(),
       property: yup.string().required(),
+      propertyType: yup.string().required(),
       value: yup.string().required(),
     })
-  )
+  ),
+  destination: yup.object({
+    country: yup.array().of(yup.object({
+      value: yup.string().required()
+    })),
+    postal: yup.array().of(yup.object({
+      value: yup.string().required()
+    })),
+    region: yup.array().of(yup.object({
+      value: yup.string().required()
+    }))
+  })
 });
 
 type FulfillmentRestrictionProps = {
@@ -73,7 +93,7 @@ const AttributesForm: FC<AttributesFormProps> = ({name, control}) => {
   });
 
   const handleAppendField = () => {
-    append({operator: undefined})
+    append({operator: undefined, property: "", propertyType: undefined, value: ""})
   }
 
   return (
@@ -89,14 +109,25 @@ const AttributesForm: FC<AttributesFormProps> = ({name, control}) => {
                 <ControlledTextField
                   size="small"
                   control={control}
-                  name={`itemAttributes.${index}.property`}
+                  name={`${name}.${index}.property`}
                   label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.property.label", "Property")}
                   hideLabel={index !== 0}
                 />
                 <ControlledSelect
                   size="small"
                   control={control}
-                  name={`itemAttributes.${index}.operator`}
+                  name={`${name}.${index}.propertyType`}
+                  items={fulfillmentRestrictionAttributePropertyTypes.map((propertyType) => ({
+                    value: propertyType.value,
+                    label: t(propertyType.label, propertyType.defaultTranslation)
+                  }))}
+                  label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.propertyType.label", "Property type")}
+                  hideLabel={index !== 0}
+                />
+                <ControlledSelect
+                  size="small"
+                  control={control}
+                  name={`${name}.${index}.operator`}
                   items={fulfillmentRestrictionAttributeOperators.map((operator) => ({
                     value: operator.value,
                     label: t(operator.label, operator.defaultTranslation)
@@ -107,11 +138,11 @@ const AttributesForm: FC<AttributesFormProps> = ({name, control}) => {
                 <ControlledTextField
                   size="small"
                   control={control}
-                  name={`itemAttributes.${index}.value`}
+                  name={`${name}.${index}.value`}
                   label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.value.label", "Value")}
                   hideLabel={index !== 0}
                 />
-                <Box>
+                <Box pb={0.5}>
                   <IconButton size="small" onClick={() => remove(index)}>
                     <DeleteIcon/>
                   </IconButton>
@@ -121,19 +152,141 @@ const AttributesForm: FC<AttributesFormProps> = ({name, control}) => {
           ))
         ) : (
           <ListItem disabled>
-            <ListItemText primary={t(`admin.shipping.flatRateFulfillmentRestriction.${name}.empty.label`, "No attributes")}/>
+            <ListItemText
+              primary={t(`admin.shipping.flatRateFulfillmentRestriction.${name}.empty.label`, "No attributes")}/>
           </ListItem>
         )}
-        <ListItem button onClick={handleAppendField} sx={{borderRadius: 1}}>
-          <ListItemIcon>
-            <AddIcon fontSize="small"/>
-          </ListItemIcon>
-          <ListItemText primary={t(`admin.shipping.flatRateFulfillmentRestriction.${name}.add.label`, "New attribute")}/>
-        </ListItem>
+        <ListItemAdd
+          onClick={handleAppendField}
+          primary={t(`admin.shipping.flatRateFulfillmentRestriction.${name}.add.label`, "New attribute")}
+        />
       </List>
     </Box>
   )
-}
+};
+
+const DestinationForm: FC<{ control: Control<FlatRateFulfillmentRestrictionFieldValues> }> = ({control}) => {
+  const {t} = useTranslation();
+  const {fields: postalFields, append: postalAppend, remove: postalRemove} = useFieldArray({
+    control,
+    name: "destination.postal"
+  });
+  const {fields: regionFields, append: regionAppend, remove: regionRemove} = useFieldArray({
+    control,
+    name: "destination.region"
+  });
+  const {fields: countryFields, append: countryAppend, remove: countryRemove} = useFieldArray({
+    control,
+    name: "destination.country"
+  });
+
+  const handleAppendPostalField = () => postalAppend({value: ""})
+  const handleAppendRegionField = () => regionAppend({value: ""})
+  const handleAppendCountryField = () => countryAppend({value: ""})
+
+  return (
+    <Box>
+      <Typography color={(theme: Theme) => theme.palette.text.secondary} fontSize={14} ml="6px">
+        {t("admin.shipping.flatRateFulfillmentRestriction.destination.label", "Destination")}
+      </Typography>
+      <Box display="flex" flexDirection="column" gap={1}>
+        <List dense sx={{pt: 0, flex: 1}}>
+          {postalFields.length ? (
+            postalFields.map((field, index) => (
+              <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
+                <Box display="flex" gap={1} alignItems="end">
+                  <ControlledTextField
+                    size="small"
+                    control={control}
+                    name={`destination.postal.${index}.value`}
+                    label={t("admin.shipping.flatRateFulfillmentRestriction.destination.postal.label", "Postal")}
+                    hideLabel
+                  />
+                  <Box pb={0.5}>
+                    <IconButton size="small" onClick={() => postalRemove(index)}>
+                      <DeleteIcon/>
+                    </IconButton>
+                  </Box>
+                </Box>
+              </ListItem>
+            ))
+          ) : (
+            <ListItem disabled>
+              <ListItemText
+                primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.postal.empty.label`, "No postal codes")}/>
+            </ListItem>
+          )}
+          <ListItemAdd
+            onClick={handleAppendPostalField}
+            primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.postal.add.label`, "Add postal")}
+          />
+        </List>
+        <List dense sx={{pt: 0, flex: 1}}>
+          {regionFields.length ? (
+            regionFields.map((field, index) => (
+              <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
+                <Box display="flex" gap={1} alignItems="end">
+                  <ControlledTextField
+                    size="small"
+                    control={control}
+                    name={`destination.region.${index}.value`}
+                    label={t("admin.shipping.flatRateFulfillmentRestriction.destination.region.label", "Region")}
+                    hideLabel
+                  />
+                  <Box pb={0.5}>
+                    <IconButton size="small" onClick={() => regionRemove(index)}>
+                      <DeleteIcon/>
+                    </IconButton>
+                  </Box>
+                </Box>
+              </ListItem>
+            ))
+          ) : (
+            <ListItem disabled>
+              <ListItemText
+                primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.region.empty.label`, "No regions")}/>
+            </ListItem>
+          )}
+          <ListItemAdd
+            onClick={handleAppendRegionField}
+            primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.region.add.label`, "Add region")}
+          />
+        </List>
+        <List dense sx={{pt: 0, flex: 1}}>
+          {countryFields.length ? (
+            countryFields.map((field, index) => (
+              <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
+                <Box display="flex" gap={1} alignItems="end">
+                  <ControlledTextField
+                    size="small"
+                    control={control}
+                    name={`destination.country.${index}.value`}
+                    label={t("admin.shipping.flatRateFulfillmentRestriction.destination.country.label", "Country")}
+                    hideLabel
+                  />
+                  <Box pb={0.5}>
+                    <IconButton size="small" onClick={() => countryRemove(index)}>
+                      <DeleteIcon/>
+                    </IconButton>
+                  </Box>
+                </Box>
+              </ListItem>
+            ))
+          ) : (
+            <ListItem disabled>
+              <ListItemText
+                primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.country.empty.label`, "No countries")}/>
+            </ListItem>
+          )}
+          <ListItemAdd
+            onClick={handleAppendCountryField}
+            primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.country.add.label`, "Add country")}
+          />
+        </List>
+      </Box>
+    </Box>
+  )
+};
 
 const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   const {t} = useTranslation();
@@ -157,7 +310,12 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   const fulfillmentRestrictionFieldValues = useMemo<FlatRateFulfillmentRestrictionFieldValues>(() => ({
     name: fulfillmentRestriction?.name,
     type: fulfillmentRestriction?.type,
-    itemAttributes: fulfillmentRestriction?.itemAttributes || []
+    itemAttributes: fulfillmentRestriction?.itemAttributes || [],
+    destination: {
+      postal: fulfillmentRestriction?.destination?.postal.map(postal => ({value: postal})) || [],
+      region: fulfillmentRestriction?.destination?.region.map(region => ({value: region})) || [],
+      country: fulfillmentRestriction?.destination?.country.map(country => ({value: country})) || []
+    }
   }), [fulfillmentRestriction]);
 
   const {control, handleSubmit, reset, formState: {isDirty}} = useForm<FlatRateFulfillmentRestrictionFieldValues>({
@@ -171,7 +329,10 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
 
   const handleCreate = async (
     {
-      name
+      name,
+      type,
+      destination,
+      itemAttributes
     }: FlatRateFulfillmentRestrictionFieldValues) => {
     await createFlatRateFulfillmentRestriction({
       variables: {
@@ -180,7 +341,13 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
           shopId,
           restriction: {
             name,
-            ...fulfillmentRestriction
+            type,
+            itemAttributes,
+            destination: {
+              postal: destination.postal.map(({value}) => value),
+              region: destination.region.map(({value}) => value),
+              country: destination.country.map(({value}) => value),
+            }
           }
         }
       }
@@ -191,7 +358,10 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
 
   const handleUpdate = async (
     {
-      name
+      name,
+      type,
+      destination,
+      itemAttributes
     }: FlatRateFulfillmentRestrictionFieldValues) => {
     await updateFlatRateFulfillmentRestriction({
       variables: {
@@ -201,7 +371,13 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
           restrictionId: id,
           restriction: {
             name,
-            ...fulfillmentRestriction
+            type,
+            itemAttributes,
+            destination: {
+              postal: destination.postal.map(({value}) => value),
+              region: destination.region.map(({value}) => value),
+              country: destination.country.map(({value}) => value),
+            }
           }
         }
       }
@@ -210,9 +386,8 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   }
 
   const onSave = async (data: FlatRateFulfillmentRestrictionFieldValues) => {
-    console.log(data);
-    // if (isNew) return handleCreate(data);
-    // return handleUpdate(data);
+    if (isNew) return handleCreate(data);
+    return handleUpdate(data);
   }
 
   const handleDelete = async () => {
@@ -235,8 +410,8 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
       <Box display="flex" flexDirection="column" gap={1} height="100%">
         <Box display="flex" alignItems="center">
           <Typography variant="h5" flex={1}>
-            {id ? (t("admin.shipping.flatRateFulfillmentRestriction.edit", "Edit restriction")) :
-              (t("admin.shipping.flatRateFulfillmentRestriction.new", "New restriction"))}
+            {id ? (t("admin.shipping.flatRateFulfillmentRestriction.edit.label", "Edit restriction")) :
+              (t("admin.shipping.flatRateFulfillmentRestriction.new.label", "New restriction"))}
           </Typography>
           {!isNew && (
             <IconButton onClick={() => setDeleteDialogOpen(true)}>
@@ -250,7 +425,7 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
               control={control}
               name="name"
               size="small"
-              label={t("admin.table.headers.flatRateFulfillmentName", "Name")}
+              label={t("admin.table.headers.flatRateFulfillment.name.label", "Name")}
             />
             <ControlledSelect
               size="small"
@@ -260,9 +435,10 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
                 value: type.value,
                 label: t(type.label, type.defaultTranslation)
               }))}
-              label={t("admin.sipping.flatRateFulfillmentRestriction.type", "Restriction type")}
+              label={t("admin.sipping.flatRateFulfillmentRestriction.type.label", "Restriction type")}
             />
             <AttributesForm control={control} name="itemAttributes"/>
+            <DestinationForm control={control}/>
           </Box>
         ) : (
           <CircularProgress/>
@@ -281,12 +457,12 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
       </Box>
       <Dialog open={deleteDialogOpen}>
         <DialogTitle>
-          {t("admin.shipping.flatRateFulfillmentRestriction.delete.title", "Delete fulfillment method")}
+          {t("admin.shipping.flatRateFulfillmentRestriction.delete.title", "Delete fulfillment restriction")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {t("admin.shipping.flatRateFulfillmentRestriction.delete.content",
-              "Are you sure you want to delete fulfillment method:"
+              "Are you sure you want to delete fulfillment restriction:"
             )} <br/>
             <strong>{fulfillmentRestriction?.name}</strong>
           </DialogContentText>

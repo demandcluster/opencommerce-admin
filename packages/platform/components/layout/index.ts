@@ -13,4 +13,4 @@ export type OperatorLayout =
 export const sidebarWidthExpanded = 280;
 export const sidebarWidthCollapsed = 72;
 
-export const detailDrawerWidth = 390;
+export const detailDrawerWidth = 480;

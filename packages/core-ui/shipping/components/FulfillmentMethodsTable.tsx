@@ -30,7 +30,7 @@ const FulfillmentMethodsTable: FC = () => {
   const {t} = useTranslation();
   const {openDetailDrawer, isTablet} = useUI();
   const shopId = useShopId();
-  const [getFlatRateFulfillmentMethods, {data, loading}] =
+  const [getFlatRateFulfillmentMethods, {data, loading, refetch}] =
     useLazyQuery<FlatRateFulfillmentMethodsResponse>(flatRateFulfillmentMethodsQuery);
   const [fulfillmentMethods, setFulfillmentMethods] = useState<FlatRateFulfillmentMethod[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -81,6 +81,13 @@ const FulfillmentMethodsTable: FC = () => {
   }
 
   useEffect(() => {
+    refetch({
+      shopId
+    }).then()
+  }, [shopId]);
+
+
+  useEffect(() => {
     if (!loading && data) {
       setFulfillmentMethods(data?.flatRateFulfillmentMethods?.nodes || []);
       // TODO: change to totalCount when https://github.com/reactioncommerce/api-utils/pull/97 is merged
@@ -116,7 +123,11 @@ const FulfillmentMethodsTable: FC = () => {
           title={t("admin.shipping.flatRateFulfillmentMethodsTitle", "Fulfillment methods")}
           action={
             isTablet ? (
-              <Tooltip disableHoverListener title={t("admin.createFulfillmentMethod", "Create Fulfillment Method")}>
+              <Tooltip
+                disableHoverListener={!isTablet}
+                title={t("admin.createFulfillmentMethod", "Create Fulfillment Method")}
+                placement="bottom-end"
+              >
                 <Button
                   onClick={() => handleOpenDetailDrawer()}
                   size="small"
