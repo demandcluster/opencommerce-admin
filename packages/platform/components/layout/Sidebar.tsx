@@ -139,6 +139,7 @@ const SidebarContent = memo(() => {
               key={path}
               primary={t(navigationLabel || '')}
               NavigationIcon={NavigationIcon}
+              hideTooltip={isPrimarySidebarOpen}
             />
           ))
         }

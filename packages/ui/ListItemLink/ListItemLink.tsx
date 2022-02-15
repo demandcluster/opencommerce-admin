@@ -5,25 +5,28 @@ import {
   useResolvedPath
 } from 'react-router-dom';
 import {FC, forwardRef, MouseEventHandler, useMemo} from "react";
-import {ListItem, ListItemIcon, ListItemProps, ListItemText, SxProps} from "@mui/material";
+import {ListItem, ListItemIcon, ListItemProps, ListItemText, SxProps, Tooltip} from "@mui/material";
 
 type ListItemLinkProps = {
   NavigationIcon?: FC;
   primary: string;
   onClick?: MouseEventHandler;
   to: To;
-  sx?: SxProps
+  sx?: SxProps;
+  hideTooltip?: boolean;
 };
 
 const ListItemLink: FC<ListItemLinkProps> = (
-  { NavigationIcon,
+  {
+    NavigationIcon,
     onClick,
     primary,
     to,
-    sx
+    sx,
+    hideTooltip = true
   }) => {
   const resolved = useResolvedPath(to);
-  const match = useMatch({ path: resolved.pathname});
+  const match = useMatch({path: resolved.pathname});
 
   const renderLink = useMemo(
     () =>
@@ -37,6 +40,13 @@ const ListItemLink: FC<ListItemLinkProps> = (
   );
 
   return (
+    <Tooltip
+      title={primary}
+      disableFocusListener={hideTooltip}
+      disableHoverListener={hideTooltip}
+      disableTouchListener={hideTooltip}
+      placement="right"
+    >
       <ListItem
         selected={Boolean(match)}
         button
@@ -44,7 +54,7 @@ const ListItemLink: FC<ListItemLinkProps> = (
         sx={{
           ...sx,
           borderRadius: "6px"
-      }}
+        }}
       >
         {NavigationIcon && (
           <ListItemIcon>
@@ -58,6 +68,7 @@ const ListItemLink: FC<ListItemLinkProps> = (
           }}
         />
       </ListItem>
+    </Tooltip>
   );
 }
 
