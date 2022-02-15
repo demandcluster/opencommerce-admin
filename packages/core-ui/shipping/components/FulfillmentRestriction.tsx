@@ -1,5 +1,5 @@
 import {FC, useEffect, useMemo, useState} from "react";
-import {Control, useFieldArray, useForm} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -15,9 +15,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import {useSnackbar} from "notistack";
 
 import ControlledTextField from "ui/ControlledTextField";
@@ -26,11 +23,8 @@ import useShopId from "platform/hooks/useShopId";
 import useUI from "platform/hooks/useUI";
 import useFlatRateFulfillmentRestriction from "../hooks/useFlatRateFulfillmentRestriction";
 import fulfillmentRestrictionTypes from "../utils/fulfillmentRestrictionTypes";
-import fulfillmentRestrictionAttributeOperators from "../utils/fulfillmentRestrictionAttributeOperators";
-import fulfillmentRestrictionAttributePropertyTypes from "../utils/fulfillmentRestrictionAttributePropertyTypes";
-import {Theme} from "@mui/material/styles";
-import ListItemAdd from "./common/ListItemAdd";
-import flatRateFulfillmentRestriction from "../graphql/queries/flatRateFulfillmentRestriction";
+import FulfillmentRestrictionAttributes from "./FulfillmentRestrictionAttributes";
+import FulfillmentRestrictionDestination from "./FulfillmentRestrictionDestination";
 
 type ItemAttributeFieldValues = {
   operator: string;
@@ -45,7 +39,7 @@ type DestinationFieldValues = {
   region: { value: string }[],
 };
 
-type FlatRateFulfillmentRestrictionFieldValues = {
+export type FlatRateFulfillmentRestrictionFieldValues = {
   name: string;
   type: "allow" | "deny";
   itemAttributes: ItemAttributeFieldValues[];
@@ -79,214 +73,6 @@ const validationSchema = yup.object({
 type FulfillmentRestrictionProps = {
   id?: string;
 }
-
-type AttributesFormProps = {
-  name: "itemAttributes";
-  control: Control<FlatRateFulfillmentRestrictionFieldValues>;
-}
-
-const AttributesForm: FC<AttributesFormProps> = ({name, control}) => {
-  const {t} = useTranslation();
-  const {fields, append, remove} = useFieldArray({
-    control,
-    name
-  });
-
-  const handleAppendField = () => {
-    append({operator: undefined, property: "", propertyType: undefined, value: ""})
-  }
-
-  return (
-    <Box>
-      <Typography color={(theme: Theme) => theme.palette.text.secondary} fontSize={14} ml="6px">
-        {t("admin.shipping.flatRateFulfillmentRestriction.itemAttributes.label", "Item attributes")}
-      </Typography>
-      <List dense sx={{pt: 0}}>
-        {fields.length ? (
-          fields.map((field, index) => (
-            <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
-              <Box display="flex" gap={1} alignItems="end">
-                <ControlledTextField
-                  size="small"
-                  control={control}
-                  name={`${name}.${index}.property`}
-                  label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.property.label", "Property")}
-                  hideLabel={index !== 0}
-                />
-                <ControlledSelect
-                  size="small"
-                  control={control}
-                  name={`${name}.${index}.propertyType`}
-                  items={fulfillmentRestrictionAttributePropertyTypes.map((propertyType) => ({
-                    value: propertyType.value,
-                    label: t(propertyType.label, propertyType.defaultTranslation)
-                  }))}
-                  label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.propertyType.label", "Property type")}
-                  hideLabel={index !== 0}
-                />
-                <ControlledSelect
-                  size="small"
-                  control={control}
-                  name={`${name}.${index}.operator`}
-                  items={fulfillmentRestrictionAttributeOperators.map((operator) => ({
-                    value: operator.value,
-                    label: t(operator.label, operator.defaultTranslation)
-                  }))}
-                  label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.operator.label", "Operator")}
-                  hideLabel={index !== 0}
-                />
-                <ControlledTextField
-                  size="small"
-                  control={control}
-                  name={`${name}.${index}.value`}
-                  label={t("admin.sipping.flatRateFulfillmentRestriction.itemAttributes.value.label", "Value")}
-                  hideLabel={index !== 0}
-                />
-                <Box pb={0.5}>
-                  <IconButton size="small" onClick={() => remove(index)}>
-                    <DeleteIcon/>
-                  </IconButton>
-                </Box>
-              </Box>
-            </ListItem>
-          ))
-        ) : (
-          <ListItem disabled>
-            <ListItemText
-              primary={t(`admin.shipping.flatRateFulfillmentRestriction.${name}.empty.label`, "No attributes")}/>
-          </ListItem>
-        )}
-        <ListItemAdd
-          onClick={handleAppendField}
-          primary={t(`admin.shipping.flatRateFulfillmentRestriction.${name}.add.label`, "New attribute")}
-        />
-      </List>
-    </Box>
-  )
-};
-
-const DestinationForm: FC<{ control: Control<FlatRateFulfillmentRestrictionFieldValues> }> = ({control}) => {
-  const {t} = useTranslation();
-  const {fields: postalFields, append: postalAppend, remove: postalRemove} = useFieldArray({
-    control,
-    name: "destination.postal"
-  });
-  const {fields: regionFields, append: regionAppend, remove: regionRemove} = useFieldArray({
-    control,
-    name: "destination.region"
-  });
-  const {fields: countryFields, append: countryAppend, remove: countryRemove} = useFieldArray({
-    control,
-    name: "destination.country"
-  });
-
-  const handleAppendPostalField = () => postalAppend({value: ""})
-  const handleAppendRegionField = () => regionAppend({value: ""})
-  const handleAppendCountryField = () => countryAppend({value: ""})
-
-  return (
-    <Box>
-      <Typography color={(theme: Theme) => theme.palette.text.secondary} fontSize={14} ml="6px">
-        {t("admin.shipping.flatRateFulfillmentRestriction.destination.label", "Destination")}
-      </Typography>
-      <Box display="flex" flexDirection="column" gap={1}>
-        <List dense sx={{pt: 0, flex: 1}}>
-          {postalFields.length ? (
-            postalFields.map((field, index) => (
-              <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
-                <Box display="flex" gap={1} alignItems="end">
-                  <ControlledTextField
-                    size="small"
-                    control={control}
-                    name={`destination.postal.${index}.value`}
-                    label={t("admin.shipping.flatRateFulfillmentRestriction.destination.postal.label", "Postal")}
-                    hideLabel
-                  />
-                  <Box pb={0.5}>
-                    <IconButton size="small" onClick={() => postalRemove(index)}>
-                      <DeleteIcon/>
-                    </IconButton>
-                  </Box>
-                </Box>
-              </ListItem>
-            ))
-          ) : (
-            <ListItem disabled>
-              <ListItemText
-                primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.postal.empty.label`, "No postal codes")}/>
-            </ListItem>
-          )}
-          <ListItemAdd
-            onClick={handleAppendPostalField}
-            primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.postal.add.label`, "Add postal")}
-          />
-        </List>
-        <List dense sx={{pt: 0, flex: 1}}>
-          {regionFields.length ? (
-            regionFields.map((field, index) => (
-              <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
-                <Box display="flex" gap={1} alignItems="end">
-                  <ControlledTextField
-                    size="small"
-                    control={control}
-                    name={`destination.region.${index}.value`}
-                    label={t("admin.shipping.flatRateFulfillmentRestriction.destination.region.label", "Region")}
-                    hideLabel
-                  />
-                  <Box pb={0.5}>
-                    <IconButton size="small" onClick={() => regionRemove(index)}>
-                      <DeleteIcon/>
-                    </IconButton>
-                  </Box>
-                </Box>
-              </ListItem>
-            ))
-          ) : (
-            <ListItem disabled>
-              <ListItemText
-                primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.region.empty.label`, "No regions")}/>
-            </ListItem>
-          )}
-          <ListItemAdd
-            onClick={handleAppendRegionField}
-            primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.region.add.label`, "Add region")}
-          />
-        </List>
-        <List dense sx={{pt: 0, flex: 1}}>
-          {countryFields.length ? (
-            countryFields.map((field, index) => (
-              <ListItem key={field.id} disablePadding sx={{py: 0.5}}>
-                <Box display="flex" gap={1} alignItems="end">
-                  <ControlledTextField
-                    size="small"
-                    control={control}
-                    name={`destination.country.${index}.value`}
-                    label={t("admin.shipping.flatRateFulfillmentRestriction.destination.country.label", "Country")}
-                    hideLabel
-                  />
-                  <Box pb={0.5}>
-                    <IconButton size="small" onClick={() => countryRemove(index)}>
-                      <DeleteIcon/>
-                    </IconButton>
-                  </Box>
-                </Box>
-              </ListItem>
-            ))
-          ) : (
-            <ListItem disabled>
-              <ListItemText
-                primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.country.empty.label`, "No countries")}/>
-            </ListItem>
-          )}
-          <ListItemAdd
-            onClick={handleAppendCountryField}
-            primary={t(`admin.shipping.flatRateFulfillmentRestriction.destination.country.add.label`, "Add country")}
-          />
-        </List>
-      </Box>
-    </Box>
-  )
-};
 
 const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   const {t} = useTranslation();
@@ -437,8 +223,8 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
               }))}
               label={t("admin.sipping.flatRateFulfillmentRestriction.type.label", "Restriction type")}
             />
-            <AttributesForm control={control} name="itemAttributes"/>
-            <DestinationForm control={control}/>
+            <FulfillmentRestrictionAttributes control={control} name="itemAttributes"/>
+            <FulfillmentRestrictionDestination control={control}/>
           </Box>
         ) : (
           <CircularProgress/>

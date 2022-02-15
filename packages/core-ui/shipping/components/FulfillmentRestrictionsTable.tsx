@@ -16,6 +16,7 @@ import {
 import {FetchDataHandler, Table} from "ui";
 import flatRateFulfillmentRestrictionsQuery from "../graphql/queries/flatRateFulfillmentRestrictions";
 import FulfillmentRestriction from "./FulfillmentRestriction";
+import RestrictionTypeCell from "./common/RestrictionTypeCell";
 
 type FlatRateFulfillmentRestrictionResponse = {
   getFlatRateFulfillmentRestrictions: FlatRateFulfillmentRestrictionConnection
@@ -32,12 +33,13 @@ const FulfillmentRestrictionTable: FC = () => {
 
   const columns = useMemo<Column<FlatRateFulfillmentRestriction>[]>(() => [
     {
-      Header: t("admin.table.headers.id", "Id"),
-      accessor: "_id"
-    },
-    {
       Header: t("admin.table.headers.name", "Name"),
       accessor: "name"
+    },
+    {
+      Header: t("admin.table.headers.restrictionType", "Restriction type"),
+      accessor: "type",
+      Cell: ({cell}) => <RestrictionTypeCell cell={cell}/>
     },
   ], []);
 
