@@ -100,7 +100,11 @@ export const AuthProvider: FC = ({children}) => {
         justifyContent: "center",
         alignItems: "center"
       }}>
-        <CircularProgress disableShrink/>
+          <img
+            src="/dc-logo-animated.svg"
+            alt="Loading..."
+            width="80px"
+          />
       </Container>
     )
   }

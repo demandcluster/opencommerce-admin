@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#274093;}
+	.st1{fill:#45C1F1;}
+
+        :root {
+            --speed: 1.2s;
+            --fadeout: 1.2;
+        }
+	#path1 {     animation: showme1 var(--speed) ease-in infinite calc(var(--speed) / (var(--fadeout)/0.07) );    }
+	#path2 {     animation: showme2 var(--speed) ease-in infinite calc(var(--speed) / (var(--fadeout)/0.14) );    }
+	#path3 {     animation: showme3 var(--speed) ease-in infinite calc(var(--speed) / (var(--fadeout)/0.21) );     }
+
+        @keyframes showme1 {        5% {opacity: 0;        }        10% {opacity: 1;        }   85% {opacity: 1;        }        100% {opacity: 0;        }    }
+        @keyframes showme2 {        10% {opacity: 0;        }        15% {opacity: 1;        }  80% {opacity: 1;        }        100% {opacity: 0;        }    }
+        @keyframes showme3 {        15% {opacity: 0;        }        20% {opacity: 1;        }  75% {opacity: 1;        }        100% {opacity: 0;        }    }
+		 #path1, #path2, #path3{
+            opacity: 0;
+        }
+</style>
+    <polygon class="st0" points="358.1,253.8 70.2,253.8 70.2,126.8 19.2,126.8 19.2,101.3 95.6,101.3 95.6,228.4 332.7,228.4
+	332.7,210.9 358.1,210.9 "/>
+    <rect id="path1" x="116.9" y="186" class="st1" width="197.9" height="25.4"/>
+    <rect id="path2" x="116.9" y="143.7" class="st1" width="197.9" height="25.4"/>
+    <rect id="path3" x="116.9" y="101.3" class="st1" width="197.9" height="25.4"/>
+    <path class="st0" d="M139.8,335.9c-24.3,0-44-19.7-44-44s19.7-44,44-44s44,19.7,44,44S164,335.9,139.8,335.9z M139.8,273.3
+	c-10.2,0-18.6,8.3-18.6,18.6c0,10.2,8.3,18.6,18.6,18.6s18.6-8.3,18.6-18.6C158.3,281.7,150,273.3,139.8,273.3z"/>
+    <path class="st0" d="M284,335.9c-24.3,0-44-19.7-44-44s19.7-44,44-44s44,19.7,44,44S308.3,335.9,284,335.9z M284,273.3
+	c-10.2,0-18.6,8.3-18.6,18.6c0,10.2,8.3,18.6,18.6,18.6s18.6-8.3,18.6-18.6C302.6,281.7,294.3,273.3,284,273.3z"/>
+</svg>
