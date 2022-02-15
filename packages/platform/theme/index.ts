@@ -70,6 +70,13 @@ const themeOptions: ThemeOptions = {
         }
       }
     },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: "inherit"
+        }
+      }
+    },
     MuiListItemText: {
       styleOverrides: {
         root: {
