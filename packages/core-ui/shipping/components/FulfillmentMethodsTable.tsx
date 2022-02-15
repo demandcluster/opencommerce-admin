@@ -28,7 +28,7 @@ const updateFulfillmentMethodInList = (methodList: FlatRateFulfillmentMethod[], 
 
 const FulfillmentMethodsTable: FC = () => {
   const {t} = useTranslation();
-  const {openDetailDrawer, isMobile} = useUI();
+  const {openDetailDrawer, isTablet} = useUI();
   const shopId = useShopId();
   const [getFlatRateFulfillmentMethods, {data, loading}] =
     useLazyQuery<FlatRateFulfillmentMethodsResponse>(flatRateFulfillmentMethodsQuery);
@@ -115,7 +115,7 @@ const FulfillmentMethodsTable: FC = () => {
         <CardHeader
           title={t("admin.shipping.flatRateFulfillmentMethodsTitle", "Fulfillment methods")}
           action={
-            isMobile ? (
+            isTablet ? (
               <Tooltip disableHoverListener title={t("admin.createFulfillmentMethod", "Create Fulfillment Method")}>
                 <Button
                   onClick={() => handleOpenDetailDrawer()}

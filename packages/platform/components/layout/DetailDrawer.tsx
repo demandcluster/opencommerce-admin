@@ -9,10 +9,11 @@ import IconButton from "@mui/material/IconButton";
 import useUI from "../../hooks/useUI";
 import {detailDrawerWidth} from "./index";
 import {useLocation} from "react-router-dom";
+import Container from "@mui/material/Container";
 
 
 const DetailDrawer: FC = () => {
-  const {isMobile, isDetailDrawerOpen, closeDetailDrawer, detailDrawerContent} = useUI();
+  const {isLaptop, isDetailDrawerOpen, closeDetailDrawer, detailDrawerContent} = useUI();
 
   const location = useLocation();
 
@@ -24,7 +25,7 @@ const DetailDrawer: FC = () => {
   return (
     <Drawer
       sx={((theme: Theme) => ({
-        ...(!isMobile && {
+        ...(!isLaptop && {
           width: 0,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
@@ -41,18 +42,18 @@ const DetailDrawer: FC = () => {
           })
         })
       }))}
-      anchor={isMobile ? "bottom" : "right"}
+      anchor={isLaptop ? "bottom" : "right"}
       open={isDetailDrawerOpen}
-      variant={isMobile ? "temporary" : "persistent"}
+      variant={isLaptop ? "temporary" : "persistent"}
     >
       <Toolbar>
         <IconButton onClick={() => closeDetailDrawer()}>
           <CloseIcon/>
         </IconButton>
       </Toolbar>
-      <Box p={2} height="100%">
+      <Container maxWidth="md" sx={{pb: 2}}>
         {detailDrawerContent}
-      </Box>
+      </Container>
     </Drawer>
   );
 };

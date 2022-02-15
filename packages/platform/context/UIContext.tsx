@@ -11,6 +11,8 @@ export interface State {
   isDetailDrawerOpen: boolean,
   isDetailDrawerOpening: boolean,
   isMobile: boolean,
+  isTablet: boolean,
+  isLaptop: boolean,
   isPrimarySidebarOpen: boolean,
   detailDrawerContent: ReactNode,
   closeDetailDrawer: () => void,
@@ -24,6 +26,8 @@ const initialState = {
   isDetailDrawerOpen: false,
   isDetailDrawerOpening: false,
   isMobile: false,
+  isTablet: false,
+  isLaptop: false,
   isPrimarySidebarOpen: false,
   detailDrawerContent: null
 }
@@ -83,6 +87,8 @@ export const UIProvider: FC = ({children}) => {
   const [state, dispatch] = useReducer(uiReducer, initialState as State)
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const isLaptop = useMediaQuery(theme.breakpoints.down('lg'));
 
   const openPrimarySidebar = useCallback(
     () => dispatch({type: 'OPEN_PRIMARY_SIDEBAR'}),
@@ -113,6 +119,8 @@ export const UIProvider: FC = ({children}) => {
     () => ({
       ...state,
       isMobile,
+      isTablet,
+      isLaptop,
       openPrimarySidebar,
       closePrimarySidebar,
       togglePrimarySidebar,
@@ -121,6 +129,8 @@ export const UIProvider: FC = ({children}) => {
     }),
     [
       isMobile,
+      isTablet,
+      isLaptop,
       closeDetailDrawer,
       closePrimarySidebar,
       openDetailDrawer,
