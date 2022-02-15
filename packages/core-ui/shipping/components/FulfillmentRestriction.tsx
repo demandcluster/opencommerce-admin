@@ -96,7 +96,18 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   const fulfillmentRestrictionFieldValues = useMemo<FlatRateFulfillmentRestrictionFieldValues>(() => ({
     name: fulfillmentRestriction?.name,
     type: fulfillmentRestriction?.type,
-    itemAttributes: fulfillmentRestriction?.itemAttributes || [],
+    itemAttributes: fulfillmentRestriction?.itemAttributes.map((
+      {
+        operator,
+        propertyType,
+        property,
+        value
+      }) => ({
+      operator,
+      propertyType,
+      property,
+      value
+    })),
     destination: {
       postal: fulfillmentRestriction?.destination?.postal.map(postal => ({value: postal})) || [],
       region: fulfillmentRestriction?.destination?.region.map(region => ({value: region})) || [],
