@@ -5,7 +5,8 @@ import {
   useMemo,
   useReducer
 } from "react";
-import {useMediaQuery, useTheme} from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import {useTheme} from "@mui/material/styles";
 
 export interface State {
   isDetailDrawerOpen: boolean,

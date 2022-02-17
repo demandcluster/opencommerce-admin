@@ -25,10 +25,10 @@ import {FlatRateFulfillmentMethod} from "platform/types/gql-types";
 type FlatRateFulfillmentMethodFieldValues = {
   name: string;
   label: string;
-  cost: number;
+  cost: string;
   group: string;
-  handling: number;
-  rate: number;
+  handling: string;
+  rate: string;
   isEnabled: boolean;
 }
 
@@ -60,13 +60,13 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
   });
 
   const fulfillmentMethodFieldValues = useMemo<FlatRateFulfillmentMethodFieldValues>(() => ({
-    name: fulfillmentMethod?.name,
-    label: fulfillmentMethod?.label,
-    cost: fulfillmentMethod?.cost,
-    group: fulfillmentMethod?.group,
-    handling: fulfillmentMethod?.handling,
-    rate: fulfillmentMethod?.rate,
-    isEnabled: fulfillmentMethod?.isEnabled
+    name: fulfillmentMethod?.name || "",
+    label: fulfillmentMethod?.label || "",
+    cost: fulfillmentMethod?.cost.toString() || "",
+    group: fulfillmentMethod?.group || "",
+    handling: fulfillmentMethod?.handling.toString() || "",
+    rate: fulfillmentMethod?.rate.toString() || "",
+    isEnabled: fulfillmentMethod?.isEnabled || false
   }), [fulfillmentMethod]);
 
   const {control, handleSubmit, reset, formState: {isDirty}} = useForm<FlatRateFulfillmentMethodFieldValues>({

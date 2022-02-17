@@ -3,7 +3,9 @@ import {Control, Controller} from 'react-hook-form'
 import InputAdornment from '@mui/material/InputAdornment'
 import Error from '@mui/icons-material/Error'
 import Tooltip from '@mui/material/Tooltip'
-import {FormControl, FormLabel, OutlinedInput, OutlinedInputProps} from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import OutlinedInput, {OutlinedInputProps} from "@mui/material/OutlinedInput";
 
 type ControlledTextFieldProps = {
   name: string

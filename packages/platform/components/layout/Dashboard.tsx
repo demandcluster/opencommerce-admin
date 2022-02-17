@@ -11,6 +11,8 @@ import {OperatorRoute, operatorRoutesDefinitions} from "../../router";
 const Dashboard: FC = () => {
   const {t} = useTranslation();
 
+  console.log(operatorRoutesDefinitions)
+
   return (
     <Box display='flex' overflow="hidden" height="100vh">
       <Sidebar/>

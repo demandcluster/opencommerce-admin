@@ -1,5 +1,4 @@
-// @ts-ignore
-import React, {FC, memo, useEffect, useMemo, useState} from "react";
+import {FC, memo, useEffect, useMemo} from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -15,7 +14,7 @@ import ControlledTextField from "ui/ControlledTextField";
 import useShopId from "platform/hooks/useShopId";
 import {Shop} from "platform/types/gql-types";
 import Container from "@mui/material/Container";
-import {CardActions} from "@mui/material";
+import CardActions from "@mui/material/CardActions";
 
 type ShopSettingsFieldValues = {
   name: string;

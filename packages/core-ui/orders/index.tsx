@@ -2,7 +2,6 @@ import {lazy} from "react";
 
 import InboxIcon from '@mui/icons-material/Inbox';
 import {OperatorViewStandardLayout} from "platform/components/layout";
-import LinkIcon from "@mui/icons-material/Link";
 import { registerOperatorRoute } from "platform/router";
 
 registerOperatorRoute({

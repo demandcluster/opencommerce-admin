@@ -8,7 +8,7 @@ import useUI from "../../hooks/useUI";
 import Avatar from "../common/Avatar";
 import ShopSelector from "../common/ShopSelector";
 import Box from "@mui/material/Box";
-import {Theme} from "@mui/material";
+import {Theme} from "@mui/material/styles";
 
 const AppBar: FC<{ title?: string }> = ({title}) => {
   const {isMobile, togglePrimarySidebar} = useUI();

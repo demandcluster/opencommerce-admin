@@ -1,6 +1,11 @@
 import {FC, FormEvent} from "react";
 import {useLocation, useNavigate, Navigate} from "react-router-dom";
-import {Box, Button, Checkbox, FormControlLabel, Grid, TextField} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";

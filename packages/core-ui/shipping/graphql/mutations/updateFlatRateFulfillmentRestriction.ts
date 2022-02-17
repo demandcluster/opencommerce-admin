@@ -11,6 +11,12 @@ export default gql`
           propertyType
           value
         }
+        orderAttributes {
+          operator
+          property
+          propertyType
+          value
+        }
         name
         destination {
           country

@@ -1,13 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
+import {StrictMode} from "react";
+import ReactDOM from 'react-dom'
 import './styles/base.css';
 import {App} from 'platform';
 import "./util/prepareRoutes";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <StrictMode>
+    <App/>
+  </StrictMode>,
   document.getElementById('root')
 );

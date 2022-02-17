@@ -4,8 +4,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
+import {alpha, Theme} from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import Menu from "@mui/material/Menu";
 
-import {alpha, Button, debounce, FormControl, lighten, Menu, TextField, Theme} from "@mui/material";
 import {useMenu} from "ui/hooks";
 import useShop from "../../hooks/useShop";
 import {Shop} from "../../types/gql-types";

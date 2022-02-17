@@ -3446,6 +3446,11 @@ export type FlatRateFulfillmentRestriction = Node & {
   methodIds: Maybe<Array<Maybe<Scalars['ID']>>>;
   /** Name of the restriction */
   name: Maybe<Scalars['String']>;
+  /**
+   * Attribute restrictions applied on common order.
+   * Multiple attribute restrictions are evaluated with AND.
+   */
+  orderAttributes: Maybe<Array<Maybe<AttributeRestriction>>>;
   /** The shop ID */
   shopId: Scalars['ID'];
   /** The type of this restriction. Allowed types are `allow` or `deny`. */
@@ -3500,6 +3505,11 @@ export type FlatRateFulfillmentRestrictionInput = {
   methodIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   /** Name of the restriction */
   name: InputMaybe<Scalars['String']>;
+  /**
+   * Attribute restrictions applied on common order.
+   * Multiple attribute restrictions are evaluated with AND.
+   */
+  orderAttributes: InputMaybe<Array<InputMaybe<AttributeRestrictionInput>>>;
   /** The type of this restriction. Allowed types are `allow` or `deny`. */
   type: RestrictionTypeEnum;
 };

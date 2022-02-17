@@ -2,7 +2,6 @@ import {memo, ReactElement} from "react";
 import {styled} from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import List from "@mui/material/List";
@@ -14,11 +13,8 @@ import {
 } from "./index";
 import useUI from "../../hooks/useUI";
 import {useTranslation} from "react-i18next";
-import useShopId from "../../hooks/useShopId";
 import useOperatorRoutes from "../../hooks/useOperatorRoutes";
-import ShopSelector from "../common/ShopSelector";
-import Box from "@mui/material/Box";
-import {Button} from "@mui/material";
+import Button from "@mui/material/Button";
 
 const DesktopDrawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
   ({theme, open}) => ({

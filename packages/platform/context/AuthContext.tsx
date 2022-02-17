@@ -3,7 +3,6 @@ import getAccountsClient from "../config/accountsClient";
 import hashPassword from "./utils/hashPassword";
 import {useLazyQuery} from "@apollo/client";
 import viewerQuery from "../graphql/queries/viewerQuery";
-import {CircularProgress} from "@mui/material";
 import Container from "@mui/material/Container";
 import {Account} from "../types/gql-types";
 

@@ -1,13 +1,10 @@
-import React, {FC} from 'react';
+import {FC} from 'react';
 import {Control, Controller} from "react-hook-form";
-import {
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  Switch,
-  SwitchProps
-} from "@mui/material";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import FormHelperText from "@mui/material/FormHelperText";
+import Switch, {SwitchProps} from "@mui/material/Switch";
 
 type ControlledSwitchProps = {
   name: string

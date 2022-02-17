@@ -26,7 +26,7 @@ import fulfillmentRestrictionTypes from "../utils/fulfillmentRestrictionTypes";
 import FulfillmentRestrictionAttributes from "./FulfillmentRestrictionAttributes";
 import FulfillmentRestrictionDestination from "./FulfillmentRestrictionDestination";
 
-type ItemAttributeFieldValues = {
+type AttributeFieldValues = {
   operator: string;
   propertyType: 'bool' | 'float' | 'int' | 'string';
   property: string;
@@ -42,7 +42,8 @@ type DestinationFieldValues = {
 export type FlatRateFulfillmentRestrictionFieldValues = {
   name: string;
   type: "allow" | "deny";
-  itemAttributes: ItemAttributeFieldValues[];
+  itemAttributes: AttributeFieldValues[];
+  orderAttributes: AttributeFieldValues[];
   destination: DestinationFieldValues;
 }
 
@@ -50,6 +51,14 @@ const validationSchema = yup.object({
   name: yup.string().required(),
   type: yup.string().required(),
   itemAttributes: yup.array().of(
+    yup.object({
+      operator: yup.string().required(),
+      property: yup.string().required(),
+      propertyType: yup.string().required(),
+      value: yup.string().required(),
+    })
+  ),
+  orderAttributes: yup.array().of(
     yup.object({
       operator: yup.string().required(),
       property: yup.string().required(),
@@ -96,7 +105,7 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   const fulfillmentRestrictionFieldValues = useMemo<FlatRateFulfillmentRestrictionFieldValues>(() => ({
     name: fulfillmentRestriction?.name,
     type: fulfillmentRestriction?.type,
-    itemAttributes: fulfillmentRestriction?.itemAttributes.map((
+    itemAttributes: fulfillmentRestriction?.itemAttributes?.map((
       {
         operator,
         propertyType,
@@ -107,11 +116,23 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
       propertyType,
       property,
       value
-    })),
+    })) || [],
+    orderAttributes: fulfillmentRestriction?.orderAttributes?.map((
+      {
+        operator,
+        propertyType,
+        property,
+        value
+      }) => ({
+      operator,
+      propertyType,
+      property,
+      value
+    })) || [],
     destination: {
-      postal: fulfillmentRestriction?.destination?.postal.map(postal => ({value: postal})) || [],
-      region: fulfillmentRestriction?.destination?.region.map(region => ({value: region})) || [],
-      country: fulfillmentRestriction?.destination?.country.map(country => ({value: country})) || []
+      postal: fulfillmentRestriction?.destination?.postal?.map(postal => ({value: postal})) || [],
+      region: fulfillmentRestriction?.destination?.region?.map(region => ({value: region})) || [],
+      country: fulfillmentRestriction?.destination?.country?.map(country => ({value: country})) || []
     }
   }), [fulfillmentRestriction]);
 
@@ -129,7 +150,8 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
       name,
       type,
       destination,
-      itemAttributes
+      itemAttributes,
+      orderAttributes
     }: FlatRateFulfillmentRestrictionFieldValues) => {
     await createFlatRateFulfillmentRestriction({
       variables: {
@@ -140,6 +162,7 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
             name,
             type,
             itemAttributes,
+            orderAttributes,
             destination: {
               postal: destination.postal.map(({value}) => value),
               region: destination.region.map(({value}) => value),
@@ -158,7 +181,8 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
       name,
       type,
       destination,
-      itemAttributes
+      itemAttributes,
+      orderAttributes
     }: FlatRateFulfillmentRestrictionFieldValues) => {
     await updateFlatRateFulfillmentRestriction({
       variables: {
@@ -170,6 +194,7 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
             name,
             type,
             itemAttributes,
+            orderAttributes,
             destination: {
               postal: destination.postal.map(({value}) => value),
               region: destination.region.map(({value}) => value),
@@ -234,6 +259,7 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
               }))}
               label={t("admin.sipping.flatRateFulfillmentRestriction.type.label", "Restriction type")}
             />
+            <FulfillmentRestrictionAttributes control={control} name="orderAttributes"/>
             <FulfillmentRestrictionAttributes control={control} name="itemAttributes"/>
             <FulfillmentRestrictionDestination control={control}/>
           </Box>

@@ -5,7 +5,11 @@ import {
   useResolvedPath
 } from 'react-router-dom';
 import {FC, forwardRef, MouseEventHandler, useMemo} from "react";
-import {ListItem, ListItemIcon, ListItemProps, ListItemText, SxProps, Tooltip} from "@mui/material";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import {SxProps} from "@mui/material/styles";
 
 type ListItemLinkProps = {
   NavigationIcon?: FC;

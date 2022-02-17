@@ -1,5 +1,7 @@
 import {useMemo, FC} from "react";
-import {Card, CardContent, Typography} from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
 import ordersQuery from "../graphql/queries/orders";
 import {useTranslation} from "react-i18next";
 import Table, {FetchDataHandler, MultipleSelectColumnFilter, RowClickHandler, SelectColumnFilter} from "ui/Table";
@@ -90,7 +92,6 @@ const OrdersTable: FC = () => {
     }
   ], [t]);
 
-  // @ts-ignore
   const handleFetchData: FetchDataHandler<Order> = async ({pageSize, pageIndex, filters}) => {
     const filtersByKey: Partial<OrderFilterInput> = {}
     filters.forEach(filter => filtersByKey[filter.id] = filter.value)

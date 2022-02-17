@@ -14,7 +14,7 @@ declare module '@mui/material/styles' {
   }
 }
 
-const themeOptions: ThemeOptions = {
+export const themeOptions: ThemeOptions = {
   palette: {
     primary: {
       main: '#607d8b',
@@ -154,6 +154,9 @@ theme = createTheme(theme, <ThemeOptions>{
       }
     },
     MuiButton: {
+      defaultProps: {
+        disableElevation: true
+      },
       styleOverrides: {
         root: {
           fontWeight: 700,

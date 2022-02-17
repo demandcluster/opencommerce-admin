@@ -14,7 +14,7 @@ import flatRateFulfillmentMethodsQuery from "../graphql/queries/flatRateFulfillm
 import EnabledCell from "./common/EnabledCell";
 import FulfillmentMethod from "./FulfillmentMethod";
 import Button from "@mui/material/Button";
-import {Tooltip} from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 
 type FlatRateFulfillmentMethodsResponse = {
   flatRateFulfillmentMethods: FlatRateFulfillmentMethodConnection

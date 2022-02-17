@@ -18,7 +18,6 @@ const DetailDrawer: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("Changing location");
     if (isDetailDrawerOpen) closeDetailDrawer();
   }, [location]);
 

@@ -10,7 +10,7 @@ import PersonIcon from '@mui/icons-material/Person';
 
 import useAuth from "../../hooks/useAuth";
 import {useMenu} from "ui/hooks";
-import {alpha} from "@mui/material";
+import {alpha} from "@mui/material/styles";
 import theme from "../../theme";
 
 const Avatar: FC = () => {

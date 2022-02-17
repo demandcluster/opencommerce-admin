@@ -17,10 +17,7 @@ i18n
     interpolation: {
       escapeValue: false // react already safes from xss
     },
-    react: {
-      useSuspense: false
-    },
     ns: ["demandcluster-merchants","reaction-i18n","reaction-email","reaction-address","reaction-translations","reaction-accounts","reaction-catalog","reaction-tags","reaction-simple-pricing","reaction-inventory","reaction-simple-inventory","reaction-orders","reaction-payments","reaction-stripe","example-paymentmethod","reaction-discounts","discount-codes","reaction-shipping","reaction-shipping-rates","reaction-taxes","reaction-navigation","reaction-sitemap-generator","reaction-demandcluster","reaction-demandcms","buckaroo-paymentmethod"]
-  });
+  }).then();
 
 export default i18n;

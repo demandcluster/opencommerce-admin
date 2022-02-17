@@ -5,19 +5,19 @@ import {Account, Shop} from "../types/gql-types";
 interface State {
   changeShop: (shopId: string) => void,
   viewerShops: Shop[],
-  currentShop: Shop,
+  currentShop: Shop | null,
 }
 
 const shopIdAccessor = "shopId";
 export const ShopContext = createContext<State>({} as State);
 
-const getFirstShopFromViewer = (viewer: Account) => {
+const getFirstShopFromViewer = (viewer: Account | null) => {
   return viewer?.adminUIShops?.find(shop => shop.shopType === "primary")
     || viewer?.adminUIShops[0]
 }
 
-const getShopByIdFromViewer = (viewer: Account, shopId: string) => {
-  return viewer?.adminUIShops?.find(shop => shop._id === shopId)
+const getShopByIdFromViewer = (viewer: Account | null, shopId: string | null) => {
+  return viewer?.adminUIShops?.find(shop => shop._id === shopId) || null;
 }
 
 export const ShopProvider: FC = ({children}) => {
@@ -29,7 +29,7 @@ export const ShopProvider: FC = ({children}) => {
 
     if (!localStorageShopId || !viewerShop) {
       const firstShop = getFirstShopFromViewer(viewer);
-      localStorage.setItem(shopIdAccessor, firstShop?._id);
+      localStorage.setItem(shopIdAccessor, firstShop?._id || "");
 
       if (!firstShop) return null;
       return firstShop;
@@ -43,7 +43,7 @@ export const ShopProvider: FC = ({children}) => {
   // When the viewer changes, the new viewer might not have access to the currently selected shop.
   // This effect ensures the current shop state is valid for the new viewer
   useEffect(() => {
-    if (!getShopByIdFromViewer(viewer, currentShop?._id)) {
+    if (!getShopByIdFromViewer(viewer, currentShop?._id || null)) {
       return setCurrentShop(getInitialShop())
     }
   }, [viewer]);
