@@ -41,7 +41,7 @@ const PhoneInput: FC<PhoneInputProps> = (
     countries,
     defaultCountryCode = "NL",
     label,
-    value= "",
+    value,
     name,
     onChange,
     onBlur,
@@ -50,7 +50,7 @@ const PhoneInput: FC<PhoneInputProps> = (
   const [activeCountry, setActiveCountry] = useState(countries[defaultCountryCode]);
 
   const handleCountryChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    const newCountry = countries[value || "NL"];
+    const newCountry = countries[value || defaultCountryCode];
     const noPrefixNumber = value.replace(activeCountry.phoneCode, "")
     const changeEvent = {
       target: {

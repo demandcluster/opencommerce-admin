@@ -15,14 +15,12 @@ import {
   UseSortByState
 } from "react-table";
 
-export {};
+export interface UseCustomFilterColumnProps<D extends object> {
+  filterOptions: {label: string, value: string}[]
+  filterLabel: string
+}
 
 declare module 'react-table' {
-  export interface UseCustomFilterColumnProps<D extends object> {
-    filterOptions: {label: string, value: string}[]
-    filterLabel: string
-  }
-
   export interface TableOptions<D extends object>
     extends UseFiltersOptions<D>,
       UsePaginationOptions<D>,
@@ -54,3 +52,5 @@ declare module 'react-table' {
       UseCustomFilterColumnProps<D> {
   }
 }
+
+export {};

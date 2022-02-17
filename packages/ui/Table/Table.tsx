@@ -18,11 +18,9 @@ import Skeleton from "@mui/material/Skeleton";
 import {
   Column,
   ColumnInstance,
-  TableState,
   TableOptions,
+  TableState,
   useFilters, usePagination, useTable} from "react-table";
-
-import type {} from "../types"
 
 export type FetchDataHandler<T extends object> = (state: TableState<T>) => Promise<void>
 
@@ -262,7 +260,7 @@ const Table = <T extends object>(
                           handleRowClick(row!.original)
                         }}
                       >
-                        {row.cells.map(cell => {
+                        {row.cells.map((cell) => {
                           return (
                             <TableCell {...cell.getCellProps()}>
                               {cell.render('Cell')}

@@ -1,5 +1,7 @@
 import {alpha, createTheme, lighten, ThemeOptions} from "@mui/material/styles";
 
+import type {} from '@mui/lab/themeAugmentation';
+
 declare module '@mui/material/styles' {
   interface Theme {
     outline: {
