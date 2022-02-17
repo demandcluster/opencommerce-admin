@@ -15,6 +15,8 @@ import {
   UseSortByState
 } from "react-table";
 
+export {};
+
 declare module 'react-table' {
   export interface UseCustomFilterColumnProps<D extends object> {
     filterOptions: {label: string, value: string}[]

@@ -22,6 +22,8 @@ import {
   TableOptions,
   useFilters, usePagination, useTable} from "react-table";
 
+import type {} from "../types"
+
 export type FetchDataHandler<T extends object> = (state: TableState<T>) => Promise<void>
 
 export type RowClickHandler<T extends object> = (row: T) => void | Promise<void>
