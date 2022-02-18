@@ -11,7 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ListItemText from "@mui/material/ListItemText";
 
 import ControlledTextField from "ui/ControlledTextField";
-import ListItemAdd from "./common/ListItemAdd";
+import ListItemAdd from "ui/ListItemAdd";
 import {FlatRateFulfillmentRestrictionFieldValues} from "./FulfillmentRestriction";
 
 const FulfillmentRestrictionDestination: FC<{ control: Control<FlatRateFulfillmentRestrictionFieldValues> }> = ({control}) => {

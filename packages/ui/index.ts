@@ -4,6 +4,9 @@ export * from "./Table";
 export {default as ListItemLink} from "./ListItemLink";
 export * from "./ListItemLink";
 
+export {default as ListItemAdd} from "./ListItemAdd";
+export * from "./ListItemAdd";
+
 export {default as ControlledTextField} from "./ControlledTextField";
 export * from "./ControlledTextField";
 

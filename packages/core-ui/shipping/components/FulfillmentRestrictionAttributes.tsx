@@ -14,7 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 import ControlledTextField from "ui/ControlledTextField";
 import ControlledSelect from "ui/ControlledSelect";
-import ListItemAdd from "./common/ListItemAdd";
+import ListItemAdd from "ui/ListItemAdd";
 import {FlatRateFulfillmentRestrictionFieldValues} from "./FulfillmentRestriction";
 
 type FulfillmentRestrictionAttributesProps = {

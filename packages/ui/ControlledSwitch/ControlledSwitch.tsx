@@ -3,7 +3,6 @@ import {Control, Controller} from "react-hook-form";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
-import FormHelperText from "@mui/material/FormHelperText";
 import Switch, {SwitchProps} from "@mui/material/Switch";
 
 type ControlledSwitchProps = {
@@ -26,7 +25,7 @@ const ControlledSwitch: FC<ControlledSwitchProps> = (
       name={name}
       control={control}
       defaultValue={defaultValue}
-      render={({field: {value, ...field}, fieldState: {error}}) => (
+      render={({field: {value, ...field}}) => (
         <FormControl>
           <FormGroup>
             <FormControlLabel control={
@@ -37,9 +36,6 @@ const ControlledSwitch: FC<ControlledSwitchProps> = (
               />
             } label={label}/>
           </FormGroup>
-          <FormHelperText id={`switch-helper-text-${name}`}>
-            {error ? error.message : " "}
-          </FormHelperText>
         </FormControl>
       )
       }

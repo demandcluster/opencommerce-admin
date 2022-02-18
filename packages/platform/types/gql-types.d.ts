@@ -3522,25 +3522,6 @@ export enum FlatRateFulfillmentRestrictionSortByField {
   CreatedAt = 'createdAt'
 }
 
-export type FreeShippingPolicy = {
-  __typename?: 'FreeShippingPolicy';
-  /** Whether free shipping is allowed for the merchant */
-  allowed: Scalars['Boolean'];
-  /** Country */
-  country: Maybe<Scalars['String']>;
-  /** Above what price free shipping is applied. Should be null if free shipping is not allowed */
-  threshold: Maybe<Money>;
-};
-
-export type FreeShippingPolicyInput = {
-  /** Whether free shipping is allowed for the merchant */
-  allowed: Scalars['Boolean'];
-  /** Country */
-  country: InputMaybe<Scalars['String']>;
-  /** Above what price free shipping is applied. Should be null if free shipping is not allowed */
-  threshold: InputMaybe<MoneyInput>;
-};
-
 /** Information needed by the selected fulfillment method to properly fulfill the order */
 export type FulfillmentData = {
   __typename?: 'FulfillmentData';
@@ -4443,6 +4424,17 @@ export type MerchantEdge = NodeEdge & {
   cursor: Scalars['ConnectionCursor'];
   /** The Merchant */
   node: Maybe<Merchant>;
+};
+
+export type MerchantShippingRate = {
+  __typename?: 'MerchantShippingRate';
+  country: Scalars['String'];
+  rate: Scalars['Float'];
+};
+
+export type MerchantShippingRateInput = {
+  country: Scalars['String'];
+  rate: Scalars['Float'];
 };
 
 /** Possible statuses for merchant registration */
@@ -9145,11 +9137,6 @@ export type Shop = Node & {
   description: Maybe<Scalars['String']>;
   /** The shop's default email record */
   emails: Maybe<Array<Maybe<EmailRecord>>>;
-  /**
-   * Defines whether the merchant is allowed to have free shipping for a specific destination country
-   * and if yes, above what threshold it's allowed
-   */
-  freeShippingPolicy: Maybe<Array<Maybe<FreeShippingPolicy>>>;
   /** Returns a list of groups for this shop, as a Relay-compatible connection. */
   groups: Maybe<GroupConnection>;
   holding: Maybe<Scalars['String']>;
@@ -9181,6 +9168,8 @@ export type Shop = Node & {
   roles: Maybe<RoleConnection>;
   /** Email which the system forwards shippment status changes */
   shipmentEmails: Maybe<Scalars['String']>;
+  /** Defines the shipping rates the merchant shop has to pay for each supported destination country */
+  shippingRates: Maybe<Array<Maybe<MerchantShippingRate>>>;
   /** Returns URLs for shop logos */
   shopLogoUrls: Maybe<ShopLogoUrls>;
   /** Shop's type */
@@ -10573,13 +10562,10 @@ export type UpdateMerchantShopPayload = {
 };
 
 export type UpdateMerchantShopShippingSettingsInput = {
-  /**
-   * Defines whether the merchant is allowed to have free shipping for a specific destination country
-   * and if yes, above what threshold it's allowed
-   */
-  freeShippingPolicies: InputMaybe<Array<InputMaybe<FreeShippingPolicyInput>>>;
   /** Defines whether the merchant shop uses it's own carrier for fulfilling the shipping */
   ownCarrier: InputMaybe<Scalars['Boolean']>;
+  /** Defines the shipping rates the merchant shop has to pay for each supported destination country */
+  shippingRates: InputMaybe<Array<InputMaybe<MerchantShippingRateInput>>>;
   /** Id of the merchant shop */
   shopId: Scalars['ID'];
 };
