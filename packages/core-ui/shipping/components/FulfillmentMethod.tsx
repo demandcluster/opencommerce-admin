@@ -1,6 +1,8 @@
-import { MouseEvent, FC, useEffect, useMemo, useState } from "react";
+import { KeyboardEvent, MouseEvent, FC, useEffect, useMemo, useState } from "react";
 import { Control, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -24,7 +26,7 @@ import useShopId from "platform/hooks/useShopId";
 import useUI from "platform/hooks/useUI";
 import useMenu from "ui/hooks/useMenu";
 import useFlatRateFulfillmentMethod from "../hooks/useFlatRateFulfillmentMethod";
-import { FlatRateFulfillmentMethod, FlatRateFulfillmentRestriction } from "platform/types/gql-types";
+import { FlatRateFulfillmentRestriction } from "platform/types/gql-types";
 import {
   ClickAwayListener,
   FormControl,
@@ -52,6 +54,22 @@ type FlatRateFulfillmentMethodFieldValues = {
   isEnabled: boolean;
   restrictions: { name: string, _id: string }[]
 }
+
+const validationSchema = yup.object({
+  name: yup.string().required(),
+  label: yup.string().required(),
+  cost: yup.string().required(),
+  group: yup.string().required(),
+  handling: yup.string().required(),
+  rate: yup.string().required(),
+  isEnabled: yup.boolean(),
+  restrictions: yup.array().of(
+    yup.object({
+      name: yup.string().required(),
+      _id: yup.string().required()
+    })
+  )
+});
 
 const StyledPopper = styled(Popper)(({ theme }) => ({
   width: 300,
@@ -99,7 +117,7 @@ const RestrictionsAutocomplete: FC<RestrictionsAutocompleteProps> = ({ onClose, 
     onChange: (event, newValue, reason) => {
       if (
         event.type === 'keydown' &&
-        (event as React.KeyboardEvent).key === 'Backspace' &&
+        (event as KeyboardEvent).key === 'Backspace' &&
         reason === 'removeOption'
       ) {
         return;
@@ -208,12 +226,12 @@ const FulfillmentMethodRestrictions: FC<FulfillmentMethodRestrictionsProps> = ({
       _id: field._id,
       name: field.name
     } as FlatRateFulfillmentRestriction));
-    
+
     if (open) {
       handleClose();
       return;
-    };
-    
+    }
+
     setPendingRestrictions(currentRestrictions);
     handleMenuClick(e);
   }
@@ -233,7 +251,7 @@ const FulfillmentMethodRestrictions: FC<FulfillmentMethodRestrictionsProps> = ({
       </Button>
       <List>
         {fields.length ? (
-          fields.map((field, index) => (
+          fields.map((field) => (
             <ListItem
               sx={{
                 backgroundColor: "primary.main",
@@ -279,10 +297,9 @@ const FulfillmentMethodRestrictions: FC<FulfillmentMethodRestrictionsProps> = ({
 
 type FulfillmentMethodProps = {
   id?: string;
-  onFulfillmentMethodUpdate: (fulfillmentMethod: FlatRateFulfillmentMethod) => void
 }
 
-const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethodUpdate }) => {
+const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id }) => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { closeDetailDrawer } = useUI();
@@ -298,11 +315,10 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethod
     createFlatRateFulfillmentMethod,
     createLoading,
     deleteFlatRateFulfillmentMethod,
-    deleteLoading
-  } = useFlatRateFulfillmentMethod({
-    id,
-    fulfillmentMethodUpdateHook: onFulfillmentMethodUpdate
-  });
+    deleteLoading,
+    setRestrictionsOnFulfillmentMethod,
+    updateRestrictionsLoading
+  } = useFlatRateFulfillmentMethod({id});
 
   const fulfillmentMethodFieldValues = useMemo<FlatRateFulfillmentMethodFieldValues>(() => ({
     name: fulfillmentMethod?.name || "",
@@ -322,7 +338,8 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethod
   }), [fulfillmentMethod]);
 
   const { control, handleSubmit, reset, formState: { isDirty } } = useForm<FlatRateFulfillmentMethodFieldValues>({
-    defaultValues: fulfillmentMethodFieldValues
+    defaultValues: fulfillmentMethodFieldValues,
+    resolver: yupResolver(validationSchema)
   });
 
   useEffect(() => {
@@ -331,9 +348,9 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethod
 
   const handleCreate = async (
     {
-      name, cost, handling, rate, group, label, isEnabled
+      name, cost, handling, rate, group, label, isEnabled, restrictions
     }: FlatRateFulfillmentMethodFieldValues) => {
-    await createFlatRateFulfillmentMethod({
+    const {data} = await createFlatRateFulfillmentMethod({
       variables: {
         input: {
           clientMutationId: undefined,
@@ -352,13 +369,24 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethod
         }
       }
     })
+
+    await setRestrictionsOnFulfillmentMethod({
+      variables: {
+        input: {
+          shopId,
+          methodId: data?.createFlatRateFulfillmentMethod.method._id,
+          restrictionIds: restrictions.map(({_id}) => _id)
+        }
+      }
+    });
+
     enqueueSnackbar("Created", { variant: "success" });
     closeDetailDrawer();
   }
 
   const handleUpdate = async (
     {
-      name, cost, handling, rate, group, label, isEnabled
+      name, cost, handling, rate, group, label, isEnabled, restrictions
     }: FlatRateFulfillmentMethodFieldValues) => {
     await updateFlatRateFulfillmentMethod({
       variables: {
@@ -379,10 +407,21 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethod
         }
       }
     })
+
+    await setRestrictionsOnFulfillmentMethod({
+      variables: {
+        input: {
+          shopId,
+          methodId: id,
+          restrictionIds: restrictions.map(({_id}) => _id)
+        }
+      }
+    });
+
     enqueueSnackbar("Updated", { variant: "success" });
   }
 
-  const onSave = async (data: FlatRateFulfillmentMethodFieldValues) => {    
+  const onSave = async (data: FlatRateFulfillmentMethodFieldValues) => {
     if (isNew) return handleCreate(data);
     return handleUpdate(data);
   }
@@ -473,7 +512,7 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethod
             onClick={handleSubmit(onSave)}
             disableElevation
             variant="contained"
-            loading={isNew ? createLoading : updateLoading}
+            loading={isNew ? createLoading || updateRestrictionsLoading : updateLoading || updateRestrictionsLoading}
           >{t("app.saveChanges", "Save")}
           </LoadingButton>
           <Button onClick={closeDetailDrawer}>{t("app.cancel", "Cancel")}</Button>

@@ -103,8 +103,8 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
   } = useFlatRateFulfillmentRestriction({id});
 
   const fulfillmentRestrictionFieldValues = useMemo<FlatRateFulfillmentRestrictionFieldValues>(() => ({
-    name: fulfillmentRestriction?.name,
-    type: fulfillmentRestriction?.type,
+    name: fulfillmentRestriction?.name || "",
+    type: fulfillmentRestriction?.type || "allow",
     itemAttributes: fulfillmentRestriction?.itemAttributes?.map((
       {
         operator,
@@ -217,7 +217,7 @@ const FulfillmentRestriction: FC<FulfillmentRestrictionProps> = ({id}) => {
       variables: {
         input: {
           clientMutationId: undefined,
-          restrictionId: id,
+          restrictionId: id!,
           shopId
         }
       }

@@ -4,7 +4,7 @@ import {useLazyQuery, useMutation} from "@apollo/client";
 import {
   CreateFlatRateFulfillmentMethodInput,
   CreateFlatRateFulfillmentMethodPayload, DeleteFlatRateFulfillmentMethodInput, DeleteFlatRateFulfillmentMethodPayload,
-  FlatRateFulfillmentMethod,
+  FlatRateFulfillmentMethod, SetRestrictionsOnFulfillmentMethodIput, SetRestrictionsOnFulfillmentMethodPayload,
   UpdateFlatRateFulfillmentMethodInput,
   UpdateFlatRateFulfillmentMethodPayload
 } from "platform/types/gql-types";
@@ -14,19 +14,13 @@ import createFlatRateFulfillmentMethodMutation from "../graphql/mutations/create
 import deleteFlatRateFulfillmentMethodMutation from "../graphql/mutations/deleteFlatRateFulfillmentMethod";
 import updateFlatRateFulfillmentMethodMutation from "../graphql/mutations/updateFlatRateFulfillmentMethod";
 import flatRateFulfillmentMethodsQuery from "../graphql/queries/flatRateFulfillmentMethods";
-
-export type FulfillmentMethodUpdateHandler = (fulfillmentMethod: FlatRateFulfillmentMethod) => void;
+import setRestrictionsOnFulfillmentMethodMutation from "../graphql/mutations/setRestrictionsOnFulfillmentMethod";
 
 type FlatRateFulfillmentMethodHookOptions = {
   id?: string;
-  fulfillmentMethodUpdateHook?: FulfillmentMethodUpdateHandler
 }
 
-export default function useFlatRateFulfillmentMethod(
-  {
-    id,
-    fulfillmentMethodUpdateHook
-  }: FlatRateFulfillmentMethodHookOptions) {
+export default function useFlatRateFulfillmentMethod({id}: FlatRateFulfillmentMethodHookOptions) {
 
   const shopId = useShopId();
   const [fulfillmentMethod, setFulfillmentMethod] = useState<FlatRateFulfillmentMethod | undefined>(undefined);
@@ -42,7 +36,6 @@ export default function useFlatRateFulfillmentMethod(
   const [
     updateFlatRateFulfillmentMethod,
     {
-      data: updateData,
       loading: updateLoading
     }
   ] = useMutation<{ updateFlatRateFulfillmentMethod: UpdateFlatRateFulfillmentMethodPayload },
@@ -51,12 +44,11 @@ export default function useFlatRateFulfillmentMethod(
   const [
     createFlatRateFulfillmentMethod,
     {
-      data: createData,
       loading: createLoading
     }
   ] = useMutation<{ createFlatRateFulfillmentMethod: CreateFlatRateFulfillmentMethodPayload },
     { input: Partial<CreateFlatRateFulfillmentMethodInput> }>(createFlatRateFulfillmentMethodMutation, {
-      refetchQueries: [flatRateFulfillmentMethodsQuery]
+    refetchQueries: [flatRateFulfillmentMethodsQuery]
   })
 
   const [
@@ -65,7 +57,18 @@ export default function useFlatRateFulfillmentMethod(
       loading: deleteLoading
     }
   ] = useMutation<{ deleteFlatRateFulfillmentMethod: DeleteFlatRateFulfillmentMethodPayload },
-    { input: Partial<DeleteFlatRateFulfillmentMethodInput>}>(deleteFlatRateFulfillmentMethodMutation, {
+    { input: Partial<DeleteFlatRateFulfillmentMethodInput> }>(deleteFlatRateFulfillmentMethodMutation, {
+    refetchQueries: [flatRateFulfillmentMethodsQuery]
+  })
+
+  const [
+    setRestrictionsOnFulfillmentMethod,
+    {
+      data: updateRestrictionsData,
+      loading: updateRestrictionsLoading
+    }
+  ] = useMutation<{ setRestrictionsOnFulfillmentMethod: SetRestrictionsOnFulfillmentMethodPayload },
+    { input: Partial<SetRestrictionsOnFulfillmentMethodIput> }>(setRestrictionsOnFulfillmentMethodMutation, {
     refetchQueries: [flatRateFulfillmentMethodsQuery]
   })
 
@@ -74,17 +77,10 @@ export default function useFlatRateFulfillmentMethod(
   }, [data, loading]);
 
   useEffect(() => {
-    if (!updateLoading && updateData) {
-      setFulfillmentMethod(updateData.updateFlatRateFulfillmentMethod.method);
-      fulfillmentMethodUpdateHook && fulfillmentMethodUpdateHook(updateData.updateFlatRateFulfillmentMethod.method);
+    if (!updateRestrictionsLoading && updateRestrictionsData) {
+      setFulfillmentMethod(updateRestrictionsData.setRestrictionsOnFulfillmentMethod.method);
     }
-  }, [updateData, updateLoading]);
-
-  useEffect(() => {
-    if (!createLoading && createData) {
-      setFulfillmentMethod(createData.createFlatRateFulfillmentMethod.method);
-    }
-  }, [createLoading, createData]);
+  }, [updateRestrictionsLoading, updateRestrictionsData]);
 
   useEffect(() => {
     if (id) {
@@ -108,6 +104,8 @@ export default function useFlatRateFulfillmentMethod(
     createFlatRateFulfillmentMethod,
     createLoading,
     deleteFlatRateFulfillmentMethod,
-    deleteLoading
+    deleteLoading,
+    setRestrictionsOnFulfillmentMethod,
+    updateRestrictionsLoading
   };
 }

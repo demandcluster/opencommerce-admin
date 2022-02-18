@@ -20,12 +20,6 @@ type FlatRateFulfillmentMethodsResponse = {
   flatRateFulfillmentMethods: FlatRateFulfillmentMethodConnection
 }
 
-const updateFulfillmentMethodInList = (methodList: FlatRateFulfillmentMethod[], method: FlatRateFulfillmentMethod) => {
-  return methodList.map((oldMethod) =>
-    oldMethod._id === method._id ? method : oldMethod
-  )
-}
-
 const FulfillmentMethodsTable: FC = () => {
   const {t} = useTranslation();
   const {openDetailDrawer, isTablet} = useUI();
@@ -67,7 +61,6 @@ const FulfillmentMethodsTable: FC = () => {
     }
   ], []);
 
-  // @ts-ignore
   const handleFetchData: FetchDataHandler<FlatRateFulfillmentMethod> = async ({pageSize, pageIndex}) => {
     await getFlatRateFulfillmentMethods(
       {
@@ -95,21 +88,8 @@ const FulfillmentMethodsTable: FC = () => {
     }
   }, [data, loading]);
 
-
-  const handleFulfillmentMethodUpdate = useCallback(
-    (fulfillmentMethod: FlatRateFulfillmentMethod) => {
-      setFulfillmentMethods((currentFulfillmentMethods) =>
-        updateFulfillmentMethodInList(currentFulfillmentMethods, fulfillmentMethod)
-      );
-    },
-    [fulfillmentMethods]
-  );
-
   const handleOpenDetailDrawer = (methodId?: string) => {
-    openDetailDrawer(<FulfillmentMethod
-      id={methodId}
-      onFulfillmentMethodUpdate={handleFulfillmentMethodUpdate}
-    />);
+    openDetailDrawer(<FulfillmentMethod id={methodId}/>);
   }
 
   const onRowClick = useCallback((row) => {
@@ -153,7 +133,6 @@ const FulfillmentMethodsTable: FC = () => {
         />
         <CardContent>
           <Table
-            // @ts-ignore
             disableFilters={true}
             onRowClick={onRowClick}
             onFetchData={handleFetchData}

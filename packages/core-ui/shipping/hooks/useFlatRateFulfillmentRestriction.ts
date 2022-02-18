@@ -59,8 +59,7 @@ export default function useFlatRateFulfillmentRestriction({id}: FlatRateFulfillm
     {
       loading: deleteLoading
     }
-  ] = useMutation<{ deleteFlatRateFulfillmentRestriction: DeleteFlatRateFulfillmentRestrictionPayload },
-    { input: DeleteFlatRateFulfillmentRestrictionInput }>(deleteFlatRateFulfillmentRestrictionMutation, {
+  ] = useMutation<{ deleteFlatRateFulfillmentRestriction: DeleteFlatRateFulfillmentRestrictionPayload }>(deleteFlatRateFulfillmentRestrictionMutation, {
     refetchQueries: [flatRateFulfillmentRestrictionsQuery]
   })
 
