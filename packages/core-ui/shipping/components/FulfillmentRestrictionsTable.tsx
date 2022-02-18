@@ -18,7 +18,7 @@ import flatRateFulfillmentRestrictionsQuery from "../graphql/queries/flatRateFul
 import FulfillmentRestriction from "./FulfillmentRestriction";
 import RestrictionTypeCell from "./common/RestrictionTypeCell";
 
-type FlatRateFulfillmentRestrictionResponse = {
+export type FlatRateFulfillmentRestrictionResponse = {
   getFlatRateFulfillmentRestrictions: FlatRateFulfillmentRestrictionConnection
 }
 

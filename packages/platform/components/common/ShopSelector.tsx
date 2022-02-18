@@ -1,4 +1,4 @@
-import {ChangeEvent, FC, memo, useMemo, useState} from "react";
+import {ChangeEvent, FC, memo, MouseEvent, useMemo, useState} from "react";
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
 import MenuItem from '@mui/material/MenuItem';
 import Box from "@mui/material/Box";
@@ -46,7 +46,7 @@ const ShopSelector = () => {
   const [filteredShops, setFilteredShops] = useState(viewerShops);
   const {isMobile} = useUI();
 
-  const handleClick = (e) => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     setFilteredShops(viewerShops);
     handleMenuClick(e)
   }
@@ -98,10 +98,10 @@ const ShopSelector = () => {
         <Box display="flex" gap={2} alignItems="center">
           <Box sx={{height: "32px", width: "32px"}}>
             <img src={
-              currentShop.brandAssets?.navbarBrandImage.small || defaultLogo
+              currentShop?.brandAssets?.navbarBrandImage.small || defaultLogo
             } alt="Merchant logo"/>
           </Box>
-          <Typography>{currentShop.name}</Typography>
+          <Typography>{currentShop?.name}</Typography>
         </Box>
       </Button>
       <Menu

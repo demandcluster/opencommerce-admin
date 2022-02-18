@@ -9,10 +9,14 @@ declare module '@mui/material/styles' {
     };
   }
 
+  export interface TypeBackground {
+    lighten: string
+  }
+
   interface ThemeOptions {
     outline?: {
       focus?: string
-    }
+    };
   }
 }
 
@@ -25,7 +29,7 @@ export const themeOptions: ThemeOptions = {
       main: '#f50057',
     },
     background: {
-      default: '#eceff1',
+      default: '#eceff1'
     },
   },
   shape: {
@@ -107,6 +111,14 @@ theme = createTheme(theme, <ThemeOptions>{
   outline: {
     focus: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
   },
+  palette: {
+    background: {
+      lighten: lighten(theme.palette.background.default, 0.7)
+    }
+  }
+})
+
+theme = createTheme(theme, <ThemeOptions>{
   components: {
     MuiTableHead: {
       styleOverrides: {
@@ -133,7 +145,7 @@ theme = createTheme(theme, <ThemeOptions>{
     MuiOutlinedInput: {
       styleOverrides: {
         sizeSmall: {
-          backgroundColor: lighten(theme.palette.background.default, 0.7)
+          backgroundColor: theme.palette.background.lighten
         }
       }
     },
@@ -170,5 +182,4 @@ theme = createTheme(theme, <ThemeOptions>{
     }
   }
 })
-
 export default theme;

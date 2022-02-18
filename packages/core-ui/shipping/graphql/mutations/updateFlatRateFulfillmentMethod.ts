@@ -13,6 +13,10 @@ export default gql`
         name
         rate
         _id
+        restrictions {
+          _id
+          name
+        }
       }
     }
   }

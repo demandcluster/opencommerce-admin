@@ -3371,6 +3371,8 @@ export type FlatRateFulfillmentMethod = Node & {
   name: Scalars['String'];
   /** A fixed price to charge for fulfillment costs when this fulfillment method is selected for an order */
   rate: Scalars['Float'];
+  /** List of flat rate fulfillment restrictions applicable to the fulfillment method */
+  restrictions: Maybe<Array<Maybe<FlatRateFulfillmentRestriction>>>;
   /** The shop to which this fulfillment method belongs */
   shop: Shop;
 };
@@ -4785,6 +4787,7 @@ export type Mutation = {
   setBuckarooCallbackData: Maybe<ReturnValue>;
   /** Set the email address for an anonymous cart */
   setEmailOnAnonymousCart: SetEmailOnAnonymousCartPayload;
+  setRestrictionsOnFulfillmentMethod: SetRestrictionsOnFulfillmentMethodPayload;
   /** Set the shipping address for all fulfillment groups */
   setShippingAddressOnCart: SetShippingAddressOnCartPayload;
   /** Set the commission rates for a merchant shop */
@@ -5496,6 +5499,11 @@ export type MutationSetBuckarooCallbackDataArgs = {
 
 export type MutationSetEmailOnAnonymousCartArgs = {
   input: SetEmailOnAnonymousCartInput;
+};
+
+
+export type MutationSetRestrictionsOnFulfillmentMethodArgs = {
+  input: SetRestrictionsOnFulfillmentMethodIput;
 };
 
 
@@ -8995,6 +9003,25 @@ export type SetEmailOnAnonymousCartPayload = {
   cart: Cart;
   /** The same string you sent with the mutation params, for matching mutation calls with their responses */
   clientMutationId: Maybe<Scalars['String']>;
+};
+
+export type SetRestrictionsOnFulfillmentMethodIput = {
+  /** An optional string identifying the mutation call, which will be returned in the response payload */
+  clientMutationId: InputMaybe<Scalars['String']>;
+  /** The ID of the flat rate fulfillment method you want to delete */
+  methodId: Scalars['ID'];
+  /** A list of ID of flat rate fulfillment method restrictions you want to add to a method */
+  restrictionIds: Array<InputMaybe<Scalars['ID']>>;
+  /** The shop that owns the method */
+  shopId: Scalars['ID'];
+};
+
+export type SetRestrictionsOnFulfillmentMethodPayload = {
+  __typename?: 'SetRestrictionsOnFulfillmentMethodPayload';
+  /** An optional string identifying the mutation call, which will be returned in the response payload */
+  clientMutationId: Maybe<Scalars['String']>;
+  /** The updated fulfillment method */
+  method: FlatRateFulfillmentMethod;
 };
 
 /** Input needed when setting the shipping address on a cart */

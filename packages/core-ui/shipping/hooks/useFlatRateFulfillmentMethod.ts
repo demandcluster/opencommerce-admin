@@ -46,7 +46,7 @@ export default function useFlatRateFulfillmentMethod(
       loading: updateLoading
     }
   ] = useMutation<{ updateFlatRateFulfillmentMethod: UpdateFlatRateFulfillmentMethodPayload },
-    { input: UpdateFlatRateFulfillmentMethodInput }>(updateFlatRateFulfillmentMethodMutation);
+    { input: Partial<UpdateFlatRateFulfillmentMethodInput> }>(updateFlatRateFulfillmentMethodMutation);
 
   const [
     createFlatRateFulfillmentMethod,
@@ -55,7 +55,7 @@ export default function useFlatRateFulfillmentMethod(
       loading: createLoading
     }
   ] = useMutation<{ createFlatRateFulfillmentMethod: CreateFlatRateFulfillmentMethodPayload },
-    { input: CreateFlatRateFulfillmentMethodInput }>(createFlatRateFulfillmentMethodMutation, {
+    { input: Partial<CreateFlatRateFulfillmentMethodInput> }>(createFlatRateFulfillmentMethodMutation, {
       refetchQueries: [flatRateFulfillmentMethodsQuery]
   })
 
@@ -65,7 +65,7 @@ export default function useFlatRateFulfillmentMethod(
       loading: deleteLoading
     }
   ] = useMutation<{ deleteFlatRateFulfillmentMethod: DeleteFlatRateFulfillmentMethodPayload },
-    { input: DeleteFlatRateFulfillmentMethodInput }>(deleteFlatRateFulfillmentMethodMutation, {
+    { input: Partial<DeleteFlatRateFulfillmentMethodInput>}>(deleteFlatRateFulfillmentMethodMutation, {
     refetchQueries: [flatRateFulfillmentMethodsQuery]
   })
 
@@ -76,7 +76,7 @@ export default function useFlatRateFulfillmentMethod(
   useEffect(() => {
     if (!updateLoading && updateData) {
       setFulfillmentMethod(updateData.updateFlatRateFulfillmentMethod.method);
-      fulfillmentMethodUpdateHook(updateData.updateFlatRateFulfillmentMethod.method);
+      fulfillmentMethodUpdateHook && fulfillmentMethodUpdateHook(updateData.updateFlatRateFulfillmentMethod.method);
     }
   }, [updateData, updateLoading]);
 

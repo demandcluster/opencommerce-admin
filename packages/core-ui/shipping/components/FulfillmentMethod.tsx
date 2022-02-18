@@ -1,6 +1,6 @@
-import {FC, useEffect, useMemo, useState} from "react";
-import {useForm} from "react-hook-form";
-import {useTranslation} from "react-i18next";
+import { MouseEvent, FC, useEffect, useMemo, useState } from "react";
+import { Control, useFieldArray, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -8,19 +8,39 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import {useSnackbar} from "notistack";
+import SettingsIcon from '@mui/icons-material/Settings';
+import EditIcon from '@mui/icons-material/Edit';
+import { useSnackbar } from "notistack";
 
 import ControlledTextField from "ui/ControlledTextField";
 import ControlledSwitch from "ui/ControlledSwitch";
 import useShopId from "platform/hooks/useShopId";
 import useUI from "platform/hooks/useUI";
+import useMenu from "ui/hooks/useMenu";
 import useFlatRateFulfillmentMethod from "../hooks/useFlatRateFulfillmentMethod";
-import {FlatRateFulfillmentMethod} from "platform/types/gql-types";
+import { FlatRateFulfillmentMethod, FlatRateFulfillmentRestriction } from "platform/types/gql-types";
+import {
+  ClickAwayListener,
+  FormControl,
+  InputBase,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  Popper,
+  useAutocomplete
+} from "@mui/material";
+import { styled } from '@mui/material/styles';
+import { useQuery } from "@apollo/client";
+import flatRateFulfillmentRestrictionsQuery from "../graphql/queries/flatRateFulfillmentRestrictions";
+import { FlatRateFulfillmentRestrictionResponse } from "./FulfillmentRestrictionsTable";
 
 type FlatRateFulfillmentMethodFieldValues = {
   name: string;
@@ -30,6 +50,231 @@ type FlatRateFulfillmentMethodFieldValues = {
   handling: string;
   rate: string;
   isEnabled: boolean;
+  restrictions: { name: string, _id: string }[]
+}
+
+const StyledPopper = styled(Popper)(({ theme }) => ({
+  width: 300,
+  zIndex: theme.zIndex.modal
+}));
+
+type FulfillmentMethodRestrictionsProps = {
+  control: Control<FlatRateFulfillmentMethodFieldValues>
+};
+
+type RestrictionsAutocompleteProps = {
+  onClose: () => void;
+  value: FlatRateFulfillmentRestriction[],
+  setValue: (value: FlatRateFulfillmentRestriction[]) => void
+}
+
+const RestrictionsAutocomplete: FC<RestrictionsAutocompleteProps> = ({ onClose, value, setValue }) => {
+  const shopId = useShopId();
+  const {
+    data,
+    loading
+  } = useQuery<FlatRateFulfillmentRestrictionResponse>(flatRateFulfillmentRestrictionsQuery, {
+    variables: {
+      shopId,
+      first: 100,
+      offset: 0
+    }
+  });
+
+  const [options, setOptions] = useState<FlatRateFulfillmentRestriction[]>([])
+
+  const {
+    getRootProps,
+    getInputProps,
+    getListboxProps,
+    getOptionProps,
+    groupedOptions
+  } = useAutocomplete({
+    id: "autocomplete-select",
+    options,
+    value,
+    isOptionEqualToValue: (option, value) => option._id === value._id,
+    getOptionLabel: (option) => option.name,
+    multiple: true,
+    onChange: (event, newValue, reason) => {
+      if (
+        event.type === 'keydown' &&
+        (event as React.KeyboardEvent).key === 'Backspace' &&
+        reason === 'removeOption'
+      ) {
+        return;
+      }
+
+      setValue(newValue)
+    },
+    onClose: (_, reason) => {
+      if (reason === 'escape') {
+        onClose();
+      }
+    },
+    open: true,
+    disableCloseOnSelect: true
+  });
+
+  useEffect(() => {
+    if (!loading && data) setOptions(data.getFlatRateFulfillmentRestrictions?.nodes || []);
+  }, [data]);
+
+  return (
+    <Paper
+      elevation={10}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        width: "300px"
+      }}
+      {...getRootProps()}
+    >
+      <FormControl sx={{ pt: 2, px: 1 }}>
+        <InputBase
+          placeholder={"Search for restrictions..."}
+          sx={{
+            backgroundColor: "background.lighten",
+            px: 2,
+            py: 0.5,
+            borderRadius: 0.5
+          }}
+          size="small"
+          inputProps={getInputProps()}
+          autoFocus
+        />
+      </FormControl>
+      <List component="ul" {...getListboxProps()}>
+        {loading ? (
+          <ListItem component="li">
+            <ListItemText
+              primaryTypographyProps={{ color: "text.disabled" }}
+              primary={"Loading..."}
+            />
+          </ListItem>
+        ) : (
+          (groupedOptions as FlatRateFulfillmentRestriction[]).map((option, index) => {
+            const optionProps = getOptionProps({ option, index });
+            const selected = !!optionProps["aria-selected"];
+            return (
+              <ListItemButton
+                component="li"
+                selected={selected}
+                {...optionProps}
+              >
+                <ListItemText
+                  primary={option.name}
+                />
+                {selected && <CloseIcon sx={{ color: "text.secondary" }} fontSize="small" />}
+              </ListItemButton>
+            );
+          })
+        )}
+      </List>
+    </Paper>
+  );
+}
+
+const FulfillmentMethodRestrictions: FC<FulfillmentMethodRestrictionsProps> = ({ control }) => {
+  const { t } = useTranslation();
+  const { open, handleClick: handleMenuClick, handleClose: handleMenuClose, anchorEl } = useMenu();
+
+  const { fields, replace } = useFieldArray({
+    control,
+    name: "restrictions"
+  });
+
+  const [
+    selectedRestrictions,
+    setSelectedRestrictions
+  ] = useState<FlatRateFulfillmentRestriction[]>([]);
+
+  const [
+    pendingRestrictions,
+    setPendingRestrictions
+  ] = useState<FlatRateFulfillmentRestriction[]>([]);
+
+  useEffect(() => {
+    replace(selectedRestrictions.map(({ _id, name }) => ({ _id, name })))
+  }, [selectedRestrictions]);
+
+  const handleClose = () => {
+    setSelectedRestrictions(pendingRestrictions);
+    handleMenuClose();
+  };
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
+    const currentRestrictions = fields.map((field) => ({
+      _id: field._id,
+      name: field.name
+    } as FlatRateFulfillmentRestriction));
+    
+    if (open) {
+      handleClose();
+      return;
+    };
+    
+    setPendingRestrictions(currentRestrictions);
+    handleMenuClick(e);
+  }
+
+  return (
+    <Box display="flex" flexDirection="column">
+      <Button
+        onClick={handleClick}
+        sx={{
+          fontWeight: "normal",
+          color: "text.secondary"
+        }}>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <span>{t("admin.shipping.flatRateFulfillmentMethod.restrictions.label", "Restrictions")}</span>
+          <SettingsIcon fontSize="small" />
+        </Box>
+      </Button>
+      <List>
+        {fields.length ? (
+          fields.map((field, index) => (
+            <ListItem
+              sx={{
+                backgroundColor: "primary.main",
+                color: "common.white",
+                borderRadius: 1,
+                my: 0.5
+              }}
+              key={field.id}
+              secondaryAction={
+                <IconButton edge="end" aria-label="edit" color="inherit">
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              }
+            >
+              <ListItemText primary={field.name} />
+            </ListItem>
+          ))
+        ) : (
+          <ListItem sx={{ py: 0, px: 1 }}>
+            <ListItemText primaryTypographyProps={{ color: "text.disabled" }} primary={"No restrictions"} />
+          </ListItem>
+        )}
+      </List>
+      <StyledPopper
+        id="autocomplete-popper"
+        anchorEl={anchorEl}
+        open={open}
+        placement="bottom-end"
+      >
+        <ClickAwayListener onClickAway={handleClose}>
+          <div>
+            <RestrictionsAutocomplete
+              onClose={handleClose}
+              value={pendingRestrictions}
+              setValue={setPendingRestrictions}
+            />
+          </div>
+        </ClickAwayListener>
+      </StyledPopper>
+    </Box>
+  );
 }
 
 type FulfillmentMethodProps = {
@@ -37,10 +282,10 @@ type FulfillmentMethodProps = {
   onFulfillmentMethodUpdate: (fulfillmentMethod: FlatRateFulfillmentMethod) => void
 }
 
-const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodUpdate}) => {
-  const {t} = useTranslation();
-  const {enqueueSnackbar} = useSnackbar();
-  const {closeDetailDrawer} = useUI();
+const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id, onFulfillmentMethodUpdate }) => {
+  const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
+  const { closeDetailDrawer } = useUI();
   const shopId = useShopId();
   const isNew = useMemo(() => Boolean(!id), [id]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -66,10 +311,17 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
     group: fulfillmentMethod?.group || "",
     handling: fulfillmentMethod?.handling.toString() || "",
     rate: fulfillmentMethod?.rate.toString() || "",
-    isEnabled: fulfillmentMethod?.isEnabled || false
+    isEnabled: fulfillmentMethod?.isEnabled || false,
+    restrictions: fulfillmentMethod?.restrictions?.map(({
+      _id,
+      name
+    }) => ({
+      _id,
+      name
+    })) || []
   }), [fulfillmentMethod]);
 
-  const {control, handleSubmit, reset, formState: {isDirty}} = useForm<FlatRateFulfillmentMethodFieldValues>({
+  const { control, handleSubmit, reset, formState: { isDirty } } = useForm<FlatRateFulfillmentMethodFieldValues>({
     defaultValues: fulfillmentMethodFieldValues
   });
 
@@ -100,7 +352,7 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
         }
       }
     })
-    enqueueSnackbar("Created", {variant: "success"});
+    enqueueSnackbar("Created", { variant: "success" });
     closeDetailDrawer();
   }
 
@@ -122,15 +374,15 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
             group,
             label,
             isEnabled,
-            fulfillmentTypes: fulfillmentMethod.fulfillmentTypes
+            fulfillmentTypes: fulfillmentMethod?.fulfillmentTypes || []
           }
         }
       }
     })
-    enqueueSnackbar("Updated", {variant: "success"});
+    enqueueSnackbar("Updated", { variant: "success" });
   }
 
-  const onSave = async (data: FlatRateFulfillmentMethodFieldValues) => {
+  const onSave = async (data: FlatRateFulfillmentMethodFieldValues) => {    
     if (isNew) return handleCreate(data);
     return handleUpdate(data);
   }
@@ -140,13 +392,13 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
       variables: {
         input: {
           clientMutationId: undefined,
-          methodId: fulfillmentMethod._id,
+          methodId: fulfillmentMethod?._id,
           shopId
         }
       }
     })
 
-    enqueueSnackbar("Deleted", {variant: "success"});
+    enqueueSnackbar("Deleted", { variant: "success" });
     closeDetailDrawer();
   }
 
@@ -160,7 +412,7 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
           </Typography>
           {!isNew && (
             <IconButton onClick={() => setDeleteDialogOpen(true)}>
-              <DeleteIcon/>
+              <DeleteIcon />
             </IconButton>
           )}
         </Box>
@@ -203,6 +455,9 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
               size="small"
               label={t("admin.table.headers.flatRateFulfillmentMethods.rate", "Rate")}
             />
+            <FulfillmentMethodRestrictions
+              control={control}
+            />
             <ControlledSwitch
               control={control}
               name="isEnabled"
@@ -210,7 +465,7 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
             />
           </Box>
         ) : (
-          <CircularProgress/>
+          <CircularProgress />
         )}
         <Box display="flex" gap={2} flex={1} alignItems="end">
           <LoadingButton
@@ -232,7 +487,7 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({id, onFulfillmentMethodU
           <DialogContentText id="alert-dialog-description">
             {t("admin.shipping.flatRateFulfillmentMethod.delete.content",
               "Are you sure you want to delete fulfillment method:"
-            )} <br/>
+            )} <br />
             <strong>{fulfillmentMethod?.name}</strong>
           </DialogContentText>
         </DialogContent>

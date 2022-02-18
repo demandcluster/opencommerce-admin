@@ -12,6 +12,10 @@ export default gql`
       label
       name
       rate
+      restrictions {
+        _id
+        name
+      }
     }
   }
 `
