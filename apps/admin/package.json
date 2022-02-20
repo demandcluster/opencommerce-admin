@@ -6,8 +6,8 @@
     "dev": "NODE_ENV=development vite",
     "build": "NODE_ENV=production vite build",
     "build:dev": "NODE_ENV=development vite build --mode development",
-    "start": "NODE_ENV=production vite preview",
-    "start:dev": "NODE_ENV=development vite preview"
+    "start": "NODE_ENV=production vite preview --host",
+    "start:dev": "NODE_ENV=development vite preview --host"
   },
   "dependencies": {
     "@demandcluster/merchant-ui": "workspace:*",
