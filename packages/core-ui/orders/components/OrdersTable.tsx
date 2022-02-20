@@ -60,7 +60,7 @@ const OrdersTable: FC = () => {
     },
     {
       Header: t("admin.table.headers.payment", "Payment"),
-      accessor: (row) => row.payments[0].status,
+      accessor: (row) => row.payments[0]?.status,
       id: "paymentStatus",
       Cell: ({row}) => (
         <>{t(`admin.table.paymentStatus.${row.values.paymentStatus}`,
@@ -77,7 +77,7 @@ const OrdersTable: FC = () => {
     },
     {
       Header: t("admin.table.headers.customer", "Customer"),
-      accessor: (row) => row.payments[0]?.billingAddress.fullName,
+      accessor: (row) => row.payments[0]?.billingAddress?.fullName,
       id: "customer",
       disableFilters: true
     },
@@ -85,7 +85,7 @@ const OrdersTable: FC = () => {
       Header: () => (
         <Box textAlign="right">{t("admin.table.headers.total", "Total")}</Box>
       ),
-      accessor: (row) => row.summary.total.displayAmount,
+      accessor: (row) => row.summary?.total.displayAmount,
       id: "totalAmount",
       Cell: ({row}) => <OrderTotalCell row={row}/>,
       disableFilters: true
