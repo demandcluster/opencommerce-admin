@@ -1,8 +1,7 @@
 import {FC, useState} from "react";
-import {useLocation, useNavigate, Navigate, Link as RouterLink} from "react-router-dom";
+import {useLocation, useNavigate, Navigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
@@ -10,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {Alert} from "@mui/material";
 import {useForm} from "react-hook-form";
+import {Link as RouterLink} from 'react-router-dom';
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 
@@ -19,7 +19,11 @@ import {ControlledTextField} from "ui";
 
 const validationSchema = yup.object({
   email: yup.string().email().required(),
-  password: yup.string().required()
+  password: yup.string().required(),
+  passwordConfirm: yup.string()
+    .test('passwords-match', 'Passwords must match', function(value){
+      return this.parent.password === value
+    })
 });
 
 function Copyright(props: any) {
@@ -35,8 +39,8 @@ function Copyright(props: any) {
   );
 }
 
-const Login: FC = () => {
-  const {login, isLoggedIn} = useAuth();
+const Signup: FC = () => {
+  const {signup, isLoggedIn} = useAuth();
   const navigate = useNavigate();
   const {state} = useLocation();
   const [error, setError] = useState<Error | null>(null);
@@ -48,7 +52,7 @@ const Login: FC = () => {
   const from = (state as any)?.from?.pathname || '/';
 
   const onSubmit = async ({email, password}: any) => {
-    await login(email, password)
+    await signup(email, password)
       .then(() => navigate(from, {replace: true}))
       .catch(setError);
   };
@@ -73,7 +77,7 @@ const Login: FC = () => {
           <LockOutlinedIcon/>
         </Avatar>
         <Typography component="h1" variant="h5" pb={2}>
-          Sign in
+          Create your account
         </Typography>
         <Box
           component="form"
@@ -87,7 +91,7 @@ const Login: FC = () => {
           <ControlledTextField
             control={control}
             fullWidth
-            label="Email Address"
+            label="Email"
             name="email"
             autoComplete="email"
             type="email"
@@ -101,25 +105,26 @@ const Login: FC = () => {
             type="password"
             autoComplete="current-password"
           />
+          <ControlledTextField
+            control={control}
+            fullWidth
+            name="passwordConfirm"
+            label="Repeat Password"
+            type="password"
+            autoComplete="current-password"
+          />
           <Button
             type="submit"
             fullWidth
             variant="contained"
           >
-            Sign In
+            Sign Up
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link component={RouterLink} to="/signup" variant="body2">
-                Don't have an account? Sign Up
-              </Link>
-            </Grid>
-          </Grid>
+          <Box>
+            <Link component={RouterLink} to="/login" variant="body2">
+              Already have and account? Log in
+            </Link>
+          </Box>
         </Box>
       </Box>
       <Copyright sx={{mt: 8, mb: 4}}/>
@@ -127,4 +132,4 @@ const Login: FC = () => {
   );
 }
 
-export default Login;
+export default Signup;

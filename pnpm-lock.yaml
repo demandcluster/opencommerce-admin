@@ -170,6 +170,7 @@ importers:
       '@emotion/styled': ^11.6.0
       '@graphql-codegen/cli': ^2.4.0
       '@graphql-codegen/typescript': ^2.4.2
+      '@hookform/resolvers': 2.8.8
       '@mui/icons-material': ^5.3.1
       '@mui/lab': ^5.0.0-alpha.67
       '@mui/material': ^5.4.2
@@ -198,6 +199,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       react-helmet-async: ^1.2.2
+      react-hook-form: ^7.25.3
       react-i18next: ^11.15.3
       react-router-dom: ^6.2.1
       react-window: ^1.8.6
@@ -207,6 +209,7 @@ importers:
       typescript: ^4.5.5
       ui: workspace:*
       vite: ^2.7.13
+      yup: 0.32.11
     dependencies:
       '@accounts/apollo-link': 0.32.1_@apollo+client@3.5.8
       '@accounts/client': 0.33.1
@@ -215,6 +218,7 @@ importers:
       '@apollo/client': 3.5.8_graphql@16.3.0+react@17.0.2
       '@emotion/react': 11.7.1_7130fa07c3a1bb7b3330cbeb9c0159ca
       '@emotion/styled': 11.6.0_aad1131320234161e5b30a4e5adebbe0
+      '@hookform/resolvers': 2.8.8_react-hook-form@7.26.1
       '@mui/icons-material': 5.4.1_40fc9198f3297cec148e6ca7b8f715e2
       '@mui/lab': 5.0.0-alpha.68_ddd54e56f446c1a7bdd3004bfdf7f72c
       '@mui/material': 5.4.2_6226f8758b5b21b5515ad844c1caeb22
@@ -228,10 +232,12 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-helmet-async: 1.2.2_react-dom@17.0.2+react@17.0.2
+      react-hook-form: 7.26.1_react@17.0.2
       react-i18next: 11.15.4_3fb644aa30122a07f960d67fa51d6dc1
       react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
       react-window: 1.8.6_react-dom@17.0.2+react@17.0.2
       ui: link:../ui
+      yup: 0.32.11
     devDependencies:
       '@babel/core': 7.17.4
       '@graphql-codegen/cli': 2.5.0_f36e38bd34a49f706e8f2e1cac5eed43

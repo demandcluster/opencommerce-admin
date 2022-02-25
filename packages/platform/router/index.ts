@@ -3,6 +3,13 @@ import {FC} from "react";
 import {OperatorLayout} from "../components/layout";
 import {OperatorRouteProps} from "./OperatorRoute";
 import {IndexRouteProps, LayoutRouteProps, PathRouteProps} from "react-router-dom";
+import {Shop} from "../types/gql-types";
+import { Permission } from "../context/AuthContext";
+
+export type CanRouteProps = {
+  currentShop: Shop | null;
+  viewerHasPermission: (permissions: Permission[]) => boolean
+}
 
 export type GlobalRouteDefinition = {
   Component: FC
@@ -16,7 +23,8 @@ export type OperatorRouteDefinition = {
   navigationLabel?: string | string[],
   NavigationIcon?: FC
   group?: string,
-  href?: string
+  href?: string,
+  canRoute?: (props: CanRouteProps) => boolean
 } & OperatorRouteProps
 & PathRouteProps
 
@@ -57,4 +65,3 @@ export function registerRoutes(definitions: GlobalRouteDefinition[]) {
 
 export {default as OperatorRoute} from "./OperatorRoute";
 export {default as GlobalRoute} from "./GlobalRoute";
-export {default as Authenticated} from "./Authenticated";

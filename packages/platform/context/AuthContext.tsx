@@ -6,9 +6,12 @@ import viewerQuery from "../graphql/queries/viewerQuery";
 import Container from "@mui/material/Container";
 import {Account} from "../types/gql-types";
 
+export type Permission = { shopId: string | null, permission: string }
+
 interface State {
   viewer: Account | null,
   viewerLoading: boolean,
+  viewerHasPermission: (permissions?: Permission[]) => boolean,
   isLoggedIn: boolean,
   login: (email: string, password: string) => Promise<void>,
   signup: (email: string, password: string) => Promise<void>,
@@ -21,8 +24,8 @@ const {passwordClient, accountsClient} = getAccountsClient();
 
 export const AuthProvider: FC = ({children}) => {
   const [userLoading, setUserLoading] = useState(true);
-  const [getViewer, {loading: viewerLoading, data}] = useLazyQuery<{viewer: Account | null} | null>(viewerQuery);
-  const [viewer, setViewer] = useState<Account | null >(null);
+  const [getViewer, {loading: viewerLoading, data}] = useLazyQuery<{ viewer: Account | null } | null>(viewerQuery);
+  const [viewer, setViewer] = useState<Account | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -77,6 +80,27 @@ export const AuthProvider: FC = ({children}) => {
     [getViewer]
   );
 
+  const viewerHasPermission = useCallback(
+    (permissions?: Permission[]): boolean => {
+      if (!permissions) return true;
+
+      if (!viewer) return false;
+
+      return permissions.every(permission => viewer.groups.nodes
+        .some(group => {
+          if (!permission.shopId && !!group.shop) return false;
+          if (!!permission.shopId && !group.shop) return false;
+          if (!permission.shopId && !group.shop) {
+            return group.permissions.includes(permission.permission)
+          }
+          return group.permissions.includes(permission.permission) &&
+            group.shop._id === permission.shopId;
+        }
+      ));
+    },
+    [viewer],
+  );
+
 
   const value = useMemo(
     () => ({
@@ -85,7 +109,8 @@ export const AuthProvider: FC = ({children}) => {
       login,
       logout,
       signup,
-      viewer
+      viewer,
+      viewerHasPermission
     }),
     [isLoggedIn, viewerLoading, login, logout, signup, viewer]
   )
@@ -94,16 +119,16 @@ export const AuthProvider: FC = ({children}) => {
     return (
       <Container sx={{
         width: "100%",
-        height:"100vh",
+        height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
       }}>
-          <img
-            src="/dc-logo-animated.svg"
-            alt="Loading..."
-            width="80px"
-          />
+        <img
+          src="/dc-logo-animated.svg"
+          alt="Loading..."
+          width="80px"
+        />
       </Container>
     )
   }

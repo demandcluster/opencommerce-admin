@@ -4041,14 +4041,48 @@ export type InviteShopMemberPayload = {
   clientMutationId: Maybe<Scalars['String']>;
 };
 
-export type Invoice = {
+export type Invoice = Node & {
   __typename?: 'Invoice';
   _id: Scalars['ID'];
   endDate: Scalars['DateTime'];
   orders: Array<Maybe<InvoiceOrder>>;
+  primaryShop: Shop;
   referenceId: Maybe<Scalars['String']>;
   shop: Shop;
   startDate: Scalars['DateTime'];
+  summary: Maybe<InvoiceSummary>;
+};
+
+/**
+ * Wraps a list of `Invoice`s, providing pagination cursors and information.
+ *
+ * For information about what Relay-compatible connections are and how to use them, see the following articles:
+ * - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
+ * - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
+ * - [Using Relay-style Connections With Apollo Client](https://www.apollographql.com/docs/react/recipes/pagination.html)
+ */
+export type InvoiceConnection = {
+  __typename?: 'InvoiceConnection';
+  /** The list of nodes that match the query, wrapped in an edge to provide a cursor string for each */
+  edges: Maybe<Array<Maybe<InvoiceEdge>>>;
+  /**
+   * You can request the `nodes` directly to avoid the extra wrapping that `NodeEdge` has,
+   * if you know you will not need to paginate the results.
+   */
+  nodes: Maybe<Array<Maybe<Invoice>>>;
+  /** Information to help a client request the next or previous page */
+  pageInfo: PageInfo;
+  /** The total number of nodes that match your query */
+  totalCount: Scalars['Int'];
+};
+
+/** A connection edge in which each node is a `Invoice` object */
+export type InvoiceEdge = NodeEdge & {
+  __typename?: 'InvoiceEdge';
+  /** The cursor that represents this node in the paginated results */
+  cursor: Scalars['ConnectionCursor'];
+  /** The invoice */
+  node: Maybe<Invoice>;
 };
 
 export type InvoiceOrder = {
@@ -4076,6 +4110,12 @@ export enum InvoiceOrderItemStatus {
   Returned = 'returned'
 }
 
+export type InvoiceOrderItemsSummary = {
+  __typename?: 'InvoiceOrderItemsSummary';
+  quantity: Scalars['Int'];
+  totalAmount: Money;
+};
+
 export enum InvoiceOrderStatus {
   Canceled = 'canceled',
   Completed = 'completed',
@@ -4086,6 +4126,41 @@ export enum InvoiceOrderStatus {
 export enum InvoicePeriod {
   Bimonthly = 'bimonthly',
   Monthly = 'monthly'
+}
+
+export type InvoiceShipmentsToCountry = {
+  __typename?: 'InvoiceShipmentsToCountry';
+  country: Scalars['String'];
+  quantity: Scalars['Int'];
+};
+
+export type InvoiceShippingSummary = {
+  __typename?: 'InvoiceShippingSummary';
+  shipmentsToCountries: Maybe<Array<Maybe<InvoiceShipmentsToCountry>>>;
+  totalShippingCost: Money;
+};
+
+export type InvoiceSummary = {
+  __typename?: 'InvoiceSummary';
+  shippingSummary: InvoiceShippingSummary;
+  tax: Money;
+  total: Money;
+  totalCredit: Money;
+  totalCustomerCharges: Money;
+  totalFees: Money;
+  totalNotDelivered: InvoiceOrderItemsSummary;
+  totalOtherCosts: Money;
+  totalReturns: InvoiceOrderItemsSummary;
+  totalRevenue: InvoiceOrderItemsSummary;
+  totalShipped: InvoiceOrderItemsSummary;
+};
+
+/** The fields by which you are allowed to sort any query that returns a `InvoiceConnection` */
+export enum InvoicesSortByField {
+  /** Sort by the invoice ID */
+  Id = '_id',
+  /** Sort by the date and time when the order was placed */
+  CreatedAt = 'createdAt'
 }
 
 export type IssueInvoiceInput = {
@@ -7344,6 +7419,7 @@ export type Query = {
   groups: Maybe<GroupConnection>;
   /** Returns all pending staff member invitations */
   invitations: InvitationConnection;
+  invoices: InvoiceConnection;
   merchant: Maybe<Merchant>;
   /** Get a merchant order by its reference ID (the ID shown to customers) */
   merchantOrderByReferenceId: Maybe<Order>;
@@ -7770,6 +7846,17 @@ export type QueryInvitationsArgs = {
 };
 
 
+export type QueryInvoicesArgs = {
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  before: InputMaybe<Scalars['ConnectionCursor']>;
+  first: InputMaybe<Scalars['ConnectionLimitInt']>;
+  last: InputMaybe<Scalars['ConnectionLimitInt']>;
+  offset: InputMaybe<Scalars['Int']>;
+  sortBy?: InputMaybe<InvoicesSortByField>;
+  sortOrder?: InputMaybe<SortOrder>;
+};
+
+
 export type QueryMerchantArgs = {
   merchantId: Scalars['ID'];
 };
@@ -7798,6 +7885,7 @@ export type QueryMerchantOrdersArgs = {
 export type QueryMerchantShopsArgs = {
   after: InputMaybe<Scalars['ConnectionCursor']>;
   before: InputMaybe<Scalars['ConnectionCursor']>;
+  filters: InputMaybe<ShopFilterInput>;
   first: InputMaybe<Scalars['ConnectionLimitInt']>;
   last: InputMaybe<Scalars['ConnectionLimitInt']>;
   offset: InputMaybe<Scalars['Int']>;
@@ -9115,16 +9203,10 @@ export type Shop = Node & {
   baseUOL: Maybe<Scalars['String']>;
   /** The base unit of Measure */
   baseUOM: Maybe<Scalars['String']>;
-  /** BCC Email for of the merchant */
-  bccEmail: Maybe<Scalars['String']>;
   /** URLs for various shop assets in various sizes */
   brandAssets: Maybe<ShopBrandAssets>;
   /** Commission rates for the merchant shop */
   commission: Maybe<MerchantCommission>;
-  /** Email which the system forwards complaints */
-  complaintEmails: Maybe<Scalars['String']>;
-  /** Email which the system sends credit invoices */
-  creditInvoiceEmail: Maybe<Scalars['String']>;
   /** The default shop currency */
   currency: Currency;
   /** The default navigation tree for this shop */
@@ -9154,20 +9236,14 @@ export type Shop = Node & {
   monthlyDiscount: Maybe<Money>;
   /** Shop name */
   name: Scalars['String'];
-  /** Email which the system forwards new orders */
-  orderEmail: Maybe<Scalars['String']>;
   /** Defines whether the merchant uses it's own carrier for fulfilling the shipping */
   ownCarrier: Maybe<Scalars['Boolean']>;
   /** The package plan for a merchant shop */
   packagePlan: Maybe<PackagePlan>;
-  /** Email which the system forwards product returns */
-  productReturnEmail: Maybe<Scalars['String']>;
   /** Name of the merchant manager */
   relationOwner: Maybe<Scalars['String']>;
   /** Returns a list of roles for this shop, as a Relay-compatible connection. */
   roles: Maybe<RoleConnection>;
-  /** Email which the system forwards shippment status changes */
-  shipmentEmails: Maybe<Scalars['String']>;
   /** Defines the shipping rates the merchant shop has to pay for each supported destination country */
   shippingRates: Maybe<Array<Maybe<MerchantShippingRate>>>;
   /** Returns URLs for shop logos */
@@ -9276,6 +9352,14 @@ export type ShopEdge = NodeEdge & {
   cursor: Scalars['ConnectionCursor'];
   /** The Shop */
   node: Maybe<Shop>;
+};
+
+/** Input type for filters to by applied to an Shops list */
+export type ShopFilterInput = {
+  /** Is shop activate */
+  isActive: InputMaybe<Scalars['Boolean']>;
+  /** Keywords typed by the user in the search input field */
+  searchField: InputMaybe<Scalars['String']>;
 };
 
 /** The shopId input */
@@ -10507,14 +10591,8 @@ export type UpdateMerchantInvoiceSettingsPayload = {
 export type UpdateMerchantShopInput = {
   /** The IBAN of the merchant */
   bankNumber: InputMaybe<Scalars['String']>;
-  /** BCC Email for of the merchant */
-  bccEmail: InputMaybe<Scalars['String']>;
   /** Commission rates for the merchant shop */
   commission: InputMaybe<MerchantCommissionInput>;
-  /** Email which the system forwards complaints */
-  complaintEmails: InputMaybe<Scalars['String']>;
-  /** Email which the system sends credit invoices */
-  creditInvoiceEmail: InputMaybe<Scalars['String']>;
   holding: InputMaybe<Scalars['String']>;
   /** Period at which invoices will be generated for the merchant shop */
   invoicePeriod: InputMaybe<InvoicePeriod>;
@@ -10526,16 +10604,10 @@ export type UpdateMerchantShopInput = {
   merchantShopId: Scalars['ID'];
   /** Discount applied monthly to the invoice */
   monthlyDiscount: InputMaybe<MoneyInput>;
-  /** Email which the system forwards new orders */
-  orderEmail: InputMaybe<Scalars['String']>;
   /** Id of the package plan */
   packagePlanId: InputMaybe<Scalars['String']>;
-  /** Email which the system forwards product returns */
-  productReturnEmail: InputMaybe<Scalars['String']>;
   /** Name of the merchant manager */
   relationOwner: InputMaybe<Scalars['String']>;
-  /** Email which the system forwards shippment status changes */
-  shipmentEmails: InputMaybe<Scalars['String']>;
   /** A unique code issued to the merchant shop registered to pay VAT */
   taxNumber: InputMaybe<Scalars['String']>;
   /** Type of the the merchant */

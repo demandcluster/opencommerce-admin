@@ -14,7 +14,9 @@ import snackbarPosition from "./utils/getSnackbarPosition";
 import './config/i18n';
 import {ShopProvider} from "./context/ShopContext";
 
-const Login = lazy(() => import("./components/auth/Login"))
+const Login = lazy(() => import("./components/auth/Login"));
+const Signup = lazy(() => import("./components/auth/Signup"));
+
 const apolloClient = initApollo();
 
 const App: FC = () => {
@@ -49,6 +51,11 @@ const App: FC = () => {
                       <Route path="login" element={
                         <Suspense fallback={<></>}>
                           <Login/>
+                        </Suspense>
+                      }/>
+                      <Route path="signup" element={
+                        <Suspense fallback={<></>}>
+                          <Signup/>
                         </Suspense>
                       }/>
                     </Routes>

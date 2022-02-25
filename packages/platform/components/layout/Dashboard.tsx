@@ -1,15 +1,15 @@
 import {FC, Suspense} from "react";
 import {Routes, Route} from "react-router-dom";
-import {useTranslation} from "react-i18next";
 import Box from '@mui/material/Box';
 
 import Sidebar from "./Sidebar";
 import AppBar from "./AppBar";
 import DetailDrawer from "./DetailDrawer";
-import {OperatorRoute, operatorRoutesDefinitions} from "../../router";
+import {OperatorRoute} from "../../router";
+import useOperatorRoutes from "../../hooks/useOperatorRoutes";
 
 const Dashboard: FC = () => {
-  const {t} = useTranslation();
+  const operatorRoutesDefinitions = useOperatorRoutes();
 
   return (
     <Box display='flex' overflow="hidden" height="100vh">
