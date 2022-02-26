@@ -5,15 +5,15 @@ import Typography from "@mui/material/Typography";
 import ordersQuery from "../graphql/queries/orders";
 import {useTranslation} from "react-i18next";
 import Table, {FetchDataHandler, MultipleSelectColumnFilter, RowClickHandler, SelectColumnFilter} from "ui/Table";
-import {Column} from "react-table";
+import {CellProps, Column} from "react-table";
 import {useQuery} from "@apollo/client";
 import {useShopId} from "platform/hooks";
 import {Order, OrderConnection, OrderFilterInput} from "platform/types/gql-types";
 import {useNavigate} from "react-router-dom";
-import OrderStatusCell from "./DataTable/OrderStatusCell";
-import OrderDateCell from "./DataTable/OrderDateCell";
+import OrderStatusCell from "./tableCells/OrderStatusCell";
+import OrderDateCell from "./tableCells/OrderDateCell";
 import Box from "@mui/material/Box";
-import OrderTotalCell from "./DataTable/OrderTotalCell";
+import OrderTotalCell from "./tableCells/OrderTotalCell";
 import {defaultPaymentStatusTranslation} from "../helpers/defaultTranslation";
 
 type OrdersQueryVariables = {
@@ -29,21 +29,21 @@ const OrdersTable: FC = () => {
   const shopId = useShopId();
   const {data, loading, refetch} = useQuery<{ orders: OrderConnection }, OrdersQueryVariables>(ordersQuery, {
     variables: {
-      shopIds: [shopId]
+      shopIds: [shopId || ""]
     }
   });
 
   const columns = useMemo<Column<Order>[]>(() => [
     {
-      Header: t("admin.table.headers.id", "Id"),
+      Header: t("admin.table.headers.id", "Id")!,
       accessor: "referenceId",
       disableFilters: true
     },
     {
-      Header: t("admin.table.headers.status", "Status"),
+      Header: t("admin.table.headers.status", "Status")!,
       accessor: (row) => row.status,
       id: "status",
-      Cell: ({row}) => <OrderStatusCell row={row}/>,
+      Cell: ({row}: CellProps<Order, string>) => <OrderStatusCell row={row}/>,
       Filter: SelectColumnFilter,
       filterLabel: t("admin.table.headers.status", "Status"),
       filterOptions: [
@@ -53,21 +53,21 @@ const OrdersTable: FC = () => {
       ]
     },
     {
-      Header: t("admin.table.headers.date", "Date"),
+      Header: t("admin.table.headers.date", "Date")!,
       accessor: "createdAt",
       Cell: ({row}) => <OrderDateCell row={row}/>,
       disableFilters: true
     },
     {
-      Header: t("admin.table.headers.payment", "Payment"),
+      Header: t("admin.table.headers.payment", "Payment")!,
       accessor: (row) => row.payments[0]?.status,
       id: "paymentStatus",
-      Cell: ({row}) => (
+      Cell: ({row}: CellProps<Order, string>) => (
         <>{t(`admin.table.paymentStatus.${row.values.paymentStatus}`,
           defaultPaymentStatusTranslation(row.values.paymentStatus))}</>
       ),
       Filter: MultipleSelectColumnFilter,
-      filterLabel: t("admin.table.headers.payment", "Payment"),
+      filterLabel: t("admin.table.headers.payment", "Payment")!,
       filterOptions: [
         {label: t("admin.table.paymentStatus.completed", "Completed"), value: "completed"},
         {label: t("admin.table.paymentStatus.created", "Created"), value: "created"},
@@ -76,7 +76,7 @@ const OrdersTable: FC = () => {
       ]
     },
     {
-      Header: t("admin.table.headers.customer", "Customer"),
+      Header: t("admin.table.headers.customer", "Customer")!,
       accessor: (row) => row.payments[0]?.billingAddress?.fullName,
       id: "customer",
       disableFilters: true
@@ -87,17 +87,18 @@ const OrdersTable: FC = () => {
       ),
       accessor: (row) => row.summary?.total.displayAmount,
       id: "totalAmount",
-      Cell: ({row}) => <OrderTotalCell row={row}/>,
+      Cell: ({row}: CellProps<Order, string>) => <OrderTotalCell row={row}/>,
       disableFilters: true
     }
   ], [t]);
 
   const handleFetchData: FetchDataHandler<Order> = async ({pageSize, pageIndex, filters}) => {
     const filtersByKey: Partial<OrderFilterInput> = {}
+    // @ts-ignore
     filters.forEach(filter => filtersByKey[filter.id] = filter.value)
 
     await refetch({
-      shopIds: [shopId],
+      shopIds: [shopId || ""],
       first: pageSize,
       offset: pageIndex * pageSize,
       // @ts-ignore

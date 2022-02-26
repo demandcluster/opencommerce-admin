@@ -57,7 +57,6 @@ const ShopSettingsForm: FC = () => {
   };
 
   return (
-    <Container maxWidth="lg">
       <Card>
         <CardHeader title={t("admin.settings.shop.label", "Shop")}/>
         <CardContent>
@@ -135,14 +134,12 @@ const ShopSettingsForm: FC = () => {
             color="primary"
             variant="contained"
             type="submit"
-            size="large"
             onClick={handleSubmit(onSubmit)}
           >
             {t("app.saveChanges", "Save")}
           </Button>
         </CardActions>
       </Card>
-    </Container>
   );
 }
 

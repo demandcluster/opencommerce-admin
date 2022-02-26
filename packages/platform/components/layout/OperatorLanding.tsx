@@ -1,16 +1,11 @@
 import {FC} from 'react';
-import {Link, Navigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { Helmet } from 'react-helmet-async';
 import Grid from '@mui/material/Grid';
 import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
 
-import {useShopId, useAuth} from "platform/hooks";
-import {Account} from "platform/types/gql-types";
-
 const OperatorLanding: FC = () => {
-  const shopId = useShopId();
-
   return (
     <>
       <Helmet title="Reaction Admin" />

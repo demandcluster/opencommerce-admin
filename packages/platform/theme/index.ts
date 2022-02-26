@@ -1,4 +1,4 @@
-import {alpha, createTheme, lighten, ThemeOptions} from "@mui/material/styles";
+import {alpha, createTheme, lighten, responsiveFontSizes, ThemeOptions} from "@mui/material/styles";
 
 import type {} from '@mui/lab/themeAugmentation';
 
@@ -182,4 +182,7 @@ theme = createTheme(theme, <ThemeOptions>{
     }
   }
 })
+
+theme = responsiveFontSizes(theme);
+
 export default theme;
