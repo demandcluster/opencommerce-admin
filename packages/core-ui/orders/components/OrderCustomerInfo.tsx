@@ -16,7 +16,9 @@ const OrderCustomerInfo: FC = () => {
   if (!order) return null;
 
   const { email, fulfillmentGroups } = order!;
-  const { shippingAddress: { fullName, phone } } = fulfillmentGroups[0].data;
+
+  if (!fulfillmentGroups.length) return null;
+  const { shippingAddress: { fullName, phone } } = fulfillmentGroups[0]?.data;
 
   return (
     <Fade in={true}>

@@ -1,20 +1,29 @@
-import {useQuery} from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import orderByReferenceIdQuery from "../graphql/queries/orderByReferenceId";
-import {Order, QueryOrderByReferenceIdArgs} from "platform/types/gql-types";
-import useShopId from "platform/hooks/useShopId";
-import {useEffect, useState} from "react";
+import merchantOrderByReferenceIdQuery from "../graphql/queries/merchantOrderByReferenceId";
+import { Order, QueryOrderByReferenceIdArgs } from "platform/types/gql-types";
+import { useEffect, useMemo, useState } from "react";
+import { useShop } from "platform/hooks";
 
 type OrderHookOptions = {
   id: string
 }
 
-export default function useOrder({id}: OrderHookOptions) {
-  const shopId = useShopId();
+export default function useOrder({ id }: OrderHookOptions) {
+  const { currentShop } = useShop();
   const [order, setOrder] = useState<Order | undefined>(undefined);
-  const {data, loading} = useQuery<{order: Order}, Partial<QueryOrderByReferenceIdArgs>>(orderByReferenceIdQuery, {
+
+  const query = useMemo(() =>
+    currentShop?.shopType === 'primary' ?
+      orderByReferenceIdQuery :
+      merchantOrderByReferenceIdQuery
+    , [currentShop]
+  );
+
+  const { data, loading } = useQuery<{ order: Order }, Partial<QueryOrderByReferenceIdArgs>>(query, {
     variables: {
       id,
-      shopId
+      shopId: currentShop?._id
     }
   });
 

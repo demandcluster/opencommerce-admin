@@ -31,31 +31,31 @@ const FulfillmentMethodsTable: FC = () => {
 
   const columns = useMemo<Column<FlatRateFulfillmentMethod>[]>(() => [
     {
-      Header: t("admin.table.headers.flatRateFulfillmentName", "Name"),
+      Header: t("admin.table.headers.flatRateFulfillmentName", "Name")!,
       accessor: "name"
     },
     {
-      Header: t("admin.table.headers.flatRateFulfillmentMethods.label", "Label"),
+      Header: t("admin.table.headers.flatRateFulfillmentMethods.label", "Label")!,
       accessor: "label"
     },
     {
-      Header: t("admin.table.headers.flatRateFulfillmentMethods.cost", "Cost"),
+      Header: t("admin.table.headers.flatRateFulfillmentMethods.cost", "Cost")!,
       accessor: "cost"
     },
     {
-      Header: t("admin.table.headers.flatRateFulfillmentMethods.group", "Group"),
+      Header: t("admin.table.headers.flatRateFulfillmentMethods.group", "Group")!,
       accessor: "group"
     },
     {
-      Header: t("admin.table.headers.flatRateFulfillmentMethods.handling", "Handling"),
+      Header: t("admin.table.headers.flatRateFulfillmentMethods.handling", "Handling")!,
       accessor: "handling"
     },
     {
-      Header: t("admin.table.headers.flatRateFulfillmentMethods.rate", "Rate"),
+      Header: t("admin.table.headers.flatRateFulfillmentMethods.rate", "Rate")!,
       accessor: "rate"
     },
     {
-      Header: t("admin.table.headers.flatRateFulfillmentMethods.isEnabled", "Enabled"),
+      Header: t("admin.table.headers.flatRateFulfillmentMethods.isEnabled", "Enabled")!,
       accessor: "isEnabled",
       Cell: ({cell}) => <EnabledCell cell={cell}/>
     }

@@ -1,17 +1,34 @@
-import React, {FC} from 'react';
+import { FC, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 import {
-  Box
+  Box,
+  Typography
 } from "@mui/material";
 
 import OrderFulfillmentGroups from "./OrderFulfillmentGroups";
 import OrderHeader from "./OrderHeader";
 import OrderCustomerInfo from "./OrderCustomerInfo";
 import OrderSummary from "./OrderSummary";
+import useOrder from '../hooks/useOrder';
 
 const Order: FC = () => {
+  const { t } = useTranslation();
+  const { orderId } = useParams();
+  const { order, loading } = useOrder({ id: orderId || "" });
+
+  const isOrderEmpty = useMemo(() => !loading && order && order?.fulfillmentGroups?.length === 0, [loading, order]);
+
+  if (isOrderEmpty) {
+    return <Typography variant="h5" mt={6}>
+      {t("order.empty", "This order doesn't contain fulfillment groups related to the current shop.")}
+    </Typography>
+  }
+
   return (
     <Box mb={4}>
-      <OrderHeader/>
+      <OrderHeader />
+
       <Box
         display="grid"
         rowGap={2}
@@ -25,10 +42,10 @@ const Order: FC = () => {
           `
         }}
       >
-        <Box gridArea={{lg: "main"}} component={OrderFulfillmentGroups}/>
-        <Box gridArea={{lg: "side"}} display="flex" flexDirection="column" gap={2}>
-          <OrderCustomerInfo/>
-          <OrderSummary/>
+        <Box gridArea={{ lg: "main" }} component={OrderFulfillmentGroups} />
+        <Box gridArea={{ lg: "side" }} display="flex" flexDirection="column" gap={2}>
+          <OrderCustomerInfo />
+          <OrderSummary />
         </Box>
       </Box>
     </Box>

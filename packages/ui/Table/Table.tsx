@@ -1,4 +1,13 @@
-import {MouseEvent, ChangeEventHandler, ReactNode, useMemo, useState, useEffect} from "react";
+import {
+  MouseEvent,
+  ChangeEventHandler,
+  ReactNode,
+  useMemo,
+  useEffect,
+  forwardRef,
+  ForwardedRef,
+  useImperativeHandle
+} from "react";
 import Box from "@mui/material/Box";
 import MuiTable from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,20 +16,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import ListItemText from "@mui/material/ListItemText";
-import MenuItem from "@mui/material/MenuItem";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Skeleton from "@mui/material/Skeleton";
 import {
   Column,
-  ColumnInstance,
   TableOptions,
   TableState,
-  useFilters, usePagination, useTable} from "react-table";
+  useFilters, usePagination, useTable
+} from "react-table";
+
+import DefaultColumnFilter from "./DefaultColumnFilter";
+
+export interface Resetable {
+  reset: () => void
+}
 
 export type FetchDataHandler<T extends object> = (state: TableState<T>) => Promise<void>
 
@@ -39,95 +47,6 @@ type TableProps<T extends object> = {
   children?: ReactNode;
 } & TableOptions<T>
 
-const DefaultColumnFilter = <T extends object>({column}: { column: ColumnInstance<T> }) => {
-  return (
-    <FormControl>
-      <FormLabel
-        id={`defaultFilter-${column.filterLabel}-label`}
-      >{column.filterLabel}
-      </FormLabel>
-      <OutlinedInput
-        size="small"
-        value={column.filterValue || ''}
-        onChange={e => {
-          column.setFilter(e.target.value || undefined)
-        }}
-      />
-    </FormControl>
-  )
-}
-
-export const MultipleSelectColumnFilter = <T extends object>({column}: { column: ColumnInstance<T> }) => {
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(column.filterValue || []);
-
-  const handleChange = ({target: {value}}: SelectChangeEvent<typeof selectedFilters>) => {
-    const newFilters = typeof value === 'string' ? value.split(',') : value;
-    setSelectedFilters(newFilters);
-    column.setFilter(newFilters.length ? newFilters : undefined);
-  }
-
-  return (
-    <FormControl fullWidth sx={{maxWidth: "200px"}}>
-      <FormLabel
-        id={`filter-selection-${column.filterLabel}-label`}
-      >{column.filterLabel}
-      </FormLabel>
-      <Select
-        multiple
-        size="small"
-        id={`filter-selection-${column.filterLabel}`}
-        labelId={`filter-selection-${column.filterLabel}-label`}
-        value={selectedFilters}
-        onChange={handleChange}
-        renderValue={(selected) => (
-          <span>{selected.join(", ")}</span>
-        )}
-      >
-        {column.filterOptions.map(({label, value}) => (
-          <MenuItem key={value} value={value}>
-            <Checkbox checked={selectedFilters.includes(value)}/>
-            <ListItemText primary={label}/>
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-}
-
-export const SelectColumnFilter = <T extends object>({column}: { column: ColumnInstance<T> }) => {
-  const [selectedFilter, setSelectedFilter] = useState<string | boolean | undefined>(column.filterValue);
-
-  const handleChange = ({target: {value}}: SelectChangeEvent<typeof selectedFilter>) => {
-    setSelectedFilter(value);
-    column.setFilter((value || value === false) ? value : undefined);
-  }
-
-  return (
-    <FormControl sx={{maxWidth: "200px", minWidth: "100px"}}>
-      <FormLabel
-        id={`filter-selection-${column.filterLabel}-label`}
-      >{column.filterLabel}
-      </FormLabel>
-      <Select
-        size="small"
-        id={`filter-selection-${column.filterLabel}`}
-        labelId={`filter-selection-${column.filterLabel}-label`}
-        onChange={handleChange}
-        defaultValue={""}
-      >
-        <MenuItem value={""}>
-          <ListItemText primary={"\u00A0"}/>
-        </MenuItem>
-        {column.filterOptions.map(({label, value}) => (
-          <MenuItem key={value} value={value}>
-            <ListItemText primary={label}/>
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-}
-
 const Table = <T extends object>(
   {
     columns,
@@ -140,7 +59,8 @@ const Table = <T extends object>(
     onRowClick,
     loading,
     ...tableOptions
-  }: TableProps<T>) => {
+  }: TableProps<T>,
+  ref: ForwardedRef<Resetable>) => {
   const defaultColumn: Partial<Column<T>> = useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -154,40 +74,49 @@ const Table = <T extends object>(
     headerGroups,
     prepareRow,
     page,
-    state: {pageSize, pageIndex, filters},
+    state: { pageSize, pageIndex, filters },
     setPageSize,
     gotoPage,
-    allColumns,
+    allColumns
   } = useTable<T>({
-      columns,
-      data,
-      defaultColumn,
-      initialState: {
-        pageIndex: queryPageIndex,
-        pageSize: queryPageSize,
-        hiddenColumns: queryHiddenColumns
-      },
-      manualPagination: true,
-      manualFilters: true,
-      pageCount: Math.ceil(count / queryPageSize),
-      ...tableOptions
+    columns,
+    data,
+    defaultColumn,
+    initialState: {
+      pageIndex: queryPageIndex,
+      pageSize: queryPageSize,
+      hiddenColumns: queryHiddenColumns
     },
+    manualPagination: true,
+    manualFilters: true,
+    pageCount: Math.ceil(count / queryPageSize),
+    ...tableOptions
+  },
     useFilters,
     usePagination
   );
 
+  useImperativeHandle(
+    ref, () => ({
+      reset() {
+        console.log("reseting table");
+        onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters }).then();
+      }
+    })
+  )
+
   useEffect(() => {
-    onFetchData({pageIndex: 0, pageSize, sortBy: [], filters}).then();
+    onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters }).then();
   }, [filters]);
 
   const preloadRows = useMemo(() => Array(pageSize).fill(0)
-      .map((_, key) => (
-        <TableRow key={`preload-empty-${key}`}>
-          <TableCell colSpan={columns.length}>
-            <Skeleton/>
-          </TableCell>
-        </TableRow>
-      ))
+    .map((_, key) => (
+      <TableRow key={`preload-empty-${key}`}>
+        <TableCell colSpan={columns.length}>
+          <Skeleton />
+        </TableCell>
+      </TableRow>
+    ))
     , [pageSize])
 
   const generateFillerRows = () => {
@@ -196,26 +125,26 @@ const Table = <T extends object>(
       .map((_, key) => (
         <TableRow key={`empty-${key}`}>
           {columns.map((column, cellKey) => (
-              <TableCell
-                key={`cell-${key}-${cellKey}`}
-              >
-                {"\u00A0"}
-              </TableCell>
-            )
+            <TableCell
+              key={`cell-${key}-${cellKey}`}
+            >
+              {"\u00A0"}
+            </TableCell>
+          )
           )}
         </TableRow>
       ));
   }
 
   const handlePageChange = async (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    await onFetchData({pageIndex: newPage, pageSize, sortBy: [], filters});
+    await onFetchData({ pageIndex: newPage, pageSize, sortBy: [], filters });
     gotoPage(newPage)
   }
 
   const handleRowsPerPageChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> =
     async (event) => {
       setPageSize(+event.target.value);
-      await onFetchData({pageIndex: 0, pageSize: +event.target.value, sortBy: [], filters});
+      await onFetchData({ pageIndex: 0, pageSize: +event.target.value, sortBy: [], filters });
     };
 
   const handleRowClick = (row: T) => {
@@ -223,11 +152,11 @@ const Table = <T extends object>(
   }
 
   return (
-    <Box sx={{width: '100%'}}>
+    <Box sx={{ width: '100%' }}>
       <Box display="flex" gap={1} px={1} pb={1}>
         {allColumns
           .filter(column => column.canFilter)
-          .map(column => column.render("Filter", {key: `filter-${column.id}`}))}
+          .map(column => column.render("Filter", { key: `filter-${column.id}` }))}
       </Box>
       <TableContainer>
         <MuiTable {...getTableProps()} size="small">
@@ -255,7 +184,7 @@ const Table = <T extends object>(
                     return (
                       <TableRow
                         {...row.getRowProps()}
-                        sx={{cursor: "pointer"}}
+                        sx={{ cursor: "pointer" }}
                         onClick={() => {
                           handleRowClick(row!.original)
                         }}
@@ -290,4 +219,6 @@ const Table = <T extends object>(
   );
 };
 
-export default Table;
+export default forwardRef(Table) as <T extends object>(
+  props: TableProps<T> & { ref?: ForwardedRef<Resetable> }
+) => ReturnType<typeof Table>;;
