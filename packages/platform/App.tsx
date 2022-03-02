@@ -5,7 +5,7 @@ import {ThemeProvider} from '@mui/material/styles';
 import {ApolloProvider} from "@apollo/client";
 
 import {SnackbarProvider} from "notistack";
-import initApollo from "./config/initApollo";
+import {apolloClient} from "./config/graphqlClient";
 import {UIProvider} from "./context/UIContext";
 import {AuthProvider} from "./context/AuthContext";
 import {GlobalRoute, globalRoutesDefinitions} from "./router";
@@ -16,8 +16,6 @@ import {ShopProvider} from "./context/ShopContext";
 
 const Login = lazy(() => import("./components/auth/Login"));
 const Signup = lazy(() => import("./components/auth/Signup"));
-
-const apolloClient = initApollo();
 
 const App: FC = () => {
   return (

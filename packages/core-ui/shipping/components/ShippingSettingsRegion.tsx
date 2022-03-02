@@ -5,7 +5,6 @@ import useBlocksRegions from "platform/hooks/useBlocksRegions";
 
 const ShippingSettingsRegion: FC = () => {
   const regionDefinition = useBlocksRegions({region: "shippingSettings"});
-
   return (
     <Box
       display="flex"

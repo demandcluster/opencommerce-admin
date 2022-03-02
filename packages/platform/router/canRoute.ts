@@ -1,11 +1,13 @@
-import {CanRouteProps, OperatorRouteDefinition} from "./index";
+import { CanRouteProps, OperatorRouteDefinition } from "./index";
 
 export default function canRoute(
-  {canRoute}: OperatorRouteDefinition,
-  {viewerHasPermission, currentShop}: CanRouteProps
+  { canRoute }: OperatorRouteDefinition,
+  { viewerHasPermission, currentShop }: CanRouteProps
 ) {
-  return canRoute && canRoute({
+
+  return canRoute ? canRoute({
     currentShop,
     viewerHasPermission
-  }) || true;
+  }) : true;
+  
 }

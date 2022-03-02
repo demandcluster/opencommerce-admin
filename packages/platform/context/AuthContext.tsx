@@ -1,5 +1,5 @@
 import {createContext, FC, useCallback, useEffect, useMemo, useState} from "react";
-import getAccountsClient from "../config/accountsClient";
+import {accountsClient, accountsPasswordClient} from "../config/graphqlClient";
 import hashPassword from "./utils/hashPassword";
 import {useLazyQuery} from "@apollo/client";
 import viewerQuery from "../graphql/queries/viewerQuery";
@@ -18,9 +18,7 @@ interface State {
   logout: () => Promise<void>
 }
 
-export const AuthContext = createContext<State>({} as State)
-
-const {passwordClient, accountsClient} = getAccountsClient();
+export const AuthContext = createContext<State>({} as State);
 
 export const AuthProvider: FC = ({children}) => {
   const [userLoading, setUserLoading] = useState(true);
@@ -52,7 +50,7 @@ export const AuthProvider: FC = ({children}) => {
   }, [viewer]);
 
   const login = useCallback(async (email: string, password: string) => {
-      await passwordClient.login({
+      await accountsPasswordClient.login({
         user: {email},
         password: hashPassword(password)
       });
@@ -63,7 +61,7 @@ export const AuthProvider: FC = ({children}) => {
   );
 
   const signup = useCallback(async (email: string, password: string) => {
-      await passwordClient.createUser({
+      await accountsPasswordClient.createUser({
         email,
         password: hashPassword(password)
       })

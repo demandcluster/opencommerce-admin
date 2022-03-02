@@ -18,6 +18,17 @@ import { debounce } from "@mui/material/utils";
 
 const defaultLogo = "https://static.demandcluster.com/images/logo.svg";
 
+const sortByShopType = (shops: Shop[]) => {
+  const sortedShops = [...shops];
+  
+  const primaryShopIndex = sortedShops.findIndex(shop => shop.shopType === "primary");
+  const tempShop = sortedShops[0];
+  sortedShops[0] = sortedShops[primaryShopIndex];
+  sortedShops[primaryShopIndex] = tempShop;
+
+  return sortedShops;
+}
+
 type VirtualizedShopListData = {
   shop: Shop,
   changeShopHandler: (shopId: string) => void
@@ -43,16 +54,19 @@ const ShopSelectorRow: FC<ListChildComponentProps<VirtualizedShopListData>> = ({
 const ShopSelector = () => {
   const {currentShop, changeShop, viewerShops} = useShop();
   const {anchorEl, open, handleClose: handleMenuClose, handleClick: handleMenuClick} = useMenu();
-  const [filteredShops, setFilteredShops] = useState(viewerShops);
+  
+  const sortedShops = useMemo(() => sortByShopType(viewerShops), [viewerShops])
+
+  const [filteredShops, setFilteredShops] = useState(sortedShops);
   const {isMobile} = useUI();
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    setFilteredShops(viewerShops);
+    setFilteredShops(sortedShops);
     handleMenuClick(e)
   }
 
   const handleClose = () => {
-    setFilteredShops(viewerShops);
+    setFilteredShops(sortedShops);
     handleMenuClose()
   }
 

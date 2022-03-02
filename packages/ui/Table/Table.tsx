@@ -99,7 +99,6 @@ const Table = <T extends object>(
   useImperativeHandle(
     ref, () => ({
       reset() {
-        console.log("reseting table");
         onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters }).then();
       }
     })

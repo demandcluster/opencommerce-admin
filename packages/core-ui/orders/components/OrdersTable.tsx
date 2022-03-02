@@ -2,6 +2,7 @@ import { useMemo, FC, useState, useEffect, useCallback, useRef } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import Fade from "@mui/material/Fade";
 import ordersQuery from "../graphql/queries/orders";
 import merchantOrdersQuery from "../graphql/queries/merchantOrders";
 import { useTranslation } from "react-i18next";
@@ -107,7 +108,6 @@ const OrdersTable: FC = () => {
 
   const handleFetchData = useCallback<FetchDataHandler<Order>>(
     async ({ pageSize, pageIndex, filters }) => {
-      console.log("fetch data callback being called");
       setLoading(true);
       const filtersByKey: Partial<OrderFilterInput> = {}
       // @ts-ignore
@@ -154,7 +154,8 @@ const OrdersTable: FC = () => {
   const handleRowClick: RowClickHandler<Order> = (row) => navigate(row.referenceId)
 
   return (
-    <Box display="flex" flexDirection="column" gap={3}>
+    <Fade in>
+      <Box display="flex" flexDirection="column" gap={3}>
       <Typography variant="h4">{t("admin.dashboard.ordersTitle", "Orders")}</Typography>
       <Card>
         <CardContent>
@@ -170,6 +171,7 @@ const OrdersTable: FC = () => {
         </CardContent>
       </Card>
     </Box>
+    </Fade>
   );
 }
 

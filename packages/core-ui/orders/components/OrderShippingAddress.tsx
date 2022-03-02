@@ -1,8 +1,8 @@
 import {FC, memo} from "react";
-import {Typography, Box, Link, TypographyClasses} from "@mui/material";
+import {Typography, Box, Link} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import Address from "./common/Address";
 import {OrderFulfillmentGroup} from "platform/types/gql-types";
+import {Address} from "platform/components/common"
 
 type OrderShippingAddressProps = {
   fulfillmentGroup: OrderFulfillmentGroup

@@ -7,11 +7,21 @@ export default gql`
       name
       emails {
         address
+        provides
       }
       slug
       description
       keywords
       allowGuestCheckout
+      addressBook {
+        _id
+        address1
+        city
+        country
+        fullName
+        postal
+        region
+      }
     }
   }
 `

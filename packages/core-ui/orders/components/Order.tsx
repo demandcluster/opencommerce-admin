@@ -2,6 +2,7 @@ import { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import {
+  Alert,
   Box,
   Typography
 } from "@mui/material";
@@ -20,9 +21,11 @@ const Order: FC = () => {
   const isOrderEmpty = useMemo(() => !loading && order && order?.fulfillmentGroups?.length === 0, [loading, order]);
 
   if (isOrderEmpty) {
-    return <Typography variant="h5" mt={6}>
-      {t("order.empty", "This order doesn't contain fulfillment groups related to the current shop.")}
-    </Typography>
+    return (
+      <Alert severity='warning'>
+        {t("order.empty", "This order doesn't contain fulfillment groups related to the current shop.")}
+      </Alert>
+    )
   }
 
   return (

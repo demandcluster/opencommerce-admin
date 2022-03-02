@@ -1,7 +1,6 @@
-import {lazy} from "react";
-import {registerOperatorRoute} from "platform/router";
-import {registerBlock} from "platform/layout";
-import ShopSettingsForm from "./components/ShopSettingsForm";
+import { lazy } from "react";
+import { registerOperatorRoute } from "platform/router";
+import { registerBlock } from "platform/layout";
 
 registerOperatorRoute({
   group: "settings",
@@ -14,5 +13,11 @@ registerOperatorRoute({
 registerBlock({
   region: "shopSettings",
   priority: 10,
-  Component: ShopSettingsForm
+  Component: lazy(() => import("./components/ShopGeneral"))
+})
+
+registerBlock({
+  region: "shopSettings",
+  priority: 15,
+  Component: lazy(() => import("./components/ShopAddress"))
 })

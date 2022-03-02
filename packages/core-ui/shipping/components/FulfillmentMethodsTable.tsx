@@ -6,6 +6,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import AddIcon from '@mui/icons-material/Add';
+import Fade from '@mui/material/Fade';
 
 import {useShopId, useUI} from "platform/hooks";
 import {FlatRateFulfillmentMethod, FlatRateFulfillmentMethodConnection,} from "platform/types/gql-types";
@@ -97,7 +98,7 @@ const FulfillmentMethodsTable: FC = () => {
   }, []);
 
   return (
-    <>
+    <Fade in>
       <Card>
         <CardHeader
           title={t("admin.shipping.flatRateFulfillmentMethodsTitle", "Fulfillment methods")}
@@ -144,7 +145,7 @@ const FulfillmentMethodsTable: FC = () => {
           />
         </CardContent>
       </Card>
-    </>
+    </Fade>
   );
 };
 

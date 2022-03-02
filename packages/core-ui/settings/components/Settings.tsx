@@ -1,11 +1,9 @@
 import {FC} from "react";
 import {Routes, Route, useParams, Navigate, useResolvedPath} from "react-router-dom";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
 import SecondarySidebar from "platform/components/layout/SecondarySidebar"
 import useOperatorRoutes from "platform/hooks/useOperatorRoutes";
-import useUI from "platform/hooks/useUI";
 
 const Settings: FC = () => {
   const routeDefinitions = useOperatorRoutes({groups: ["settings"]});

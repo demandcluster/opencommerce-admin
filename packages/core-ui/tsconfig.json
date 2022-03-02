@@ -2,7 +2,7 @@
   "extends": "tsconfig/base.json",
   "include": [
     "./"
-  ],
+, "../platform/components/common/Address.tsx"  ],
   "exclude": [
     "node_modules"
   ]
