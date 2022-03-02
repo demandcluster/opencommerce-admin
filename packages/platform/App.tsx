@@ -1,32 +1,33 @@
-import {FC, lazy, Suspense} from 'react';
-import {HelmetProvider} from "react-helmet-async";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {ThemeProvider} from '@mui/material/styles';
-import {ApolloProvider} from "@apollo/client";
+import { FC, lazy, Suspense } from 'react';
+import { HelmetProvider } from "react-helmet-async";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from '@mui/material/styles';
 
-import {SnackbarProvider} from "notistack";
-import {apolloClient} from "./config/graphqlClient";
-import {UIProvider} from "./context/UIContext";
-import {AuthProvider} from "./context/AuthContext";
-import {GlobalRoute, globalRoutesDefinitions} from "./router";
+import { SnackbarProvider } from "notistack";
+import { UIProvider } from "./context/UIContext";
+import { AuthProvider } from "./context/AuthContext";
+import { GlobalRoute, globalRoutesDefinitions } from "./router";
 import theme from "./theme";
 import snackbarPosition from "./utils/getSnackbarPosition";
 import './config/i18n';
-import {ShopProvider} from "./context/ShopContext";
+import { ShopProvider } from "./context/ShopContext";
+import { GlobalAlerts } from "./components/common";
+import AuthGraphQLProvider from './context/AuthGraphQLContext';
 
 const Login = lazy(() => import("./components/auth/Login"));
 const Signup = lazy(() => import("./components/auth/Signup"));
 
 const App: FC = () => {
   return (
-    <ApolloProvider client={apolloClient}>
+    <UIProvider>
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <HelmetProvider>
-            <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
-              <AuthProvider>
-                <ShopProvider>
-                  <UIProvider>
+        <AuthGraphQLProvider>
+          <ThemeProvider theme={theme}>
+            <HelmetProvider>
+              <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
+                <AuthProvider>
+                  <ShopProvider>
+                    <GlobalAlerts />
                     <Routes>
                       {globalRoutesDefinitions.map((
                         {
@@ -42,30 +43,29 @@ const App: FC = () => {
                             <GlobalRoute
                               title={title}
                               authenticated={authenticated}
-                              children={<Component/>}
+                              children={<Component />}
                             />
-                          )}/>
+                          )} />
                       ))}
                       <Route path="login" element={
                         <Suspense fallback={<></>}>
-                          <Login/>
+                          <Login />
                         </Suspense>
-                      }/>
+                      } />
                       <Route path="signup" element={
                         <Suspense fallback={<></>}>
-                          <Signup/>
+                          <Signup />
                         </Suspense>
-                      }/>
+                      } />
                     </Routes>
-                  </UIProvider>
-                </ShopProvider>
-              </AuthProvider>
-            </SnackbarProvider>
-          </HelmetProvider>
-        </ThemeProvider>
+                  </ShopProvider>
+                </AuthProvider>
+              </SnackbarProvider>
+            </HelmetProvider>
+          </ThemeProvider>
+        </AuthGraphQLProvider>
       </BrowserRouter>
-    </ApolloProvider>
-
+    </UIProvider>
   );
 }
 
