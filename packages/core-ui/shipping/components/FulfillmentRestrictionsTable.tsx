@@ -2,12 +2,14 @@ import {FC, useCallback, useEffect, useMemo, useState} from "react";
 import {Column} from "react-table";
 import {useTranslation} from "react-i18next";
 import {useLazyQuery} from "@apollo/client";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
+import {Card,
+  Fade,
+  CardContent,
+  CardHeader,
+  Button,
+  Tooltip
+} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 
 import {useShopId, useUI} from "platform/hooks";
 import {
@@ -33,11 +35,11 @@ const FulfillmentRestrictionTable: FC = () => {
 
   const columns = useMemo<Column<FlatRateFulfillmentRestriction>[]>(() => [
     {
-      Header: t("admin.table.headers.name", "Name"),
+      Header: t("admin.table.headers.name", "Name")!,
       accessor: "name"
     },
     {
-      Header: t("admin.table.headers.restrictionType", "Restriction type"),
+      Header: t("admin.table.headers.restrictionType", "Restriction type")!,
       accessor: "type",
       Cell: ({cell}) => <RestrictionTypeCell cell={cell}/>
     },
@@ -80,7 +82,7 @@ const FulfillmentRestrictionTable: FC = () => {
   }, []);
 
   return (
-    <>
+    <Fade in>
       <Card>
         <CardHeader
           title={t("admin.shipping.flatRateFulfillmentRestrictionsTitle", "Fulfillment restrictions")}
@@ -88,7 +90,7 @@ const FulfillmentRestrictionTable: FC = () => {
             isTablet ? (
               <Tooltip
                 disableHoverListener={!isTablet}
-                title={t("admin.dashboard.createFulfillmentRestriction", "New Restriction")}
+                title={t("admin.dashboard.createFulfillmentRestriction", "New Restriction")!}
                 placement="bottom-end"
               >
                 <Button
@@ -128,7 +130,7 @@ const FulfillmentRestrictionTable: FC = () => {
           />
         </CardContent>
       </Card>
-    </>
+    </Fade>
   );
 };
 

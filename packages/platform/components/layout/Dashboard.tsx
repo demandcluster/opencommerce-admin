@@ -12,7 +12,7 @@ const Dashboard: FC = () => {
   const operatorRoutesDefinitions = useOperatorRoutes();
 
   return (
-    <Box display='flex' overflow="hidden" height="100vh">
+    <Box display='flex' overflow="hidden" flex={1}>
       <Sidebar/>
       <Box component="main" display="flex" flexDirection="column" width="100%" overflow="auto">
         <AppBar/>

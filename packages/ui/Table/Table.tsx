@@ -161,7 +161,12 @@ const Table = <T extends object>(
         <MuiTable {...getTableProps()} size="small">
           <TableHead>
             {headerGroups.map(headerGroup => (
-              <TableRow {...headerGroup.getHeaderGroupProps()}>
+              <TableRow
+              sx={{
+                whiteSpace: "nowrap"
+              }}
+              {...headerGroup.getHeaderGroupProps()}
+              >
                 {headerGroup.headers.map(column => (
                   <TableCell {...column.getHeaderProps()}>
                     {column.render('Header')}
@@ -183,7 +188,10 @@ const Table = <T extends object>(
                     return (
                       <TableRow
                         {...row.getRowProps()}
-                        sx={{ cursor: "pointer" }}
+                        sx={{
+                          cursor: "pointer",
+                          whiteSpace: "nowrap"
+                        }}
                         onClick={() => {
                           handleRowClick(row!.original)
                         }}
