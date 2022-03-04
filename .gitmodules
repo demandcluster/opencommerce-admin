@@ -1,3 +1,6 @@
 [submodule "packages/demandcluster-merchant-ui"]
 	path = packages/demandcluster-merchant-ui
 	url = git@github.com:demandcluster/demandcluster-merchant-ui.git
+[submodule "packages/demandcluster-core-ui"]
+	path = packages/demandcluster-core-ui
+	url = git@github.com:demandcluster/demandcluster-core-ui.git

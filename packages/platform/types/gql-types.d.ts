@@ -602,6 +602,41 @@ export type AfterpayPaymentData = {
   items: Array<Maybe<CartItem>>;
 };
 
+/** Inventory info for a specific apikey configuration. For inventory managed by the ApiKey plugin. */
+export type ApiKeyInfo = {
+  __typename?: 'ApiKeyInfo';
+  /** The _id and chosen options this info applies to */
+  _id: Scalars['String'];
+  /** The account this info applies to */
+  account: Maybe<Scalars['String']>;
+  /** The apikey and chosen options this info applies to */
+  apiKey: Maybe<Scalars['String']>;
+  /** The commment this info applies to */
+  comment: Maybe<Scalars['String']>;
+  /** The isEnabled and chosen options this info applies to */
+  isEnabled: Maybe<Scalars['Boolean']>;
+  /** The secret this info applies to */
+  secret: Maybe<Scalars['String']>;
+  /**
+   * The "low quantity" flag will be applied to this apikey configuration when the available quantity
+   * is at or below this threshold
+   */
+  title: Maybe<Scalars['String']>;
+  /** The type and chosen options this info applies to */
+  type: Maybe<Scalars['String']>;
+};
+
+/** The ApiKey result */
+export type ApiKeyResult = {
+  __typename?: 'ApiKeyResult';
+  /** The possible errors of the ExportResult */
+  errors: Maybe<Scalars['String']>;
+  /** The ExportFeed of the ExportResult */
+  nodes: Maybe<Array<Maybe<ApiKeyInfo>>>;
+  /** The totalCount of the ExportResult */
+  totalCount: Maybe<Scalars['Int']>;
+};
+
 /** Defines a surcharge that has been applied to a Cart or Order */
 export type AppliedSurcharge = Node & {
   __typename?: 'AppliedSurcharge';
@@ -642,42 +677,6 @@ export type ApplyDiscountCodeToCartPayload = {
   cart: Cart;
   /** The same string you sent with the mutation params, for matching mutation calls with their responses */
   clientMutationId: Maybe<Scalars['String']>;
-};
-
-/** Input parameters for the `applyForMerchant` mutation */
-export type ApplyForMerchantInput = {
-  /** Legal address at which the merchant is registered at */
-  address: MerchantAddressInput;
-  /** The legal name of the company, that is the merchant */
-  companyName: Scalars['String'];
-  email: Scalars['String'];
-  /** Unique chamber of commerce code */
-  kvk: Scalars['String'];
-  /** Unique chamber of commerce code */
-  vat: Scalars['String'];
-};
-
-/** The response from the `applyForMerchant` mutation */
-export type ApplyForMerchantPayload = {
-  __typename?: 'ApplyForMerchantPayload';
-  /** The merchant which was created with status processing */
-  merchant: Maybe<Merchant>;
-};
-
-export type ApproveMerchantInput = {
-  /** Commission rate for the merchant */
-  commission: Scalars['Int'];
-  /** Id of the merchant that needs to be approved */
-  merchantId: Scalars['ID'];
-  /** ID of the account who manages the merchant */
-  merchantManagerId: Scalars['ID'];
-};
-
-/** The response from the `approveMerchant` mutation */
-export type ApproveMerchantPayload = {
-  __typename?: 'ApproveMerchantPayload';
-  /** The merchant which was approved */
-  merchant: Maybe<Merchant>;
 };
 
 /** Input for the `approveOrderPayments` mutation */
@@ -1896,6 +1895,51 @@ export type Category = {
   name: Maybe<Scalars['String']>;
 };
 
+/** The categories matching types */
+export enum CategoryMatchMappedType {
+  /** Select only the mapped export categories items */
+  Mapped = 'mapped',
+  /** Select only the unmapped export categories items */
+  Unmapped = 'unmapped'
+}
+
+/** The categories matching types */
+export enum CategoryMatchShopType {
+  /** Select only the mapped export categories items */
+  Mapped = 'mapped',
+  /** Select only the unmapped export categories items */
+  Unmapped = 'unmapped',
+  /** Select only the unmapped export categories items that are in the shop */
+  UnmappedInShop = 'unmappedInShop'
+}
+
+/** The CategoryMatch filter */
+export type CategoryMatchfilter = {
+  /** filter the Category */
+  category: InputMaybe<Scalars['String']>;
+  /** export mapped id the Category */
+  exportId: InputMaybe<Scalars['Int']>;
+  /** filter the exportId of the Category */
+  exportTypeFilter: InputMaybe<CategoryMatchMappedType>;
+  /** importId the Category */
+  importId: InputMaybe<Scalars['Int']>;
+  /** filter if the category exists in the shop */
+  shopFilter: InputMaybe<CategoryMatchShopType>;
+};
+
+/** The export result */
+export type CategoryResult = {
+  __typename?: 'CategoryResult';
+  /** The possible errors of the CategoryResult */
+  errors: Maybe<Scalars['String']>;
+  /** The ExportFeed of the CategoryResult */
+  nodes: Maybe<Array<Maybe<ResultCatInfo>>>;
+  /** The pageinfo of the CategoryResult */
+  pageInfo: PageInfo;
+  /** The totalCount of the CategoryResult */
+  totalCount: Maybe<Scalars['Int']>;
+};
+
 /** The channel info */
 export type ChannelInfo = {
   __typename?: 'ChannelInfo';
@@ -1980,6 +2024,44 @@ export type CloneProductsPayload = {
 export type Code = {
   Code: Scalars['Int'];
   Description: InputMaybe<Scalars['String']>;
+};
+
+export type Color = {
+  __typename?: 'Color';
+  /** The name of the color */
+  name: Maybe<Scalars['String']>;
+};
+
+/**
+ * Wraps an array of colors, providing pagination cursors and information.
+ *
+ * For information about what Relay-compatible connections are and how to use them, see the following articles:
+ * - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
+ * - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
+ * - [Using Relay-style Connections With Apollo Client](https://www.apollographql.com/docs/react/recipes/pagination.html)
+ */
+export type ColorConnection = {
+  __typename?: 'ColorConnection';
+  /** The list of nodes that match the query, wrapped in an edge to provide a cursor string for each */
+  edges: Maybe<Array<Maybe<ColorEdge>>>;
+  /**
+   * You can request the `nodes` directly to avoid the extra wrapping that `NodeEdge` has,
+   * if you know you will not need to paginate the results.
+   */
+  nodes: Maybe<Array<Maybe<Color>>>;
+  /** Information to help a client request the next or previous page */
+  pageInfo: PageInfo;
+  /** The total number of nodes that match your query */
+  totalCount: Scalars['Int'];
+};
+
+/** A connection edge in which each node is a String representing a color */
+export type ColorEdge = {
+  __typename?: 'ColorEdge';
+  /** The cursor that represents this node in the paginated results */
+  cursor: Scalars['ConnectionCursor'];
+  /** The Color */
+  node: Maybe<Color>;
 };
 
 export type ComponentGlobalHero = {
@@ -2267,32 +2349,6 @@ export type CreateMediaRecordPayload = {
   clientMutationId: Maybe<Scalars['String']>;
   /** The created MediaRecord */
   mediaRecord: MediaRecord;
-};
-
-/** Input parameters for the `createMerchant` mutation */
-export type CreateMerchantInput = {
-  /** Legal address at which the merchant is registered at */
-  address: MerchantAddressInput;
-  /** Commission rate for the merchant */
-  commission: Scalars['Int'];
-  /** The legal name of the company, that is the merchant */
-  companyName: Scalars['String'];
-  email: Scalars['String'];
-  /** Unique chamber of commerce code */
-  kvk: Scalars['String'];
-  /** ID of the account who manages the merchant */
-  merchantManagerId: InputMaybe<Scalars['ID']>;
-  /** Unique chamber of commerce code */
-  vat: Scalars['String'];
-  /** VAT rate. If not provided will be determined by company's country of origin */
-  vatRate: InputMaybe<Scalars['Float']>;
-};
-
-/** The response from the `createMerchant` mutation */
-export type CreateMerchantPayload = {
-  __typename?: 'CreateMerchantPayload';
-  /** The merchant which was created */
-  merchant: Maybe<Merchant>;
 };
 
 /** Input for the `createNavigationItem` mutation */
@@ -3159,6 +3215,8 @@ export type ExportFeed = {
   /** FeedID of the Channel */
   feedId: Scalars['Int'];
   /** Amount of items found in the feed */
+  inserted: Maybe<Scalars['Int']>;
+  /** Amount of items found in the feed */
   items: Maybe<Scalars['Int']>;
   /** The last modified timestamp of the feed */
   lastrun: Maybe<Scalars['String']>;
@@ -3201,6 +3259,8 @@ export type ExportResult = {
   errors: Maybe<Scalars['String']>;
   /** The ExportFeed of the ExportResult */
   nodes: Maybe<Array<Maybe<ExportFeed>>>;
+  /** The pageinfo of the ExportResult */
+  pageInfo: PageInfo;
   /** The totalCount of the ExportResult */
   totalCount: Maybe<Scalars['Int']>;
 };
@@ -3238,6 +3298,17 @@ export type FeedCounts = {
   status: Maybe<Scalars['Int']>;
   /** The last modified date of the feed counts */
   timestamp: Maybe<Scalars['String']>;
+};
+
+/** The categary shop information */
+export type FeedIdInfo = {
+  __typename?: 'FeedIdInfo';
+  /** The amount products in the import feed */
+  amount: Maybe<Scalars['Int']>;
+  /** The feedid of the import feed */
+  feedId: Maybe<Scalars['Int']>;
+  /** The name of the import feed */
+  name: Maybe<Scalars['String']>;
 };
 
 /** The feed input */
@@ -3621,6 +3692,24 @@ export type GenerateSitemapsPayload = {
   wasJobScheduled: Scalars['Boolean'];
 };
 
+/** Get CatMatch input */
+export type GetCategoryMatch = {
+  /** Return only results that come after this cursor. Use this with first to specify the number of results to return. */
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  /** Return only results that come before this cursor. Use this with last to specify the number of results to return. */
+  before: InputMaybe<Scalars['ConnectionCursor']>;
+  /** filter the CategoryMatch */
+  filter: InputMaybe<CategoryMatchfilter>;
+  /** limit the result min(10) max(100) */
+  first: InputMaybe<Scalars['Int']>;
+  /** The id of the CategoryMatch */
+  id: InputMaybe<Scalars['String']>;
+  /** The page of the resuts */
+  offset: InputMaybe<Scalars['Int']>;
+  /** The type of the ImportFeed */
+  shopId: Scalars['String'];
+};
+
 /** Get ruleindex input */
 export type GetRuleIndex = {
   /** The id of the ImportFeed */
@@ -3758,6 +3847,10 @@ export type I18NLocale = {
 
 /** The channel field input */
 export type IDchannelfield = {
+  /** Return only results that come after this cursor. Use this with first to specify the number of results to return. */
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  /** Return only results that come before this cursor. Use this with last to specify the number of results to return. */
+  before: InputMaybe<Scalars['ConnectionCursor']>;
   /** The channel of the query */
   channel: Feedtype;
   /** The channelId of the query */
@@ -3774,6 +3867,10 @@ export type IDchannelfield = {
 
 /** The channelsearch id input */
 export type IDchannelsearch = {
+  /** Return only results that come after this cursor. Use this with first to specify the number of results to return. */
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  /** Return only results that come before this cursor. Use this with last to specify the number of results to return. */
+  before: InputMaybe<Scalars['ConnectionCursor']>;
   /** ID to update */
   channelId: InputMaybe<Scalars['Int']>;
   /** exportID to update */
@@ -3798,6 +3895,10 @@ export type IDfield = {
 
 /** The field ids */
 export type IDfields = {
+  /** Return only results that come after this cursor. Use this with first to specify the number of results to return. */
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  /** Return only results that come before this cursor. Use this with last to specify the number of results to return. */
+  before: InputMaybe<Scalars['ConnectionCursor']>;
   /** ThefeedId of the mutation */
   feedId: InputMaybe<Scalars['Int']>;
   /** limit the result min(10) max(100) */
@@ -3807,7 +3908,7 @@ export type IDfields = {
   /** The parentid of the mutation */
   parentId: InputMaybe<Scalars['Int']>;
   /** The id of the shop */
-  shopId: Scalars['String'];
+  shopId: InputMaybe<Scalars['String']>;
 };
 
 /** Data needed to process iDEAL payment */
@@ -3889,6 +3990,8 @@ export type ImportFeed = {
   doubles: Maybe<Scalars['Int']>;
   /** ID of the Channel */
   feedId: Scalars['Int'];
+  /** Amount of inserted found in the feed */
+  inserted: Maybe<Scalars['Int']>;
   /** Amount of items found in the feed */
   items: Maybe<Scalars['Int']>;
   /** The last modified timestamp of the feed */
@@ -3907,6 +4010,8 @@ export type ImportFeed = {
   name: Maybe<Scalars['String']>;
   /** The rules count of the export feed */
   rulescount: Maybe<Scalars['Int']>;
+  /** The id of the shop */
+  shopId: Maybe<Scalars['String']>;
   /** The status of the feed */
   status: Maybe<Scalars['String']>;
   /** The seconds the feed took to generate */
@@ -3928,6 +4033,8 @@ export type ImportResult = {
   errors: Maybe<Scalars['String']>;
   /** The ImportFeed of the ExportResult */
   nodes: Maybe<Array<Maybe<ImportFeed>>>;
+  /** The pageinfo of the ImportResult */
+  pageInfo: PageInfo;
   /** The totalCount of the ImportResult */
   totalCount: Maybe<Scalars['Int']>;
 };
@@ -3962,7 +4069,7 @@ export type InputStats = {
   /** page of the results */
   page: InputMaybe<Scalars['Int']>;
   /** The id of the shop */
-  shopId: Scalars['String'];
+  shopId: InputMaybe<Scalars['String']>;
   /** Type of feed */
   type: InputMaybe<StatType>;
 };
@@ -4046,6 +4153,7 @@ export type Invoice = Node & {
   _id: Scalars['ID'];
   endDate: Scalars['DateTime'];
   orders: Array<Maybe<InvoiceOrder>>;
+  ordersSummary: InvoiceOrdersSummary;
   primaryShop: Shop;
   referenceId: Maybe<Scalars['String']>;
   shop: Shop;
@@ -4088,25 +4196,36 @@ export type InvoiceEdge = NodeEdge & {
 export type InvoiceOrder = {
   __typename?: 'InvoiceOrder';
   createdAt: Scalars['DateTime'];
+  destinationCountry: Scalars['String'];
   items: Maybe<Array<Maybe<InvoiceOrderItem>>>;
   referenceId: Scalars['String'];
-  status: Maybe<InvoiceOrderStatus>;
 };
 
 export type InvoiceOrderItem = {
   __typename?: 'InvoiceOrderItem';
+  customerFulfillmentCharges: Money;
+  destinationCountry: Scalars['String'];
+  fee: Money;
+  feeRate: Scalars['Float'];
+  netShippingCost: Money;
   /** The price of the item including tax */
   price: Money;
   /** The quantity of this item that has been added to the cart. This must be a positive integer. Remove this `CartItem` from it's associated cart if you want `0` of this item. */
   quantity: Scalars['Int'];
-  status: Maybe<InvoiceOrderItemStatus>;
-  /** The price of the item multiplied by the quantity of this item ordered */
-  subtotal: Money;
+  status: InvoiceOrderItemStatus;
+  tax: Money;
+  taxRate: Scalars['Float'];
+  taxableAmount: Money;
+  /**
+   * if item is completed: subtotal - (fulfillmentTotal + tax + fee)
+   * if item is returned or not delivered - (fulfillmentTotal + tax + fee)
+   */
+  total: Money;
 };
 
 export enum InvoiceOrderItemStatus {
-  Canceled = 'canceled',
   Completed = 'completed',
+  NotDelivered = 'notDelivered',
   Returned = 'returned'
 }
 
@@ -4116,12 +4235,12 @@ export type InvoiceOrderItemsSummary = {
   totalAmount: Money;
 };
 
-export enum InvoiceOrderStatus {
-  Canceled = 'canceled',
-  Completed = 'completed',
-  NotDelivered = 'notDelivered',
-  Returned = 'returned'
-}
+export type InvoiceOrdersSummary = {
+  __typename?: 'InvoiceOrdersSummary';
+  feesTotal: Money;
+  netShippingCostTotal: Money;
+  total: Money;
+};
 
 export enum InvoicePeriod {
   Bimonthly = 'bimonthly',
@@ -4186,6 +4305,10 @@ export enum IssuingBankBic {
 
 /** The item filter input */
 export type ItemFilter = {
+  /** Return only results that come after this cursor. Use this with first to specify the number of results to return. */
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  /** Return only results that come before this cursor. Use this with last to specify the number of results to return. */
+  before: InputMaybe<Scalars['ConnectionCursor']>;
   /** filter the fields */
   filters: InputMaybe<Array<InputMaybe<FilterFields>>>;
   /** limit the result min(10) max(100) */
@@ -4199,7 +4322,7 @@ export type ItemFilter = {
   /** The search string of the resuts */
   search: InputMaybe<Scalars['String']>;
   /** The id of the shop */
-  shopId: Scalars['String'];
+  shopId: InputMaybe<Scalars['String']>;
   /** Get the full json of the item */
   totalJSON: InputMaybe<Scalars['Boolean']>;
 };
@@ -4213,6 +4336,8 @@ export type ItemResult = {
   errors: Maybe<Scalars['String']>;
   /** The Items of the ItemResult */
   nodes: Maybe<Array<Maybe<Items>>>;
+  /** The pageinfo of the ItemResult */
+  pageInfo: PageInfo;
   /** The totalCount of the ItemResult */
   totalCount: Maybe<Scalars['Int']>;
 };
@@ -4248,6 +4373,8 @@ export type Items = {
   msrp: Maybe<Scalars['String']>;
   /** The price of the item */
   price: Maybe<Scalars['String']>;
+  /** The shopId of the item */
+  shopId: Maybe<Scalars['String']>;
   /** The title of the item */
   title: Maybe<Scalars['String']>;
 };
@@ -4263,6 +4390,17 @@ export type ItemsCategory = {
   errors: Maybe<Scalars['String']>;
   /** The id of the shop */
   shopId: Scalars['String'];
+};
+
+/** The categary shop information */
+export type ItemsShopInfo = {
+  __typename?: 'ItemsShopInfo';
+  /** The amount products in the shop */
+  amount: Maybe<Scalars['Int']>;
+  /** The tagsIds of the shop */
+  tagIds: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** The tags of the shop */
+  tags: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 /** Get json output */
@@ -4379,75 +4517,6 @@ export type MediaRecordMetadataInput = {
   variantId: InputMaybe<Scalars['ID']>;
 };
 
-/** Represents a MOC merchant */
-export type Merchant = Node & {
-  __typename?: 'Merchant';
-  /** The merchant ID */
-  _id: Scalars['ID'];
-  /** Legal address at which the merchant is registered at */
-  address: MerchantAddress;
-  /** Commission rate for the merchant */
-  commission: Maybe<Scalars['Float']>;
-  /** The legal name of the company, that is the merchant */
-  companyName: Scalars['String'];
-  /** The contact email for the company */
-  email: Scalars['String'];
-  /** Period at which invoices will be generated for the merchant */
-  invoicePeriod: InvoicePeriod;
-  /** The starting date of the month for the invoice generation */
-  invoiceStartDate: Scalars['Int'];
-  /** Unique chamber of commerce code */
-  kvk: Scalars['String'];
-  /**
-   * Account of the merchant manager. Could only be an account who is part of
-   * merchants management group
-   */
-  merchantManager: Maybe<Account>;
-  /** The shop assigned to the merchant */
-  shopId: Scalars['String'];
-  /** Current status of the registration of the merchant */
-  status: MerchantStatus;
-  /** A unique code issued to the merchant registered to pay VAT */
-  vat: Scalars['String'];
-  /** VAT rate */
-  vatRate: Scalars['Float'];
-};
-
-export type MerchantAddress = {
-  __typename?: 'MerchantAddress';
-  /** The street address / first line */
-  address1: Scalars['String'];
-  /** Optional second line */
-  address2: Maybe<Scalars['String']>;
-  /** City */
-  city: Scalars['String'];
-  /** Country */
-  country: Scalars['String'];
-  /** Phone number for contact */
-  phone: Scalars['String'];
-  /** Postal code */
-  postal: Scalars['String'];
-  /** Region. For example, a U.S. state */
-  region: Scalars['String'];
-};
-
-export type MerchantAddressInput = {
-  /** The street address / first line */
-  address1: Scalars['String'];
-  /** Optional second line */
-  address2: InputMaybe<Scalars['String']>;
-  /** City */
-  city: Scalars['String'];
-  /** Country */
-  country: Scalars['String'];
-  /** Phone number for contact */
-  phone: Scalars['String'];
-  /** Postal code */
-  postal: Scalars['String'];
-  /** Region. For example, a U.S. state */
-  region: Scalars['String'];
-};
-
 /** Different commission rates for orders with specific status */
 export type MerchantCommission = {
   __typename?: 'MerchantCommission';
@@ -4469,38 +4538,6 @@ export type MerchantCommissionInput = {
   returned: InputMaybe<Scalars['Float']>;
 };
 
-/**
- * Wraps a list of `Merchants`, providing pagination cursors and information.
- *
- * For information about what Relay-compatible connections are and how to use them, see the following articles:
- * - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
- * - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
- * - [Using Relay-style Connections With Apollo Client](https://www.apollographql.com/docs/react/recipes/pagination.html)
- */
-export type MerchantConnection = {
-  __typename?: 'MerchantConnection';
-  /** The list of nodes that match the query, wrapped in an edge to provide a cursor string for each */
-  edges: Maybe<Array<Maybe<MerchantEdge>>>;
-  /**
-   * You can request the `nodes` directly to avoid the extra wrapping that `NodeEdge` has,
-   * if you know you will not need to paginate the results.
-   */
-  nodes: Maybe<Array<Maybe<Merchant>>>;
-  /** Information to help a client request the next or previous page */
-  pageInfo: PageInfo;
-  /** The total number of nodes that match your query */
-  totalCount: Scalars['Int'];
-};
-
-/** A connection edge in which each node is an `Shop` object */
-export type MerchantEdge = NodeEdge & {
-  __typename?: 'MerchantEdge';
-  /** The cursor that represents this node in the paginated results */
-  cursor: Scalars['ConnectionCursor'];
-  /** The Merchant */
-  node: Maybe<Merchant>;
-};
-
 export type MerchantShippingRate = {
   __typename?: 'MerchantShippingRate';
   country: Scalars['String'];
@@ -4511,17 +4548,6 @@ export type MerchantShippingRateInput = {
   country: Scalars['String'];
   rate: Scalars['Float'];
 };
-
-/** Possible statuses for merchant registration */
-export enum MerchantStatus {
-  /**
-   * The merchant is successfuly added to the system and has a shop
-   * assigned to them
-   */
-  Active = 'active',
-  /** The registration form is submitted and awaits confirmation */
-  Processing = 'processing'
-}
 
 /** Input to add a surcharge message with language */
 export type MessagesByLanguageInput = {
@@ -4641,6 +4667,8 @@ export type Mutation = {
   ImportStart: Maybe<ResultUpdate>;
   /** Update an import */
   ImportUpdate: Maybe<ResultUpdate>;
+  /** Remove the categories that are mapped */
+  RemoveCategoryMapping: Maybe<ResultUpdate>;
   /** Remove a rule from an import or export */
   RemoveRule: Maybe<ResultUpdate>;
   /** The json export object */
@@ -4671,14 +4699,6 @@ export type Mutation = {
   addWishlistItems: AddWishlistItemsPayload;
   /** Apply a discount code to a cart */
   applyDiscountCodeToCart: ApplyDiscountCodeToCartPayload;
-  /** Apply for merchant */
-  applyForMerchant: ApplyForMerchantPayload;
-  /**
-   * Approve merchant who submitted merchant application.
-   * When the merchant becomes active, a shop is assigned to them.
-   * If the merchant is already approved, there is no effect of this mutation.
-   */
-  approveMerchant: ApproveMerchantPayload;
   /** Approve one or more payments for an order */
   approveOrderPayments: ApproveOrderPaymentsPayload;
   /** Archive a MediaRecord to hide it without deleting the backing file data */
@@ -4724,8 +4744,6 @@ export type Mutation = {
   createFlatRateFulfillmentRestriction: CreateFlatRateFulfillmentRestrictionPayload;
   /** Create the MediaRecord for file data after you upload it */
   createMediaRecord: CreateMediaRecordPayload;
-  /** Create a new merchant */
-  createMerchant: CreateMerchantPayload;
   /** Create a new navigation item */
   createNavigationItem: Maybe<CreateNavigationItemPayload>;
   /** Create a new navigation tree */
@@ -4834,6 +4852,8 @@ export type Mutation = {
   retryFailedEmail: RetryFailedEmailPayload;
   /** Revoke admin UI access to shops for specific users */
   revokeAdminUIAccess: GrantOrRevokeAdminUiAccessPayload;
+  /** Store the categories that are mapped to each  export feed */
+  saveCategoryMapping: Maybe<ResultUpdate>;
   /** Save an index from an import or export */
   saveIndexRule: Maybe<ResultUpdate>;
   /** Save a rule from an import or export */
@@ -4880,6 +4900,8 @@ export type Mutation = {
   updateAddressValidationRule: UpdateAddressValidationRulePayload;
   /** Update admin UI access to shops for specific users */
   updateAdminUIAccess: UpdateAdminUiAccessPayload;
+  /** Update the ApiKey info for a apikey configuration */
+  updateApiKey: ApiKeyInfo;
   updateBearer: Maybe<UpdateBearerPayload>;
   updateBlog: Maybe<UpdateBlogPayload>;
   updateBlogCategory: Maybe<UpdateBlogCategoryPayload>;
@@ -4910,7 +4932,6 @@ export type Mutation = {
   updateGroupsForAccounts: Maybe<UpdateGroupsForAccountsPayload>;
   /** Update the priority metadata for a MediaRecord. Used for sorting product and variant media in the catalog. */
   updateMediaRecordPriority: UpdateMediaRecordPriorityPayload;
-  updateMerchantInvoiceSettings: UpdateMerchantInvoiceSettingsPayload;
   /**
    * Update all merchant shop properties.
    * Should be used ONLY INTERNALLY as it may cause invariance of the shop
@@ -5015,6 +5036,11 @@ export type MutationImportUpdateArgs = {
 };
 
 
+export type MutationRemoveCategoryMappingArgs = {
+  input: RemoveJsoNcategory;
+};
+
+
 export type MutationRemoveRuleArgs = {
   input: RemoveJson;
 };
@@ -5082,16 +5108,6 @@ export type MutationAddWishlistItemsArgs = {
 
 export type MutationApplyDiscountCodeToCartArgs = {
   input: ApplyDiscountCodeToCartInput;
-};
-
-
-export type MutationApplyForMerchantArgs = {
-  input: ApplyForMerchantInput;
-};
-
-
-export type MutationApproveMerchantArgs = {
-  input: ApproveMerchantInput;
 };
 
 
@@ -5199,11 +5215,6 @@ export type MutationCreateFlatRateFulfillmentRestrictionArgs = {
 
 export type MutationCreateMediaRecordArgs = {
   input: CreateMediaRecordInput;
-};
-
-
-export type MutationCreateMerchantArgs = {
-  input: CreateMerchantInput;
 };
 
 
@@ -5514,6 +5525,11 @@ export type MutationRevokeAdminUiAccessArgs = {
 };
 
 
+export type MutationSaveCategoryMappingArgs = {
+  input: SaveJsoNcategory;
+};
+
+
 export type MutationSaveIndexRuleArgs = {
   input: EditJson;
 };
@@ -5630,6 +5646,11 @@ export type MutationUpdateAdminUiAccessArgs = {
 };
 
 
+export type MutationUpdateApiKeyArgs = {
+  input: UpdateApiKeyInput;
+};
+
+
 export type MutationUpdateBearerArgs = {
   input: InputMaybe<UpdateBearerInput>;
 };
@@ -5693,11 +5714,6 @@ export type MutationUpdateGroupsForAccountsArgs = {
 
 export type MutationUpdateMediaRecordPriorityArgs = {
   input: UpdateMediaRecordPriorityInput;
-};
-
-
-export type MutationUpdateMerchantInvoiceSettingsArgs = {
-  input: UpdateMerchantInvoiceSettingsInput;
 };
 
 
@@ -7100,6 +7116,19 @@ export type ProductPricingInfoCurrencyExchangePricingArgs = {
   currencyCode: Scalars['String'];
 };
 
+/** Get the shopId of a Product */
+export type ProductShopId = {
+  __typename?: 'ProductShopId';
+  /** Id of the product */
+  _id: Scalars['String'];
+  /** Requested productId */
+  externalId: Scalars['String'];
+  /** The id of the shop */
+  shopId: Scalars['String'];
+  /** VariantId of the product */
+  variantId: Scalars['String'];
+};
+
 /** The fields by which you are allowed to sort any query that returns a `ProductConnection` */
 export enum ProductSortByField {
   /** Product ID */
@@ -7329,20 +7358,24 @@ export type Query = {
   CountRules: Maybe<RulesInfo>;
   /** Get export feed */
   ExportFeed: ExportResult;
+  /** Get the current list of Categories that are already mapped */
+  GetCategoryMapping: Maybe<CategoryResult>;
   /** Get channels */
   GetChannels: Maybe<ResultChannelInfo>;
-  /** Get channels category */
+  /** The categorys list of the xml and csv exports You can get the list of categories that you can map on these exports */
   GetChannelsCategory: Maybe<Array<Maybe<Category>>>;
   /** Get process of feed */
   GetFeedProcess: Maybe<Array<Maybe<FeedCounts>>>;
   /** Get items */
   GetItems: Maybe<ItemResult>;
-  /** Get items category */
+  /** Get the full list of the categories items */
   GetItemsCategory: Maybe<Array<Maybe<ItemsCategory>>>;
   /** Get json rules  */
   GetJsonRules: Maybe<JsonRules>;
   /** Get mapping */
   GetMapping: Maybe<Array<Maybe<UserMap>>>;
+  /** Get ProductShopId */
+  GetProductShopId: Maybe<Array<Maybe<ProductShopId>>>;
   /** Get rules */
   GetRules: Maybe<RulesInfo>;
   /** Get statitics from channels */
@@ -7389,6 +7422,8 @@ export type Query = {
   catalogItemProduct: Maybe<CatalogItemProduct>;
   /** Gets items from a shop catalog */
   catalogItems: Maybe<CatalogItemConnection>;
+  /** Gets an array of all colors */
+  colors: Maybe<ColorConnection>;
   /** Returns customer accounts */
   customers: AccountConnection;
   /** Gets discount codes */
@@ -7403,6 +7438,11 @@ export type Query = {
   flatRateFulfillmentMethod: FlatRateFulfillmentMethod;
   /** Get a flat rate fulfillment methods */
   flatRateFulfillmentMethods: FlatRateFulfillmentMethodConnection;
+  /**
+   * Get the ApiKey info for a apikey configuration. Returns `null` if `updateApiKey`
+   * has never been called for this apikey configuration.
+   */
+  getApiKeys: Maybe<ApiKeyResult>;
   /** Get a single flat rate fulfillment method restriction. */
   getFlatRateFulfillmentRestriction: Maybe<FlatRateFulfillmentRestriction>;
   /** Get the full list of flat rate fulfillment method restrictions. */
@@ -7420,13 +7460,11 @@ export type Query = {
   /** Returns all pending staff member invitations */
   invitations: InvitationConnection;
   invoices: InvoiceConnection;
-  merchant: Maybe<Merchant>;
   /** Get a merchant order by its reference ID (the ID shown to customers) */
   merchantOrderByReferenceId: Maybe<Order>;
   /** Get all orders for a single merchant shop providing shop ID and certain orderStatus */
   merchantOrders: OrderConnection;
   merchantShops: Maybe<ShopConnection>;
-  merchants: Maybe<MerchantConnection>;
   /** Returns the navigation items for a shop */
   navigationItemsByShopId: Maybe<NavigationItemConnection>;
   /** Returns a navigation tree by its ID in the specified language */
@@ -7487,6 +7525,8 @@ export type Query = {
   simpleInventory: Maybe<SimpleInventoryInfo>;
   /** Returns Sitemap object for a shop based on the handle param */
   sitemap: Maybe<Sitemap>;
+  /** Gets an array of all sizes */
+  sizes: Maybe<SizeConnection>;
   strapiToken: Maybe<StrapiLogin>;
   /** Get a single surcharge definition by its ID */
   surchargeById: Maybe<Surcharge>;
@@ -7524,6 +7564,11 @@ export type QueryExportFeedArgs = {
 };
 
 
+export type QueryGetCategoryMappingArgs = {
+  input: GetCategoryMatch;
+};
+
+
 export type QueryGetChannelsArgs = {
   input: InputMaybe<IDchannelsearch>;
 };
@@ -7551,6 +7596,11 @@ export type QueryGetItemsCategoryArgs = {
 
 export type QueryGetMappingArgs = {
   input: IDchannelfield;
+};
+
+
+export type QueryGetProductShopIdArgs = {
+  input: InputMaybe<Array<InputMaybe<ExternalItemFilter>>>;
 };
 
 
@@ -7712,13 +7762,31 @@ export type QueryCatalogItemsArgs = {
   after: InputMaybe<Scalars['ConnectionCursor']>;
   before: InputMaybe<Scalars['ConnectionCursor']>;
   booleanFilters: InputMaybe<Array<InputMaybe<CatalogBooleanFilter>>>;
+  colors: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  currencyCode: InputMaybe<Scalars['String']>;
   first: InputMaybe<Scalars['ConnectionLimitInt']>;
   last: InputMaybe<Scalars['ConnectionLimitInt']>;
+  maxPrice: InputMaybe<Scalars['Float']>;
+  minPrice: InputMaybe<Scalars['Float']>;
   offset: InputMaybe<Scalars['Int']>;
   searchQuery: InputMaybe<Scalars['String']>;
   shopIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  sizes: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   sortBy?: InputMaybe<CatalogItemSortByField>;
   sortByPriceCurrencyCode: InputMaybe<Scalars['String']>;
+  sortOrder?: InputMaybe<SortOrder>;
+  tagIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  vendors: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+
+export type QueryColorsArgs = {
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  before: InputMaybe<Scalars['ConnectionCursor']>;
+  first: InputMaybe<Scalars['ConnectionLimitInt']>;
+  last: InputMaybe<Scalars['ConnectionLimitInt']>;
+  offset: InputMaybe<Scalars['Int']>;
+  shopIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
   sortOrder?: InputMaybe<SortOrder>;
   tagIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
@@ -7799,6 +7867,19 @@ export type QueryFlatRateFulfillmentMethodsArgs = {
 };
 
 
+export type QueryGetApiKeysArgs = {
+  account: InputMaybe<Scalars['String']>;
+  comment: InputMaybe<Scalars['String']>;
+  first: InputMaybe<Scalars['ConnectionLimitInt']>;
+  isEnabled: InputMaybe<Scalars['Boolean']>;
+  offset: InputMaybe<Scalars['ConnectionCursor']>;
+  secret: InputMaybe<Scalars['String']>;
+  shopId: Scalars['String'];
+  title: InputMaybe<Scalars['String']>;
+  type: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryGetFlatRateFulfillmentRestrictionArgs = {
   restrictionId: Scalars['ID'];
   shopId: Scalars['ID'];
@@ -7857,11 +7938,6 @@ export type QueryInvoicesArgs = {
 };
 
 
-export type QueryMerchantArgs = {
-  merchantId: Scalars['ID'];
-};
-
-
 export type QueryMerchantOrderByReferenceIdArgs = {
   id: Scalars['ID'];
   shopId: Scalars['ID'];
@@ -7886,17 +7962,6 @@ export type QueryMerchantShopsArgs = {
   after: InputMaybe<Scalars['ConnectionCursor']>;
   before: InputMaybe<Scalars['ConnectionCursor']>;
   filters: InputMaybe<ShopFilterInput>;
-  first: InputMaybe<Scalars['ConnectionLimitInt']>;
-  last: InputMaybe<Scalars['ConnectionLimitInt']>;
-  offset: InputMaybe<Scalars['Int']>;
-  sortBy?: InputMaybe<GroupSortByField>;
-  sortOrder?: InputMaybe<SortOrder>;
-};
-
-
-export type QueryMerchantsArgs = {
-  after: InputMaybe<Scalars['ConnectionCursor']>;
-  before: InputMaybe<Scalars['ConnectionCursor']>;
   first: InputMaybe<Scalars['ConnectionLimitInt']>;
   last: InputMaybe<Scalars['ConnectionLimitInt']>;
   offset: InputMaybe<Scalars['Int']>;
@@ -8163,6 +8228,18 @@ export type QuerySimpleInventoryArgs = {
 export type QuerySitemapArgs = {
   handle: Scalars['String'];
   shopUrl: Scalars['String'];
+};
+
+
+export type QuerySizesArgs = {
+  after: InputMaybe<Scalars['ConnectionCursor']>;
+  before: InputMaybe<Scalars['ConnectionCursor']>;
+  first: InputMaybe<Scalars['ConnectionLimitInt']>;
+  last: InputMaybe<Scalars['ConnectionLimitInt']>;
+  offset: InputMaybe<Scalars['Int']>;
+  shopIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  sortOrder?: InputMaybe<SortOrder>;
+  tagIds: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 
@@ -8497,6 +8574,23 @@ export enum RestrictionTypeEnum {
   Deny = 'deny'
 }
 
+/** The categary Matches */
+export type ResultCatInfo = {
+  __typename?: 'ResultCatInfo';
+  /** The category name of the mapping */
+  cat: Scalars['String'];
+  /** The feedIds they occur in */
+  feedId: Maybe<Array<Maybe<FeedIdInfo>>>;
+  /** The category id of the mapping */
+  id: Maybe<Scalars['String']>;
+  /** The tags categorys that they are mapped to */
+  mapped: Maybe<Scalars['String']>;
+  /** The id of the shop */
+  shopId: Scalars['String'];
+  /** Info about how the category is mapped in the shop */
+  shopInfo: Maybe<ItemsShopInfo>;
+};
+
 /** The result channel info type */
 export type ResultChannelInfo = {
   __typename?: 'ResultChannelInfo';
@@ -8504,6 +8598,8 @@ export type ResultChannelInfo = {
   errors: Maybe<Scalars['String']>;
   /** The node of the Channel Info */
   nodes: Maybe<Array<Maybe<ChannelInfo>>>;
+  /** The pageinfo of the Channel Info */
+  pageInfo: PageInfo;
   /** The totalCount of the Channel Info */
   totalCount: Maybe<Scalars['Int']>;
 };
@@ -8676,6 +8772,22 @@ export type SaveJson = {
   json: InputMaybe<Scalars['String']>;
   /** The name of this input */
   name: InputMaybe<Scalars['String']>;
+  /** The id of the shop */
+  shopId: Scalars['String'];
+};
+
+/** The save json export input */
+export type SaveJsoNcategory = {
+  /** The export Category array it need to be mapped to */
+  category: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** The tag ids it need to be mapped to the shop */
+  categoryTagIds: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** the export FeedID to update */
+  feedId: Scalars['Int'];
+  /** The id of the CategoryMatch */
+  id: InputMaybe<Scalars['String']>;
+  /** The feed category that you want to map */
+  importCategory: InputMaybe<Scalars['String']>;
   /** The id of the shop */
   shopId: Scalars['String'];
 };
@@ -9545,6 +9657,44 @@ export type Sitemap = {
   xml: Scalars['String'];
 };
 
+export type Size = {
+  __typename?: 'Size';
+  /** The name of the size */
+  name: Maybe<Scalars['String']>;
+};
+
+/**
+ * Wraps an array of sizes, providing pagination cursors and information.
+ *
+ * For information about what Relay-compatible connections are and how to use them, see the following articles:
+ * - [Relay Connection Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#connections)
+ * - [Relay Connection Specification](https://facebook.github.io/relay/graphql/connections.htm)
+ * - [Using Relay-style Connections With Apollo Client](https://www.apollographql.com/docs/react/recipes/pagination.html)
+ */
+export type SizeConnection = {
+  __typename?: 'SizeConnection';
+  /** The list of nodes that match the query, wrapped in an edge to provide a cursor string for each */
+  edges: Maybe<Array<Maybe<SizeEdge>>>;
+  /**
+   * You can request the `nodes` directly to avoid the extra wrapping that `NodeEdge` has,
+   * if you know you will not need to paginate the results.
+   */
+  nodes: Maybe<Array<Maybe<Size>>>;
+  /** Information to help a client request the next or previous page */
+  pageInfo: PageInfo;
+  /** The total number of nodes that match your query */
+  totalCount: Scalars['Int'];
+};
+
+/** A connection edge in which each node is a String representing a size */
+export type SizeEdge = {
+  __typename?: 'SizeEdge';
+  /** The cursor that represents this node in the paginated results */
+  cursor: Scalars['ConnectionCursor'];
+  /** The Size */
+  node: Maybe<Size>;
+};
+
 /** Holds metadata specific to a specific social network service */
 export type SocialMetadata = {
   __typename?: 'SocialMetadata';
@@ -9613,7 +9763,7 @@ export type StatsInfo = {
   /** Log Category object */
   category: Maybe<Scalars['String']>;
   /** Import or export feed */
-  channel: Feedtype;
+  channel: Maybe<Feedtype>;
   /** The date of the feed log */
   created: Maybe<Scalars['String']>;
   /** Log Items object */
@@ -9624,10 +9774,12 @@ export type StatsInfo = {
   errorinfo: Maybe<Scalars['String']>;
   /** The error result of the Request */
   errors: Maybe<Scalars['String']>;
-  /** The Items of the feed log */
+  /** The inserted items of the feed log */
+  inserted: Maybe<Scalars['Int']>;
+  /** The items of the feed log */
   items: Maybe<Scalars['Int']>;
   /** The id of the feed log */
-  logId: Scalars['Int'];
+  logId: Maybe<Scalars['Int']>;
   /** How log it took to process the feed */
   timetook: Maybe<Scalars['Float']>;
   /** The Type of the stats error, stats or mappingStats */
@@ -10393,6 +10545,28 @@ export type UpdateAdminUiAccessPayload = {
   clientMutationId: Maybe<Scalars['String']>;
 };
 
+/** Input for the `updateApiKey` mutation. In addition to `shopId`, at least one field to update is required. */
+export type UpdateApiKeyInput = {
+  /** The _id and chosen options this info applies to */
+  _id: Scalars['String'];
+  /** The account this info applies to */
+  account: InputMaybe<Scalars['String']>;
+  /** The apikey and chosen options this info applies to */
+  apiKey: Scalars['String'];
+  /** The commment this info applies to */
+  comment: InputMaybe<Scalars['String']>;
+  /** The isEnabled and chosen options this info applies to */
+  isEnabled: InputMaybe<Scalars['Boolean']>;
+  /** The secret this info applies to */
+  secret: InputMaybe<Scalars['String']>;
+  /** Shop that owns the apikey */
+  shopId: Scalars['String'];
+  /** The title and chosen options this info applies to */
+  title: InputMaybe<Scalars['String']>;
+  /** The type and chosen options this info applies to */
+  type: Scalars['String'];
+};
+
 /** Input for the `updateCartItem` mutation */
 export type UpdateCartItemInput = {
   /** The cart item ID */
@@ -10571,21 +10745,6 @@ export type UpdateMediaRecordPriorityPayload = {
   clientMutationId: Maybe<Scalars['String']>;
   /** The updated MediaRecord */
   mediaRecord: MediaRecord;
-};
-
-export type UpdateMerchantInvoiceSettingsInput = {
-  /** Period at which invoices will be generated for the merchant */
-  invoicePeriod: InvoicePeriod;
-  /** The starting date of the month for the invoice generation */
-  invoiceStartDate: Scalars['Int'];
-  /** Id of the merchant that needs to be approved */
-  merchantId: Scalars['ID'];
-};
-
-export type UpdateMerchantInvoiceSettingsPayload = {
-  __typename?: 'UpdateMerchantInvoiceSettingsPayload';
-  /** The merchant which was approved */
-  merchant: Maybe<Merchant>;
 };
 
 export type UpdateMerchantShopInput = {
@@ -11289,6 +11448,8 @@ export type UserMapResult = {
   errors: Maybe<Scalars['String']>;
   /** The UserMap of the UserMapResult */
   nodes: Maybe<Array<Maybe<UserMap>>>;
+  /** The pageinfo of the UserMapResult */
+  pageInfo: PageInfo;
   /** The totalCount of the UserMapResult */
   totalCount: Maybe<Scalars['Int']>;
 };
@@ -11905,12 +12066,36 @@ export type EditServicePageInput = {
   updated_by: InputMaybe<Scalars['ID']>;
 };
 
+/** The item filter input */
+export type ExternalItemFilter = {
+  /** The external item ean */
+  ean: InputMaybe<Scalars['String']>;
+  /** The external item id */
+  id: Scalars['String'];
+  /** The external item sku */
+  sku: InputMaybe<Scalars['String']>;
+};
+
 /** The group by field input */
 export type GroupByField = {
   /** FeedID to update */
   feedId: Scalars['Int'];
   /** Update groupby string */
   groupby: Scalars['String'];
+};
+
+/** The save json export input */
+export type RemoveJsoNcategory = {
+  /** The feed category that you want to map */
+  cat: InputMaybe<Scalars['String']>;
+  /** The Category array it need to be mapped to */
+  category: InputMaybe<Scalars['String']>;
+  /** the export FeedID to update */
+  feedId: Scalars['Int'];
+  /** The id of the CategoryMatch */
+  id: InputMaybe<Scalars['String']>;
+  /** The id of the shop */
+  shopId: Scalars['String'];
 };
 
 export type ReturnValue = {

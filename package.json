@@ -23,8 +23,5 @@
     "npm": ">=7.0.0",
     "node": ">=14.0.0"
   },
-  "packageManager": "pnpm@6.30.0",
-  "dependencies": {
-    "typescript": "^4.5.5"
-  }
+  "packageManager": "pnpm@6.30.0"
 }

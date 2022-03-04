@@ -10,6 +10,7 @@
     "start:dev": "NODE_ENV=development vite preview --host"
   },
   "dependencies": {
+    "@demandcluster/core-ui": "workspace:*",
     "@demandcluster/merchant-ui": "workspace:*",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
