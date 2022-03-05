@@ -106,7 +106,7 @@ const FulfillmentMethodsTable: FC = () => {
             isTablet ? (
               <Tooltip
                 disableHoverListener={!isTablet}
-                title={t("admin.createFulfillmentMethod", "Create Fulfillment Method")}
+                title={t("admin.createFulfillmentMethod", "Create Fulfillment Method")!}
                 placement="bottom-end"
               >
                 <Button

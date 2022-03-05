@@ -8,6 +8,77 @@ import {
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { AlertProps } from "@mui/material";
+import DialogTitle from '@mui/material/DialogTitle';
+import { default as MuiDialog } from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import Button from "@mui/material/Button";
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useState } from "react";
+
+type DialogProps = {
+  title: string,
+  content: string | ReactNode
+  closeTitle?: string
+} & ({
+  onConfirm: () => void | Promise<void>,
+  confirmTitle: string,
+  confirmLoading?: boolean,
+  autocloseOnConfirm?: boolean,
+  confirmColor?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning',
+} | {
+  onConfirm: undefined,
+  confirmTitle: undefined,
+  confirmColor: undefined,
+  confirmLoading: undefined,
+  autoclose: undefined
+})
+
+const Dialog: FC<DialogProps & { onClose: () => void }> = ({
+  title,
+  content,
+  closeTitle = "Cancel",
+  onConfirm,
+  confirmTitle,
+  confirmLoading = false,
+  confirmColor = "error",
+  autocloseOnConfirm = true,
+  onClose
+}) => {
+  const [internalLoading, setInternalLoading] = useState(false);
+  return (
+    <MuiDialog open>
+      <DialogTitle>
+        {title}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {content}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button color="inherit" onClick={onClose}>{closeTitle}</Button>
+        {onConfirm && (
+          <LoadingButton
+            loading={confirmLoading || internalLoading}
+            onClick={async () => {
+              setInternalLoading(true);
+              await onConfirm();
+              setInternalLoading(false);
+              autocloseOnConfirm && onClose();
+            }}
+            disableElevation
+            autoFocus
+            variant="contained"
+            color={confirmColor}>
+            {confirmTitle}
+          </LoadingButton>
+        )}
+      </DialogActions>
+    </MuiDialog>
+  )
+}
 
 export interface State {
   isDetailDrawerOpen: boolean,
@@ -18,6 +89,8 @@ export interface State {
   isPrimarySidebarOpen: boolean,
   detailDrawerContent: ReactNode,
   globalAlerts: AlertProps[],
+  dialog?: DialogProps,
+  openDialog: (props: DialogProps) => void,
   closeDetailDrawer: () => void,
   closePrimarySidebar: () => void,
   openDetailDrawer: (children: ReactNode) => void,
@@ -59,6 +132,13 @@ type Action =
   | {
     type: 'REMOVE_GLOBAL_ALERT'
     payload: number
+  }
+  | {
+    type: 'CLOSE_DIALOG'
+  }
+  | {
+    type: 'OPEN_DIALOG',
+    payload: DialogProps
   }
 
 export const UIContext = createContext<State>({} as State)
@@ -107,6 +187,18 @@ function uiReducer(state: State, action: Action) {
       return {
         ...state,
         globalAlerts: state.globalAlerts.filter((_, index) => index !== action.payload)
+      }
+    }
+    case 'CLOSE_DIALOG': {
+      return {
+        ...state,
+        dialog: undefined
+      }
+    }
+    case 'OPEN_DIALOG': {
+      return {
+        ...state,
+        dialog: action.payload
       }
     }
   }
@@ -158,6 +250,15 @@ export const UIProvider: FC = ({ children }) => {
     [dispatch],
   )
 
+  const openDialog = useCallback(
+    (dialogProps: DialogProps) =>
+      dispatch({ type: 'OPEN_DIALOG', payload: dialogProps })
+    , [dispatch])
+
+  const closeDialog = useCallback(
+    () => dispatch({ type: 'CLOSE_DIALOG' })
+    , [dispatch])
+
   const value = useMemo(
     () => ({
       ...state,
@@ -170,7 +271,9 @@ export const UIProvider: FC = ({ children }) => {
       openDetailDrawer,
       closeDetailDrawer,
       enqueueGlobalAlert,
-      removeGlobalAlert
+      removeGlobalAlert,
+      closeDialog,
+      openDialog
     }),
     [
       isMobile,
@@ -183,13 +286,21 @@ export const UIProvider: FC = ({ children }) => {
       state,
       togglePrimarySidebar,
       enqueueGlobalAlert,
-      removeGlobalAlert
+      removeGlobalAlert,
+      closeDialog,
+      openDialog
     ]
   )
 
   return (
     <UIContext.Provider value={value}>
       {children}
+      {state.dialog && (
+        <Dialog
+          {...state.dialog}
+          onClose={closeDialog}
+        />
+      )}
     </UIContext.Provider>
   )
 }

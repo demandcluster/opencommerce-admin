@@ -302,10 +302,9 @@ type FulfillmentMethodProps = {
 const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id }) => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
-  const { closeDetailDrawer } = useUI();
+  const { closeDetailDrawer, openDialog } = useUI();
   const shopId = useShopId();
   const isNew = useMemo(() => Boolean(!id), [id]);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const {
     fulfillmentMethod,
@@ -441,6 +440,23 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id }) => {
     closeDetailDrawer();
   }
 
+  const openDeleteDialog = () => {
+    openDialog({
+      title: t("admin.shipping.flatRateFulfillmentMethod.delete.title", "Delete fulfillment method")!,
+      content: (
+        <>
+          {t("admin.shipping.flatRateFulfillmentMethod.delete.content",
+              "Are you sure you want to delete fulfillment method:"
+            )} <br />
+            <strong>{fulfillmentMethod?.name}</strong>
+        </>
+      ),
+      confirmTitle: "Agree",
+      onConfirm: handleDelete,
+      confirmLoading: deleteLoading
+    })
+  }
+
   return (
     <>
       <Box display="flex" flexDirection="column" gap={1} height="100%">
@@ -450,7 +466,7 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id }) => {
               (t("admin.shipping.flatRateFulfillmentMethod.new", "New fulfillment method"))}
           </Typography>
           {!isNew && (
-            <IconButton onClick={() => setDeleteDialogOpen(true)}>
+            <IconButton onClick={() => openDeleteDialog()}>
               <DeleteIcon />
             </IconButton>
           )}
@@ -518,31 +534,6 @@ const FulfillmentMethod: FC<FulfillmentMethodProps> = ({ id }) => {
           <Button onClick={closeDetailDrawer}>{t("app.cancel", "Cancel")}</Button>
         </Box>
       </Box>
-      <Dialog open={deleteDialogOpen}>
-        <DialogTitle>
-          {t("admin.shipping.flatRateFulfillmentMethod.delete.title", "Delete fulfillment method")}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {t("admin.shipping.flatRateFulfillmentMethod.delete.content",
-              "Are you sure you want to delete fulfillment method:"
-            )} <br />
-            <strong>{fulfillmentMethod?.name}</strong>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button color="inherit" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-          <LoadingButton
-            loading={deleteLoading}
-            onClick={handleDelete}
-            disableElevation
-            autoFocus
-            variant="contained"
-            color="error">
-            Agree
-          </LoadingButton>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

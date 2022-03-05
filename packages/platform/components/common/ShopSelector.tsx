@@ -1,86 +1,33 @@
-import {ChangeEvent, FC, memo, MouseEvent, useMemo, useState} from "react";
-import {FixedSizeList, ListChildComponentProps} from 'react-window';
-import MenuItem from '@mui/material/MenuItem';
+import {memo, MouseEvent} from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
 import {alpha, Theme} from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import Menu from "@mui/material/Menu";
 
 import {useMenu} from "ui/hooks";
 import useShop from "../../hooks/useShop";
-import {Shop} from "../../types/gql-types";
 import theme from "../../theme";
 import {useUI} from "../../hooks";
-import { debounce } from "@mui/material/utils";
+import ShopSelectorMenu from "./ShopSelectorMenu";
 
 const defaultLogo = "https://static.demandcluster.com/images/logo.svg";
 
-const sortByShopType = (shops: Shop[]) => {
-  const sortedShops = [...shops];
-  
-  const primaryShopIndex = sortedShops.findIndex(shop => shop.shopType === "primary");
-  const tempShop = sortedShops[0];
-  sortedShops[0] = sortedShops[primaryShopIndex];
-  sortedShops[primaryShopIndex] = tempShop;
-
-  return sortedShops;
-}
-
-type VirtualizedShopListData = {
-  shop: Shop,
-  changeShopHandler: (shopId: string) => void
-}[]
-
-const ShopSelectorRow: FC<ListChildComponentProps<VirtualizedShopListData>> = ({data, index, style}) => {
-  const {shop, changeShopHandler} = data[index];
-
-  return (
-    <MenuItem style={style} key={index} value={shop._id} onClick={() => changeShopHandler(shop._id)}>
-      <Box display="flex" gap={2} alignItems="center">
-        <Box sx={{height: "40px", width: "40px"}}>
-          <img src={
-            shop.brandAssets?.navbarBrandImage.small || defaultLogo
-          } alt="Merchant logo"/>
-        </Box>
-        <Typography>{shop.name}</Typography>
-      </Box>
-    </MenuItem>
-  )
-}
-
 const ShopSelector = () => {
-  const {currentShop, changeShop, viewerShops} = useShop();
+  const {currentShop, changeShop} = useShop();
   const {anchorEl, open, handleClose: handleMenuClose, handleClick: handleMenuClick} = useMenu();
-  
-  const sortedShops = useMemo(() => sortByShopType(viewerShops), [viewerShops])
-
-  const [filteredShops, setFilteredShops] = useState(sortedShops);
   const {isMobile} = useUI();
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    setFilteredShops(sortedShops);
     handleMenuClick(e)
   }
 
   const handleClose = () => {
-    setFilteredShops(sortedShops);
     handleMenuClose()
   }
 
-  const virtualizedShopListData = useMemo<VirtualizedShopListData>(
-    () => filteredShops.map(shop => ({shop, changeShopHandler: changeShop})),
-    [filteredShops]
-  );
-
-  const handleShopFilter = ({target: {value}}: ChangeEvent<HTMLInputElement>) => {
-    debounce((searchTerm: string) => {
-      setFilteredShops(viewerShops.filter(shop => shop.name.toLowerCase()
-        .includes(searchTerm.toLowerCase()))
-      )
-    }, 300)(value)
+  const handleChangeShop = (shopId: string) => {
+    changeShop(shopId);
+    handleMenuClose();
   }
 
   return (
@@ -118,47 +65,12 @@ const ShopSelector = () => {
           <Typography>{currentShop?.name}</Typography>
         </Box>
       </Button>
-      <Menu
-        anchorEl={anchorEl}
-        id="shop-selector-menu"
-        open={open}
+      <ShopSelectorMenu
+        onSelectShop={handleChangeShop}
         onClose={handleClose}
-        onClick={handleClose}
-        PaperProps={{
-          elevation: 10,
-          sx: {
-            mt: 1.5
-          }
-        }}
-        transformOrigin={{horizontal: 'right', vertical: 'top'}}
-        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-      >
-        <Box component="li" py={1} px={2}>
-          <FormControl fullWidth>
-            <InputBase
-              placeholder={"Search Merchant..."}
-              sx={{
-                backgroundColor: (theme: Theme) => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-                px: 2,
-                py: 0.5,
-                borderRadius: 0.5
-              }}
-              autoFocus
-              onClick={e => e.stopPropagation()}
-              onChange={handleShopFilter}
-            />
-          </FormControl>
-        </Box>
-        <FixedSizeList
-          height={400}
-          width={360}
-          itemSize={46}
-          itemData={virtualizedShopListData}
-          itemCount={filteredShops.length}
-          overscanCount={5}
-        >{ShopSelectorRow}
-        </FixedSizeList>
-      </Menu>
+        anchorEl={anchorEl}
+        open={open}
+      />
     </>
   );
 };

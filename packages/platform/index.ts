@@ -11,6 +11,11 @@ registerRoute({
   title: "Dashboard"
 })
 
+registerRoute({
+  Component: Dashboard,
+  path: "*",
+})
+
 registerOperatorRoute({
   Component: OperatorLanding,
   path: "/"
