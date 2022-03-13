@@ -1,7 +1,6 @@
 import {lazy} from "react";
 
 import InboxIcon from '@mui/icons-material/Inbox';
-import {OperatorViewStandardLayout} from "platform/components/layout";
 import { registerOperatorRoute } from "platform/router";
 import OperatorViewWideLayout from "platform/components/layout/OperatorViewWideLayout";
 
@@ -9,7 +8,7 @@ registerOperatorRoute({
   group: "navigation",
   priority: 10,
   title: ["admin.dashboard.ordersLabel", "Orders"],
-  LayoutComponent: OperatorViewStandardLayout,
+  LayoutComponent: OperatorViewWideLayout,
   Component: lazy(() => import("./components/OrdersTable")),
   NavigationIcon: () => (<InboxIcon/>),
   path: "orders",

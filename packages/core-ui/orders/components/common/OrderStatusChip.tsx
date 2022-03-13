@@ -31,7 +31,7 @@ const OrderStatusChip: FC<OrderStatusChipProps> = ({status, ...chipProps}) => {
   return (
       <Chip
         color={chipColor}
-        variant="filled"
+        variant="outlined"
         label={t(`admin.table.orderStatus.${status}`, defaultOrderStatusTranslation(status))}
         {...chipProps}
       />

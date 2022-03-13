@@ -55,6 +55,51 @@ importers:
       vite-plugin-externals: 0.3.4_vite@2.8.0
       vite-plugin-import: 0.4.0_vite@2.8.0
 
+  apps/admin-theme-test:
+    specifiers:
+      '@babel/core': 7.17.4
+      '@demandcluster/core-ui': workspace:*
+      '@demandcluster/merchant-ui': workspace:*
+      '@emotion/react': ^11.7.1
+      '@emotion/styled': ^11.6.0
+      '@mui/material': ^5.4.2
+      '@types/react': ^17.0.33
+      '@types/react-dom': ^17.0.10
+      '@vitejs/plugin-react': ^1.0.7
+      babel-plugin-direct-import: ^1.0.0
+      babel-plugin-import: ^1.13.3
+      core-ui: workspace:*
+      platform: workspace:*
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      tsconfig: workspace:*
+      typescript: ^4.5.5
+      vite: ^2.8.0
+      vite-plugin-externals: ^0.3.4
+      vite-plugin-import: ^0.4.0
+    dependencies:
+      '@demandcluster/core-ui': link:../../packages/demandcluster-core-ui
+      '@demandcluster/merchant-ui': link:../../packages/demandcluster-merchant-ui
+      '@emotion/react': 11.7.1_7130fa07c3a1bb7b3330cbeb9c0159ca
+      '@emotion/styled': 11.6.0_aad1131320234161e5b30a4e5adebbe0
+      '@mui/material': 5.4.2_6226f8758b5b21b5515ad844c1caeb22
+      core-ui: link:../../packages/core-ui
+      platform: link:../../packages/platform
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      '@babel/core': 7.17.4
+      '@types/react': 17.0.39
+      '@types/react-dom': 17.0.11
+      '@vitejs/plugin-react': 1.2.0
+      babel-plugin-direct-import: 1.0.0
+      babel-plugin-import: 1.13.3
+      tsconfig: link:../../packages/tsconfig
+      typescript: 4.5.5
+      vite: 2.8.0
+      vite-plugin-externals: 0.3.4_vite@2.8.0
+      vite-plugin-import: 0.4.0_vite@2.8.0
+
   packages/core-ui:
     specifiers:
       '@apollo/client': ^3.5.8

@@ -21,10 +21,11 @@ import {
   Column,
   TableOptions,
   TableState,
-  useFilters, usePagination, useTable
+  useFilters, useGlobalFilter, usePagination, useTable
 } from "react-table";
 
 import DefaultColumnFilter from "./DefaultColumnFilter";
+import GlobalFilter from "./GlobalFilter";
 
 export interface Resetable {
   reset: () => void
@@ -74,10 +75,11 @@ const Table = <T extends object>(
     headerGroups,
     prepareRow,
     page,
-    state: { pageSize, pageIndex, filters },
+    state: { pageSize, pageIndex, filters, globalFilter },
     setPageSize,
     gotoPage,
-    allColumns
+    allColumns,
+    setGlobalFilter
   } = useTable<T>({
     columns,
     data,
@@ -89,24 +91,26 @@ const Table = <T extends object>(
     },
     manualPagination: true,
     manualFilters: true,
+    manualGlobalFilter: true,
     pageCount: Math.ceil(count / queryPageSize),
     ...tableOptions
   },
     useFilters,
+    useGlobalFilter,
     usePagination
   );
 
   useImperativeHandle(
     ref, () => ({
       reset() {
-        onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters }).then();
+        onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters, globalFilter }).then();
       }
     })
   )
 
   useEffect(() => {
-    onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters }).then();
-  }, [filters]);
+    onFetchData({ pageIndex: 0, pageSize, sortBy: [], filters, globalFilter }).then();
+  }, [filters, globalFilter]);
 
   const preloadRows = useMemo(() => Array(pageSize).fill(0)
     .map((_, key) => (
@@ -123,7 +127,7 @@ const Table = <T extends object>(
     return Array(pageSize - data.length).fill(0)
       .map((_, key) => (
         <TableRow key={`empty-${key}`}>
-          {columns.map((column, cellKey) => (
+          {columns.map((_, cellKey) => (
             <TableCell
               key={`cell-${key}-${cellKey}`}
             >
@@ -135,15 +139,15 @@ const Table = <T extends object>(
       ));
   }
 
-  const handlePageChange = async (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    await onFetchData({ pageIndex: newPage, pageSize, sortBy: [], filters });
+  const handlePageChange = async (newPage: number) => {
+    await onFetchData({ pageIndex: newPage, pageSize, sortBy: [], filters, globalFilter });
     gotoPage(newPage)
   }
 
   const handleRowsPerPageChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> =
     async (event) => {
       setPageSize(+event.target.value);
-      await onFetchData({ pageIndex: 0, pageSize: +event.target.value, sortBy: [], filters });
+      await onFetchData({ pageIndex: 0, pageSize: +event.target.value, sortBy: [], filters, globalFilter });
     };
 
   const handleRowClick = (row: T) => {
@@ -152,7 +156,11 @@ const Table = <T extends object>(
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box display="flex" gap={1} px={1} pb={1}>
+      <Box display="flex" gap={1} px={1} pb={1} alignItems="flex-end">
+        <GlobalFilter
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
         {allColumns
           .filter(column => column.canFilter)
           .map(column => column.render("Filter", { key: `filter-${column.id}` }))}
@@ -162,10 +170,10 @@ const Table = <T extends object>(
           <TableHead>
             {headerGroups.map(headerGroup => (
               <TableRow
-              sx={{
-                whiteSpace: "nowrap"
-              }}
-              {...headerGroup.getHeaderGroupProps()}
+                sx={{
+                  whiteSpace: "nowrap"
+                }}
+                {...headerGroup.getHeaderGroupProps()}
               >
                 {headerGroup.headers.map(column => (
                   <TableCell {...column.getHeaderProps()}>
@@ -218,7 +226,7 @@ const Table = <T extends object>(
         rowsPerPageOptions={[5, 10, 25, 50, 100]}
         count={count}
         page={pageIndex}
-        onPageChange={handlePageChange}
+        onPageChange={(_, newPage) => handlePageChange(newPage)}
         onRowsPerPageChange={handleRowsPerPageChange}
         rowsPerPage={pageSize}
       />

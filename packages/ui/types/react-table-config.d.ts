@@ -24,7 +24,8 @@ declare module 'react-table' {
   export interface TableOptions<D extends object>
     extends UseFiltersOptions<D>,
       UsePaginationOptions<D>,
-      UseSortByOptions<D> {}
+      UseSortByOptions<D>,
+      UseGlobalFiltersOptions<D> {}
 
   export interface Hooks<D extends object = {}>
     extends UseSortByHooks<D> {}
@@ -32,18 +33,21 @@ declare module 'react-table' {
   export interface TableInstance<D extends object = {}>
     extends UsePaginationInstanceProps<D>,
       UseSortByInstanceProps<D>,
-      UseFiltersInstanceProps<D> {
+      UseFiltersInstanceProps<D>,
+      UseGlobalFiltersInstanceProps<D> {
   }
 
   export interface TableState<D extends object = {} >
     extends UsePaginationState<D>,
       UseSortByState<D>,
-      UseFiltersState<D> {
+      UseFiltersState<D>,
+      UseGlobalFiltersState<D> {
   }
 
   export interface ColumnInterface<D extends object = {}>
     extends UseFiltersColumnOptions<D>,
-      UseSortByColumnOptions<D> {
+      UseSortByColumnOptions<D>,
+      UseGlobalFiltersColumnOptions<D> {
   }
 
   export interface ColumnInstance<D extends object = {}>

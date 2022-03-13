@@ -12,6 +12,7 @@ import OrderHeader from "./OrderHeader";
 import OrderCustomerInfo from "./OrderCustomerInfo";
 import OrderSummary from "./OrderSummary";
 import useOrder from '../hooks/useOrder';
+import OrderPayments from "./OrderPayments";
 
 const Order: FC = () => {
   const { t } = useTranslation();
@@ -45,7 +46,10 @@ const Order: FC = () => {
           `
         }}
       >
-        <Box gridArea={{ lg: "main" }} component={OrderFulfillmentGroups} />
+        <Box gridArea={{ lg: "main" }} display="flex" flexDirection="column" gap={2}>
+          <OrderFulfillmentGroups />
+          <OrderPayments />
+        </Box>
         <Box gridArea={{ lg: "side" }} display="flex" flexDirection="column" gap={2}>
           <OrderCustomerInfo />
           <OrderSummary />

@@ -11,6 +11,8 @@ export default gql`
         payments {
           billingAddress {
             fullName
+            city
+            postal
           }
           status
         }

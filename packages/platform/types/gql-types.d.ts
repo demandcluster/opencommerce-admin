@@ -4154,6 +4154,8 @@ export type Invoice = Node & {
   endDate: Scalars['DateTime'];
   orders: Array<Maybe<InvoiceOrder>>;
   ordersSummary: InvoiceOrdersSummary;
+  otherCosts: Maybe<Array<Maybe<InvoiceOtherCost>>>;
+  pdf: Maybe<InvoicePdf>;
   primaryShop: Shop;
   referenceId: Maybe<Scalars['String']>;
   shop: Shop;
@@ -4240,6 +4242,25 @@ export type InvoiceOrdersSummary = {
   feesTotal: Money;
   netShippingCostTotal: Money;
   total: Money;
+};
+
+export type InvoiceOtherCost = {
+  __typename?: 'InvoiceOtherCost';
+  date: Scalars['DateTime'];
+  description: Maybe<Scalars['String']>;
+  price: Money;
+  quantity: Scalars['Int'];
+  totalAmount: Money;
+  type: Scalars['String'];
+};
+
+export type InvoicePdf = {
+  __typename?: 'InvoicePdf';
+  bucket: Maybe<Scalars['String']>;
+  etag: Maybe<Scalars['String']>;
+  path: Maybe<Scalars['String']>;
+  status: Maybe<Scalars['String']>;
+  versionId: Maybe<Scalars['String']>;
 };
 
 export enum InvoicePeriod {
@@ -9336,8 +9357,6 @@ export type Shop = Node & {
   holding: Maybe<Scalars['String']>;
   /** Period at which invoices will be generated for the merchant shop */
   invoicePeriod: Maybe<InvoicePeriod>;
-  /** The starting date of the month for the invoice generation */
-  invoiceStartDate: Maybe<Scalars['Int']>;
   /** Shop's keywords */
   keywords: Maybe<Scalars['String']>;
   /** Unique chamber of commerce code */
@@ -10755,8 +10774,6 @@ export type UpdateMerchantShopInput = {
   holding: InputMaybe<Scalars['String']>;
   /** Period at which invoices will be generated for the merchant shop */
   invoicePeriod: InputMaybe<InvoicePeriod>;
-  /** The starting date of the month for the invoice generation */
-  invoiceStartDate: InputMaybe<Scalars['Int']>;
   /** Unique chamber of commerce code */
   kvk: InputMaybe<Scalars['String']>;
   /** Id of the merchant shop */
@@ -10776,8 +10793,6 @@ export type UpdateMerchantShopInput = {
 export type UpdateMerchantShopInvoiceSettingsInput = {
   /** Period at which invoices will be generated for the merchant shop */
   invoicePeriod: InvoicePeriod;
-  /** The starting date of the month for the invoice generation */
-  invoiceStartDate: Scalars['Int'];
   /** Id of the merchant shop */
   merchantShopId: Scalars['ID'];
 };

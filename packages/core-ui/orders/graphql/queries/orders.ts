@@ -11,6 +11,8 @@ query ordersQuery($shopIds: [ID], $filters: OrderFilterInput, $first: Connection
       payments {
         billingAddress {
           fullName
+          city
+          postal
         }
         status
       }

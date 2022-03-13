@@ -47,6 +47,24 @@ const OrdersTable: FC = () => {
       disableFilters: true
     },
     {
+      Header: t("admin.table.headers.customer", "Customer")!,
+      accessor: (row) => row.payments[0]?.billingAddress?.fullName,
+      id: "customer",
+      disableFilters: true
+    },
+    {
+      Header: t("admin.table.headers.postalCode", "Postal Code")!,
+      accessor: (row) => row.payments[0]?.billingAddress?.postal,
+      id: "postal",
+      disableFilters: true
+    },
+    {
+      Header: t("admin.table.headers.city", "City")!,
+      accessor: (row) => row.payments[0]?.billingAddress?.city,
+      id: "city",
+      disableFilters: true
+    },
+    {
       Header: t("admin.table.headers.status", "Status")!,
       accessor: (row) => row.status,
       id: "status",
@@ -83,12 +101,6 @@ const OrdersTable: FC = () => {
       ]
     },
     {
-      Header: t("admin.table.headers.customer", "Customer")!,
-      accessor: (row) => row.payments[0]?.billingAddress?.fullName,
-      id: "customer",
-      disableFilters: true
-    },
-    {
       Header: () => (
         <Box textAlign="right">{t("admin.table.headers.total", "Total")}</Box>
       ),
@@ -107,37 +119,40 @@ const OrdersTable: FC = () => {
   }, [currentShop]);
 
   const handleFetchData = useCallback<FetchDataHandler<Order>>(
-    async ({ pageSize, pageIndex, filters }) => {
+    async ({ pageSize, pageIndex, filters, globalFilter }) => {
       setLoading(true);
+
       const filtersByKey: Partial<OrderFilterInput> = {}
       // @ts-ignore
       filters.forEach(filter => filtersByKey[filter.id] = filter.value)
 
       if (currentShop?.shopType === "merchant") {
-        const {data} = await getMerchantOrders({
+        const { data } = await getMerchantOrders({
           variables: {
             shopId: currentShop._id,
             first: pageSize,
             offset: pageIndex * pageSize,
             // @ts-ignore
             filters: {
-              ...filtersByKey
+              searchField: globalFilter,
+              ...filtersByKey,
             }
           }
         })
-        
+
         setOrders(data?.orders?.nodes || []);
         setTotalCount(data?.orders?.totalCount || 0);
         return setLoading(false);
       }
 
-      const {data} = await getOrders({
+      const { data } = await getOrders({
         variables: {
           shopIds: [currentShop?._id || ""],
           first: pageSize,
           offset: pageIndex * pageSize,
           // @ts-ignore
           filters: {
+            searchField: globalFilter,
             ...filtersByKey
           }
         }
@@ -156,21 +171,21 @@ const OrdersTable: FC = () => {
   return (
     <Fade in>
       <Box display="flex" flexDirection="column" gap={3}>
-      <Typography variant="h4">{t("admin.dashboard.ordersTitle", "Orders")}</Typography>
-      <Card>
-        <CardContent>
-          <Table
-            data={orders}
-            count={totalCount}
-            columns={columns}
-            onFetchData={handleFetchData}
-            onRowClick={handleRowClick}
-            loading={loading}
-            ref={tableRef}
-          />
-        </CardContent>
-      </Card>
-    </Box>
+        <Typography variant="h4">{t("admin.dashboard.ordersTitle", "Orders")}</Typography>
+        <Card>
+          <CardContent>
+            <Table
+              data={orders}
+              count={totalCount}
+              columns={columns}
+              onFetchData={handleFetchData}
+              onRowClick={handleRowClick}
+              loading={loading}
+              ref={tableRef}
+            />
+          </CardContent>
+        </Card>
+      </Box>
     </Fade>
   );
 }
