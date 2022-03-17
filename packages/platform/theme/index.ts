@@ -23,13 +23,13 @@ declare module '@mui/material/styles' {
 let theme = createTheme({
   palette: {
     primary: {
-      main: '#607d8b',
+      main: '#316eb4',
     },
     secondary: {
-      main: '#f50057',
+      main: '#000',
     },
     background: {
-      default: '#eceff1'
+      default: '#f7fafc'
     },
   },
   shape: {
@@ -165,7 +165,8 @@ theme = createTheme(theme, <ThemeOptions>{
           fontWeight: 700,
           textTransform: "none",
           paddingTop: theme.spacing(1.25),
-          paddingBottom: theme.spacing(1.25)
+          paddingBottom: theme.spacing(1.25),
+          
         }
       }
     }

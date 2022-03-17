@@ -15,6 +15,10 @@ export default cleanEnv(import.meta.env, {
     desc: "A URL that has /locales/namespaces.json and /locales/resources.json endpoints for loading translations",
     example: "http://localhost:3000"
   }),
+  VITE_PUBLIC_REST_API_URL: str({
+    desc: "A URL for REST API endpoints",
+    example: "http://localhost:3000"
+  }),
   VITE_ROOT_URL: str({
     desc: "The canonical root URL for the Reaction Admin server",
     example: "http://localhost:4080"

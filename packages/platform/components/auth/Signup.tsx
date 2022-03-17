@@ -15,7 +15,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 
 import useAuth from "../../hooks/useAuth";
 import {ControlledTextField} from "ui";
-
+import Layout from "./Layout";
 
 const validationSchema = yup.object({
   email: yup.string().email().required(),
@@ -25,19 +25,6 @@ const validationSchema = yup.object({
       return this.parent.password === value
     })
 });
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://demandcluster.com">
-        Demandcluster
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const Signup: FC = () => {
   const {signup, isLoggedIn} = useAuth();
@@ -64,13 +51,22 @@ const Signup: FC = () => {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Layout>
+      <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          pt: 8,
+          mt: 8,
+          py: 4,
+          px: {
+            xs: 2,
+            sm: 4
+          },
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          backgroundColor: "background.paper",
+          borderRadius: 1,
+          boxShadow: "10"
         }}
       >
         <Avatar sx={{m: 1, bgcolor: 'primary.main'}}>
@@ -127,8 +123,8 @@ const Signup: FC = () => {
           </Box>
         </Box>
       </Box>
-      <Copyright sx={{mt: 8, mb: 4}}/>
     </Container>
+    </Layout>
   );
 }
 
