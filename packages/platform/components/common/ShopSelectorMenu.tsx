@@ -66,7 +66,13 @@ export const ShopSelectorMenu: FC<ShopSelectorMenuProps> = (
   const [filteredShops, setFilteredShops] = useState(sortedShops);
 
   const virtualizedShopListData = useMemo<VirtualizedShopListData>(
-    () => filteredShops.map(shop => ({ shop, selectShopHandler: onSelectShop })),
+    () => filteredShops.map(shop => ({
+      shop,
+      selectShopHandler: (shopId: string) => {
+        onSelectShop(shopId);
+        setFilteredShops(sortedShops);
+      } 
+  })),
     [filteredShops]
   );
 

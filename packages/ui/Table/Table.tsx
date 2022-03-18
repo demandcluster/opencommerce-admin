@@ -45,6 +45,7 @@ type TableProps<T extends object> = {
   onFetchData: FetchDataHandler<T>;
   onRowClick?: RowClickHandler<T>;
   loading: boolean;
+  enableGlobalFilter?: boolean;
   children?: ReactNode;
 } & TableOptions<T>
 
@@ -59,6 +60,7 @@ const Table = <T extends object>(
     onFetchData,
     onRowClick,
     loading,
+    enableGlobalFilter = false,
     ...tableOptions
   }: TableProps<T>,
   ref: ForwardedRef<Resetable>) => {
@@ -157,10 +159,14 @@ const Table = <T extends object>(
   return (
     <Box sx={{ width: '100%' }}>
       <Box display="flex" gap={1} px={1} pb={1} alignItems="flex-end">
-        <GlobalFilter
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+        {
+          enableGlobalFilter && (
+            <GlobalFilter
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+          )
+        }
         {allColumns
           .filter(column => column.canFilter)
           .map(column => column.render("Filter", { key: `filter-${column.id}` }))}

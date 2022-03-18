@@ -13,6 +13,18 @@ declare module '@mui/material/styles' {
     lighten: string
   }
 
+  export interface Palette {
+    gradient: {
+      primary: string
+    };
+  }
+  
+  export interface PaletteOptions {
+    gradient?: {
+      primary?: string
+    };
+  }
+
   interface ThemeOptions {
     outline?: {
       focus?: string
@@ -23,14 +35,26 @@ declare module '@mui/material/styles' {
 let theme = createTheme({
   palette: {
     primary: {
-      main: '#316eb4',
+      main: '#0369a1',
     },
     secondary: {
       main: '#000',
     },
     background: {
-      default: '#f7fafc'
+      default: '#f3f4f6'
     },
+    success: {
+      main: "#10b981"
+    },
+    info: {
+      main: "#0ea5e9"
+    },
+    error: {
+      main: "#ef4444"
+    },
+    warning: {
+      main: "#eab308"
+    }
   },
   shape: {
     borderRadius: 12,
@@ -103,6 +127,9 @@ theme = createTheme(theme, <ThemeOptions>{
   palette: {
     background: {
       lighten: lighten(theme.palette.background.default, 0.7)
+    },
+    gradient: {
+      primary: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
     }
   }
 })
@@ -133,6 +160,9 @@ theme = createTheme(theme, <ThemeOptions>{
     },
     MuiOutlinedInput: {
       styleOverrides: {
+        input: {
+            padding: `${theme.spacing(1.5)} ${theme.spacing(1.5)}`
+        },
         sizeSmall: {
           backgroundColor: theme.palette.background.lighten
         }

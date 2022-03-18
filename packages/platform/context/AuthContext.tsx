@@ -1,11 +1,12 @@
-import {createContext, FC, useCallback, useEffect, useMemo, useState} from "react";
+import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
 import hashPassword from "./utils/hashPassword";
-import {useLazyQuery} from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import viewerQuery from "../graphql/queries/viewerQuery";
 import Container from "@mui/material/Container";
-import {Account} from "../types/gql-types";
+import { Account } from "../types/gql-types";
 import useUI from "../hooks/useUI";
 import useAccountsClient from "../hooks/useAccountsClient";
+import { Fade } from "@mui/material";
 
 export type Permission = { shopId: string | null, permission: string }
 
@@ -21,10 +22,10 @@ interface State {
 
 export const AuthContext = createContext<State>({} as State);
 
-export const AuthProvider: FC = ({children}) => {
+export const AuthProvider: FC = ({ children }) => {
   const [userLoading, setUserLoading] = useState(true);
-  const {accountsClient, accountsClientPassword} = useAccountsClient();
-  const [getViewer, {loading: viewerLoading, data}] = useLazyQuery<{ viewer: Account | null } | null>(viewerQuery);
+  const { accountsClient, accountsClientPassword } = useAccountsClient();
+  const [getViewer, { loading: viewerLoading, data }] = useLazyQuery<{ viewer: Account | null } | null>(viewerQuery);
   const [viewer, setViewer] = useState<Account | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -52,23 +53,23 @@ export const AuthProvider: FC = ({children}) => {
   }, [viewer]);
 
   const login = useCallback(async (email: string, password: string) => {
-      await accountsClientPassword.login({
-        user: {email},
-        password: hashPassword(password)
-      });
-      await getViewer();
-    },
+    await accountsClientPassword.login({
+      user: { email },
+      password: hashPassword(password)
+    });
+    await getViewer();
+  },
 
     [getViewer],
   );
 
   const signup = useCallback(async (email: string, password: string) => {
-      await accountsClientPassword.createUser({
-        email,
-        password: hashPassword(password)
-      })
-      await getViewer();
-    },
+    await accountsClientPassword.createUser({
+      email,
+      password: hashPassword(password)
+    })
+    await getViewer();
+  },
     [getViewer],
   );
 
@@ -96,7 +97,7 @@ export const AuthProvider: FC = ({children}) => {
           return group.permissions.includes(permission.permission) &&
             group.shop._id === permission.shopId;
         }
-      ));
+        ));
     },
     [viewer],
   );

@@ -1,26 +1,24 @@
+import { Box } from "@mui/material";
+import config from "platform/config";
 import {Product} from "platform/types/gql-types";
 import {Row} from "react-table";
 
 const MediaCell = ({ row }: {row: Row<Product>}) => {
-  const thumbnailUrl = row.original && row.original.media && row.original.media[0]
-    && row.original.media[0].URLs && row.original.media[0].URLs.thumbnail;
-
-  if (!thumbnailUrl) {
-    return (
-      <img
-        src={"/resources/placeholder.gif"}
-        alt={row.values.title}
-        width="36"
-      />
-    );
-  }
-
+  const thumbnailUrl = row.original?.media[0]?.URLs.thumbnail ? (
+    `${config.VITE_PUBLIC_FILES_BASE_URL}${row.original?.media[0]?.URLs.thumbnail}`
+  ) : "/placeholder.png";
+  
   return (
-    <img
+    <Box
+    width="2.5rem"
+    height="2.5rem"
+    display="flex"
+    >
+      <img
       src={thumbnailUrl}
       alt={row.values.title}
-      width="36"
     />
+    </Box>
   );
 }
 

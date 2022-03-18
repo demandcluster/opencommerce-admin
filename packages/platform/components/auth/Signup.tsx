@@ -7,7 +7,7 @@ import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import {Alert} from "@mui/material";
+import {Alert, Theme} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {Link as RouterLink} from 'react-router-dom';
 import * as yup from "yup";
@@ -69,7 +69,7 @@ const Signup: FC = () => {
           boxShadow: "10"
         }}
       >
-        <Avatar sx={{m: 1, bgcolor: 'primary.main'}}>
+        <Avatar sx={{m: 1}}>
           <LockOutlinedIcon/>
         </Avatar>
         <Typography component="h1" variant="h5" pb={2}>
