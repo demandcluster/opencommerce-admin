@@ -41,7 +41,7 @@ let theme = createTheme({
       main: '#000',
     },
     background: {
-      default: '#f3f4f6'
+      default: '#f1f5f9'
     },
     success: {
       main: "#10b981"
@@ -136,6 +136,14 @@ theme = createTheme(theme, <ThemeOptions>{
 
 theme = createTheme(theme, <ThemeOptions>{
   components: {
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          borderRadius: 6,
+          overflow: "hidden"
+        }
+      }
+    },
     MuiTableHead: {
       styleOverrides: {
         root: {
@@ -160,6 +168,9 @@ theme = createTheme(theme, <ThemeOptions>{
     },
     MuiOutlinedInput: {
       styleOverrides: {
+        root: {
+          borderRadius: "10px"
+        },
         input: {
             padding: `${theme.spacing(1.5)} ${theme.spacing(1.5)}`
         },

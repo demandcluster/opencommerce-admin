@@ -3,8 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import {
   Alert,
-  Box,
-  Typography
+  Box
 } from "@mui/material";
 
 import OrderFulfillmentGroups from "./OrderFulfillmentGroups";

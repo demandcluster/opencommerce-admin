@@ -34,7 +34,7 @@ const ShopSelector = () => {
     <>
       <Button
         onClick={handleClick}
-        size={isMobile ? "small": "medium"}
+        size="small"
         sx={{
           height: "fit-content",
           backgroundColor: (theme: Theme) => theme.palette.background.paper,
@@ -48,6 +48,7 @@ const ShopSelector = () => {
           "&:focus": {
             boxShadow: theme.outline.focus
           },
+          py: 0.75
         }}
         variant="contained"
         color="inherit"
@@ -56,13 +57,13 @@ const ShopSelector = () => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
-        <Box display="flex" gap={2} alignItems="center">
-          <Box sx={{height: "32px", width: "32px"}}>
+        <Box display="flex" gap={1} alignItems="center" width="100%">
+          <Box sx={{height: "32px", width: "32px", minWidth: "32px"}}>
             <img src={
               currentShop?.brandAssets?.navbarBrandImage.small || defaultLogo
             } alt="Merchant logo"/>
           </Box>
-          <Typography>{currentShop?.name}</Typography>
+          <Typography noWrap>{currentShop?.name}</Typography>
         </Box>
       </Button>
       <ShopSelectorMenu

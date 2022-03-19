@@ -1,36 +1,46 @@
 import {
   Link as RouterLink,
-  LinkProps, To,
-  useMatch,
+  LinkProps, matchPath, To,
+  useLocation,
   useResolvedPath
 } from 'react-router-dom';
-import {FC, forwardRef, MouseEventHandler, useMemo} from "react";
-import ListItem from "@mui/material/ListItem";
+import { FC, forwardRef, MouseEventHandler, useMemo } from "react";
+import ListItem, { ListItemProps } from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+import ListItemText, { ListItemTextProps } from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
-import {SxProps} from "@mui/material/styles";
+import ListItemButton from '@mui/material/ListItemButton';
 
 type ListItemLinkProps = {
   NavigationIcon?: FC;
-  primary: string;
   onClick?: MouseEventHandler;
   to: To;
-  sx?: SxProps;
+  tooltipTitle?: string;
   hideTooltip?: boolean;
-};
+  textProps?: ListItemTextProps;
+  matchPathEnd?: boolean;
+} & Omit<ListItemProps, "selected" | "component" | "button">;
 
 const ListItemLink: FC<ListItemLinkProps> = (
   {
     NavigationIcon,
     onClick,
-    primary,
     to,
-    sx,
-    hideTooltip = true
+    hideTooltip = true,
+    tooltipTitle = "",
+    textProps,
+    matchPathEnd = false,
+    ...listItemProps
   }) => {
   const resolved = useResolvedPath(to);
-  const match = useMatch({path: resolved.pathname});
+  const location = useLocation();
+  const match = useMemo(() => matchPath(
+    {
+      path: resolved.pathname,
+      end: matchPathEnd
+    },
+    location.pathname
+  ), [location]);
 
   const renderLink = useMemo(
     () =>
@@ -38,39 +48,40 @@ const ListItemLink: FC<ListItemLinkProps> = (
         linkProps,
         ref,
       ) {
-        return <RouterLink ref={ref} to={to}  {...linkProps} onClick={onClick}/>;
+        return <RouterLink ref={ref} to={to}  {...linkProps} onClick={onClick} />;
       }),
     [to],
   );
 
   return (
     <Tooltip
-      title={primary}
+      title={tooltipTitle}
       disableFocusListener={hideTooltip}
       disableHoverListener={hideTooltip}
       disableTouchListener={hideTooltip}
       placement="right"
     >
       <ListItem
-        selected={Boolean(match)}
-        button
-        component={renderLink}
-        sx={{
-          ...sx,
-          borderRadius: "6px"
-        }}
+      disablePadding
+        {...listItemProps}
       >
-        {NavigationIcon && (
-          <ListItemIcon>
-            {<NavigationIcon/>}
-          </ListItemIcon>
-        )}
-        <ListItemText
-          primary={primary}
-          primaryTypographyProps={{
-            fontWeight: match ? 700 : 400
-          }}
-        />
+        <ListItemButton
+          selected={Boolean(match)}
+          component={renderLink}
+        >
+          {NavigationIcon && (
+            <ListItemIcon>
+              {<NavigationIcon />}
+            </ListItemIcon>
+          )}
+          <ListItemText
+            {...textProps}
+            primaryTypographyProps={{
+              fontWeight: match ? 700 : 400,
+              ...textProps?.primaryTypographyProps
+            }}
+          />
+        </ListItemButton>
       </ListItem>
     </Tooltip>
   );

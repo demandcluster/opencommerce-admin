@@ -6,6 +6,7 @@ interface State {
   changeShop: (shopId: string) => void,
   viewerShops: Shop[],
   currentShop: Shop | null,
+  isCurrentShopPrimary: boolean
 }
 
 const shopIdAccessor = "shopId";
@@ -61,13 +62,20 @@ export const ShopProvider: FC = ({children}) => {
 
   const viewerShops = useMemo<Shop[]>(() => viewer?.adminUIShops || [], [viewer]);
 
+  const isCurrentShopPrimary = useMemo(
+    () => currentShop?.shopType === "primary",
+    [currentShop]
+  )
+  
+
   const value = useMemo(
     () => ({
       changeShop,
       viewerShops,
-      currentShop
+      currentShop,
+      isCurrentShopPrimary
     }),
-    [changeShop, viewerShops, currentShop]
+    [changeShop, viewerShops, currentShop, isCurrentShopPrimary]
   )
 
   return (

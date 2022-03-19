@@ -50,7 +50,9 @@ const SecondarySidebarMobile: FC<SecondarySidebarProps> = memo(({groups}) => {
             sx={{width: "auto"}}
             to={pathname + '/' + path}
             key={path}
-            primary={t(navigationLabel || '')}
+            textProps={{
+              primary: t(navigationLabel || '')
+            }}
             NavigationIcon={NavigationIcon}
             onClick={() => handleItemClick(index)}
           />

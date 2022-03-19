@@ -20,8 +20,8 @@ const Signup = lazy(() => import("./components/auth/Signup"));
 const App: FC = () => {
   return (
     <ThemeProvider theme={theme}>
-      <UIProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <UIProvider>
           <AuthGraphQLProvider>
             <HelmetProvider>
               <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
@@ -63,8 +63,8 @@ const App: FC = () => {
               </SnackbarProvider>
             </HelmetProvider>
           </AuthGraphQLProvider>
-        </BrowserRouter>
-      </UIProvider>
+        </UIProvider>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

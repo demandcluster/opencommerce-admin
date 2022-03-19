@@ -22,6 +22,7 @@ export default gql`
         }
         shop {
           _id
+          name
         }
       }
       pageInfo {

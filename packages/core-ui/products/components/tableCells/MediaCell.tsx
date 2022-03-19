@@ -13,6 +13,7 @@ const MediaCell = ({ row }: {row: Row<Product>}) => {
     width="2.5rem"
     height="2.5rem"
     display="flex"
+    overflow="hidden"
     >
       <img
       src={thumbnailUrl}

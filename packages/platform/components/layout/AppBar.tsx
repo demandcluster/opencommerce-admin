@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from "@mui/material/IconButton";
@@ -9,10 +9,9 @@ import Avatar from "../common/Avatar";
 import ShopSelector from "../common/ShopSelector";
 import Box from "@mui/material/Box";
 import { Theme } from "@mui/material/styles";
-import { Button } from "@mui/material";
 
 const AppBar: FC<{ title?: string }> = ({ title }) => {
-  const { isMobile, togglePrimarySidebar, toolbarContent } = useUI();
+  const { isMobile, togglePrimarySidebar } = useUI();
 
   return (
     <Toolbar component="nav" sx={{
@@ -29,12 +28,12 @@ const AppBar: FC<{ title?: string }> = ({ title }) => {
         }}
       >
         <Box
-        display="flex"
-        minHeight="64px"
-        gap={3}
-        flex={1}
-        justifyContent="end"
-        alignItems="center"
+          display="flex"
+          minHeight="64px"
+          gap={3}
+          flex={1}
+          justifyContent="end"
+          alignItems="center"
         >
           {isMobile && (
             <Box flex={1}>
@@ -47,17 +46,21 @@ const AppBar: FC<{ title?: string }> = ({ title }) => {
               </IconButton>
             </Box>
           )}
-          {
-            !isMobile && toolbarContent
-          }
+          {/* {
+            !isMobile && toolbarContentRef.current?.content && (
+              <Box flex={1}>
+                {toolbarContentRef.current.content}
+              </Box>
+            )
+          } */}
           <ShopSelector />
           <Avatar />
         </Box>
-        {isMobile && toolbarContent && (
-          <Box py={1}>
-            {toolbarContent}
+        {/* {isMobile && toolbarContentRef.current?.content && (
+          <Box pb={2}>
+            {toolbarContentRef.current.content}
           </Box>
-        )}
+        )} */}
       </Container>
     </Toolbar>
   );

@@ -6,6 +6,7 @@ import OperatorViewWideLayout from "./OperatorViewWideLayout";
 export {default as OperatorViewStandardLayout} from "./OperatorViewStandardLayout";
 export {default as OperatorViewNoopLayout} from "./OperatorViewNoopLayout";
 export {default as OperatorViewFullLayout} from "./OperatorViewFullLayout";
+export {default as OperatorViewWideLayout} from "./OperatorViewWideLayout";
 
 export type OperatorLayout =
   typeof OperatorViewFullLayout |

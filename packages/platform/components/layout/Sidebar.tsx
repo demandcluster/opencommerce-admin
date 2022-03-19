@@ -133,7 +133,10 @@ const SidebarContent = memo(() => {
               onClick={handleSidebarLinkClick}
               to={(href || path)}
               key={path}
-              primary={t(navigationLabel || '')}
+              textProps={{
+                primary: t(navigationLabel || '')
+              }}
+              tooltipTitle={t(navigationLabel || '')}
               NavigationIcon={NavigationIcon}
               hideTooltip={isPrimarySidebarOpen}
             />

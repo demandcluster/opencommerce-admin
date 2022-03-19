@@ -4,22 +4,23 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 import { CellProps, Column } from "react-table";
 import { useSnackbar } from "notistack";
-import { Button, Card, CardContent, Box, Typography } from "@mui/material";
+import { Button, Card, CardContent, Box, Typography, Fade } from "@mui/material";
 
 import { useAuth, useShop } from "platform/hooks";
-import { Resetable, SelectColumnFilter, Table } from "ui";
+import { Resetable, RowClickHandler, SelectColumnFilter, Table } from "ui";
 import productsQuery from "../graphql/queries/products";
 import createProductMutation from "../graphql/mutations/createProduct";
 import { Product, ProductConnection, QueryProductsArgs } from "platform/types/gql-types";
-import MediaCell from "./DataTable/MediaCell";
-import PublishedStatusCell from "./DataTable/PublishedStatusCell";
-import StatusIconCell from "./DataTable/StatusIconCell";
+import MediaCell from "./tableCells/MediaCell";
+import PublishedStatusCell from "./tableCells/PublishedStatusCell";
+import ShopLinkCell from "./tableCells/ShopLinkCell";
+import VisibleStatus from "./common/VisibleStatus";
 
 const ProductsTable: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { currentShop } = useShop();
-  const {viewer} = useAuth();
+  const { currentShop, isCurrentShopPrimary } = useShop();
+  const { viewer } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
   const [initialLoad, setInitialLoad] = useState(true);
@@ -62,7 +63,7 @@ const ProductsTable: FC = () => {
     },
     {
       Header: t("admin.productTable.header.visible", "Visible")!,
-      Cell: ({ row }: CellProps<Product, string>) => <StatusIconCell row={row} />,
+      Cell: ({ row }: CellProps<Product, string>) => <VisibleStatus isVisible={row?.original?.isVisible}/>,
       accessor: (row) => row.isVisible,
       id: "isVisible",
       Filter: SelectColumnFilter,
@@ -71,8 +72,15 @@ const ProductsTable: FC = () => {
         { label: t("admin.tags.visible", "Visible"), value: true },
         { label: t("admin.product.publishStatus.unpublished", "Unpublished"), value: false }
       ]
-    }
-  ], [t]);
+    },
+    ...(isCurrentShopPrimary && [{
+      Header: t("admin.productTable.header.shop", "Shop")!,
+      accessor: (row) => row.shop.name,
+      Cell: ({ row }: CellProps<Product, string>) => <ShopLinkCell row={row} />,
+      id: "shop",
+      disableFilters: true
+    } as Column<Product>] || []),
+  ], [t, currentShop]);
 
   useEffect(() => {
     if (!initialLoad) {
@@ -84,10 +92,10 @@ const ProductsTable: FC = () => {
   const onFetchData = useCallback(async ({ pageIndex, pageSize, filters }) => {
     setLoading(true);
 
-    const filtersByKey: {isVisible?: boolean} = {}
+    const filtersByKey: { isVisible?: boolean } = {}
     // @ts-ignore
     filters.forEach(filter => filtersByKey[filter.id] = filter.value)
-    
+
     const shopIds = currentShop?.shopType === "primary" ?
       viewer?.adminUIShops.map(shop => shop._id) :
       [currentShop?._id || ""];
@@ -107,11 +115,7 @@ const ProductsTable: FC = () => {
     setLoading(false);
   }, [currentShop]);
 
-  const onRowClick = useCallback((row) => {
-    console.log(row);
-
-    navigate(row.id);
-  }, [navigate]);
+  const onRowClick: RowClickHandler<Product> = (row) => navigate(row._id);
 
   const labels = useMemo(() => ({
     globalFilterPlaceholder: t("admin.productTable.filters.placeholder")
@@ -131,36 +135,38 @@ const ProductsTable: FC = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" gap={2}>
-      <Box
-        display="flex"
-      >
-        <Typography variant="h4" flex={1}>
-          {t("admin.products", "Products")}
-        </Typography>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={handleCreateProduct}
-          disableElevation
+    <Fade in>
+      <Box display="flex" flexDirection="column" gap={2}>
+        <Box
+          display="flex"
         >
-          {t("admin.createProduct", "Create product")}
-        </Button>
+          <Typography variant="h4" flex={1}>
+            {t("admin.products", "Products")}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleCreateProduct}
+            disableElevation
+          >
+            {t("admin.createProduct", "Create product")}
+          </Button>
+        </Box>
+        <Card>
+          <CardContent>
+            <Table
+              ref={tableRef}
+              loading={loading}
+              data={products}
+              columns={columns}
+              count={totalCount}
+              onFetchData={onFetchData}
+              onRowClick={onRowClick}
+            />
+          </CardContent>
+        </Card>
       </Box>
-      <Card>
-        <CardContent>
-          <Table
-            ref={tableRef}
-            loading={loading}
-            data={products}
-            columns={columns}
-            count={totalCount}
-            onFetchData={onFetchData}
-            onRowClick={onRowClick}
-          />
-        </CardContent>
-      </Card>
-    </Box>
+    </Fade>
   );
 }
 
