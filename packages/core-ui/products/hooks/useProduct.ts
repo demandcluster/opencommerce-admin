@@ -30,9 +30,9 @@ export default function useProduct({ id }: ProductHookOptions) {
       getProduct({
         variables: {
           productId: id,
-          shopId
+          shopId: shopId!
         }
-      });
+      }).then();
     } else {
       setProduct(undefined);
     }

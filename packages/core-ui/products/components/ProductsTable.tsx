@@ -19,7 +19,7 @@ import VisibleStatus from "./common/VisibleStatus";
 const ProductsTable: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { currentShop, isCurrentShopPrimary } = useShop();
+  const { currentShop, isCurrentShopPrimary, changeShop } = useShop();
   const { viewer } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -115,7 +115,12 @@ const ProductsTable: FC = () => {
     setLoading(false);
   }, [currentShop]);
 
-  const onRowClick: RowClickHandler<Product> = (row) => navigate(row._id);
+  const onRowClick: RowClickHandler<Product> = (row) => {
+    if (isCurrentShopPrimary) {
+      changeShop(row.shop._id);
+    }
+    navigate(row._id);
+  };
 
   const labels = useMemo(() => ({
     globalFilterPlaceholder: t("admin.productTable.filters.placeholder")

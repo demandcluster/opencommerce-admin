@@ -1,3 +1,5 @@
+import {useParams} from "react-router-dom";
+import {useEffect, useMemo} from "react";
 import {
   Card,
   CardHeader,
@@ -7,15 +9,13 @@ import {
   Fade,
   Skeleton
 } from "@mui/material";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import {useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
 
 import countryOptions from "platform/utils/countryOptions";
 import ControlledTextField from "ui/ControlledTextField";
 import ControlledSelect from "ui/ControlledSelect";
 import useProduct from "../hooks/useProduct";
-import { useParams } from "react-router-dom";
-import { useEffect, useMemo } from "react";
 
 type ProductDetailsFieldValues = {
   title: string,
@@ -27,9 +27,9 @@ type ProductDetailsFieldValues = {
 }
 
 const ProductDetailsForm = () => {
-  const { t } = useTranslation();
-  const { productId } = useParams();
-  const { product, loading } = useProduct({ id: productId });
+  const {t} = useTranslation();
+  const {productId} = useParams();
+  const {product, loading} = useProduct({id: productId});
 
   const productFieldValues = useMemo<ProductDetailsFieldValues>(() => ({
     title: product?.title || "",
@@ -44,7 +44,7 @@ const ProductDetailsForm = () => {
     control,
     handleSubmit,
     reset,
-    formState: { isDirty, isSubmitting }
+    formState: {isDirty, isSubmitting}
   } = useForm<ProductDetailsFieldValues>({
     defaultValues: productFieldValues
   });
@@ -59,14 +59,17 @@ const ProductDetailsForm = () => {
 
   if (loading) {
     return (
-      <Skeleton variant="rectangular" sx={{borderRadius: 1}} height={"40.2rem"}/>
+      <Skeleton
+        variant="rectangular"
+        sx={{borderRadius: 1}}
+        height={"40.2rem"}
+      />
     )
   }
 
   return (
-    <Fade in>
-      <Card>
-      <CardHeader title={t("admin.productAdmin.details", "Details")} />
+    <Card>
+      <CardHeader title={t("admin.productAdmin.details", "Details")}/>
       <CardContent>
         <Box
           display="flex"
@@ -79,25 +82,21 @@ const ProductDetailsForm = () => {
             control={control}
             name="title"
             label={t("productDetailEdit.title", "Title")}
-            size="small"
           />
           <ControlledTextField
             control={control}
             name="slug"
             label={t("productDetailEdit.parmalink", "Slug")}
-            size="small"
           />
           <ControlledTextField
             control={control}
             name="pageTitle"
             label={t("productDetailEdit.pageTitle", "Page Title")}
-            size="small"
           />
           <ControlledTextField
             control={control}
             name="vendor"
             label={t("productDetailEdit.vendor", "Vendor")}
-            size="small"
           />
           <ControlledTextField
             control={control}
@@ -105,29 +104,28 @@ const ProductDetailsForm = () => {
             minRows={2}
             name="description"
             label={t("productDetailEdit.description", "Description")}
-            size="small"
           />
           <ControlledSelect
             control={control}
             name="originCountry"
             label={t("productDetailEdit.originCountry", "Country of origin")}
             items={countryOptions}
-            size="small"
           />
-          <Box>
-            <Button
-              color="primary"
-              disabled={!isDirty || isSubmitting}
-              variant="contained"
-              type="submit"
-            >
-              {t("app.saveChanges", "Save")}
-            </Button>
-          </Box>
+          <Button
+            color="primary"
+            disabled={!isDirty || isSubmitting}
+            variant="contained"
+            disableElevation
+            type="submit"
+            sx={{
+              width: "fit-content"
+            }}
+          >
+            {t("app.saveChanges", "Save")}
+          </Button>
         </Box>
       </CardContent>
     </Card>
-    </Fade>
   )
 }
 
