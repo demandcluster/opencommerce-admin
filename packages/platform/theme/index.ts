@@ -18,7 +18,7 @@ declare module '@mui/material/styles' {
       primary: string
     };
   }
-  
+
   export interface PaletteOptions {
     gradient?: {
       primary?: string
@@ -172,7 +172,13 @@ theme = createTheme(theme, <ThemeOptions>{
           borderRadius: "10px"
         },
         input: {
-            padding: `${theme.spacing(1.5)} ${theme.spacing(1.5)}`
+          padding: `${theme.spacing(1.5)} ${theme.spacing(1.5)}`
+        },
+        inputSizeSmall: {
+          padding: `${theme.spacing(1.125)} ${theme.spacing(1.75)}`
+        },
+        inputMultiline: {
+          padding: 0
         },
         sizeSmall: {
           backgroundColor: theme.palette.background.lighten
@@ -207,7 +213,7 @@ theme = createTheme(theme, <ThemeOptions>{
           textTransform: "none",
           paddingTop: theme.spacing(1.25),
           paddingBottom: theme.spacing(1.25),
-          
+
         }
       }
     }

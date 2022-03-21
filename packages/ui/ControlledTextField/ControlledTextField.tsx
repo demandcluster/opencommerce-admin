@@ -10,10 +10,16 @@ import OutlinedInput, {OutlinedInputProps} from "@mui/material/OutlinedInput";
 type ControlledTextFieldProps = {
   name: string
   defaultValue?: string
-  label: string
   control: Control<any>
-  hideLabel?: boolean
-} & OutlinedInputProps;
+} & (
+  {
+    label: string
+    hideLabel?: false
+  }
+  | {
+  label?: string
+  hideLabel: boolean
+}) & OutlinedInputProps;
 
 const ControlledTextField: FC<ControlledTextFieldProps> = (
   {

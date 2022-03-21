@@ -72,6 +72,8 @@ importers:
       notistack: ^2.0.3
       platform: workspace:*
       react: ^17.0.2
+      react-dnd: ^15.1.1
+      react-dnd-html5-backend: ^15.1.2
       react-dom: ^17.0.2
       react-helmet-async: ^1.2.2
       react-hook-form: ^7.25.3
@@ -95,6 +97,8 @@ importers:
       notistack: 2.0.3_3bffd08b967165f57931a6a4fa352453
       platform: link:../platform
       react: 17.0.2
+      react-dnd: 15.1.1_react@17.0.2
+      react-dnd-html5-backend: 15.1.2
       react-dom: 17.0.2_react@17.0.2
       react-helmet-async: 1.2.2_react-dom@17.0.2+react@17.0.2
       react-hook-form: 7.26.1_react@17.0.2
@@ -2338,6 +2342,18 @@ packages:
     resolution: {integrity: sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==}
     dev: false
 
+  /@react-dnd/asap/4.0.0:
+    resolution: {integrity: sha512-0XhqJSc6pPoNnf8DhdsPHtUhRzZALVzYMTzRwV4VI6DJNJ/5xxfL9OQUwb8IH5/2x7lSf7nAZrnzUD+16VyOVQ==}
+    dev: false
+
+  /@react-dnd/invariant/3.0.0:
+    resolution: {integrity: sha512-keberJRIqPX15IK3SWS/iO1t/kGETiL1oczKrDitAaMnQ+kpHf81l3MrRmFjvfqcnApE+izEvwM6GsyoIcpsVA==}
+    dev: false
+
+  /@react-dnd/shallowequal/3.0.0:
+    resolution: {integrity: sha512-1ELWQdJB2UrCXTKK5cCD9uGLLIwECLIEdttKA255owdpchtXohIjZBTlFJszwYi2ZKe2Do+QvUzsGyGCMNwbdw==}
+    dev: false
+
   /@rollup/pluginutils/4.1.2:
     resolution: {integrity: sha512-ROn4qvkxP9SyPeHaf7uQC/GPFY6L/OWy9+bd9AwcjOAWQwxRscoEyAUD8qCY5o5iL4jqQwoLk2kaTKJPb/HwzQ==}
     engines: {node: '>= 8.0.0'}
@@ -3358,6 +3374,14 @@ packages:
       path-type: 4.0.0
     dev: true
 
+  /dnd-core/15.1.1:
+    resolution: {integrity: sha512-Mtj/Sltcx7stVXzeDg4g7roTe/AmzRuIf/FYOxX6F8gULbY54w066BlErBOzQfn9RIJ3gAYLGX7wvVvoBSq7ig==}
+    dependencies:
+      '@react-dnd/asap': 4.0.0
+      '@react-dnd/invariant': 3.0.0
+      redux: 4.1.2
+    dev: false
+
   /dom-accessibility-api/0.5.11:
     resolution: {integrity: sha512-7X6GvzjYf4yTdRKuCVScV+aA9Fvh5r8WzWrXBH9w82ZWB/eYDMGCnazoC/YAqAzUJWHzLOnZqr46K3iEyUhUvw==}
     dev: true
@@ -3674,6 +3698,10 @@ packages:
     resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}
     engines: {node: ^10.17.0 || ^12.0.0 || >= 13.7.0}
     dev: true
+
+  /fast-deep-equal/3.1.3:
+    resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
+    dev: false
 
   /fast-glob/3.2.11:
     resolution: {integrity: sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==}
@@ -4760,9 +4788,9 @@ packages:
       '@emotion/styled':
         optional: true
     dependencies:
-      '@emotion/react': 11.7.1_7130fa07c3a1bb7b3330cbeb9c0159ca
-      '@emotion/styled': 11.6.0_aad1131320234161e5b30a4e5adebbe0
-      '@mui/material': 5.4.2_6226f8758b5b21b5515ad844c1caeb22
+      '@emotion/react': 11.7.1_@babel+core@7.17.4+react@17.0.2
+      '@emotion/styled': 11.6.0_2f5e3aad4ccc2f648f3f047fad493f05
+      '@mui/material': 5.4.2_c84e354a724f4213aa6539fdea9d08aa
       clsx: 1.1.1
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
@@ -5051,6 +5079,35 @@ packages:
       strip-json-comments: 2.0.1
     dev: true
 
+  /react-dnd-html5-backend/15.1.2:
+    resolution: {integrity: sha512-mem9QbutUF+aA2YC1y47G3ECjnYV/sCYKSnu5Jd7cbg3fLMPAwbnTf/JayYdnCH5l3eg9akD9dQt+cD0UdF8QQ==}
+    dependencies:
+      dnd-core: 15.1.1
+    dev: false
+
+  /react-dnd/15.1.1_react@17.0.2:
+    resolution: {integrity: sha512-QLrHtPU08U4c5zop0ANeqrHXaQw2EWLMn8DQoN6/e4eSN/UbB84P49/80Qg0MEF29VLB5vikSoiFh9N8ASNmpQ==}
+    peerDependencies:
+      '@types/hoist-non-react-statics': '>= 3.3.1'
+      '@types/node': '>= 12'
+      '@types/react': '>= 16'
+      react: '>= 16.14'
+    peerDependenciesMeta:
+      '@types/hoist-non-react-statics':
+        optional: true
+      '@types/node':
+        optional: true
+      '@types/react':
+        optional: true
+    dependencies:
+      '@react-dnd/invariant': 3.0.0
+      '@react-dnd/shallowequal': 3.0.0
+      dnd-core: 15.1.1
+      fast-deep-equal: 3.1.3
+      hoist-non-react-statics: 3.3.2
+      react: 17.0.2
+    dev: false
+
   /react-dom/17.0.2_react@17.0.2:
     resolution: {integrity: sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==}
     peerDependencies:
@@ -5209,6 +5266,12 @@ packages:
       indent-string: 4.0.0
       strip-indent: 3.0.0
     dev: true
+
+  /redux/4.1.2:
+    resolution: {integrity: sha512-SH8PglcebESbd/shgf6mii6EIoRM0zrQyjcuQ+ojmfxjTtE0z9Y8pa62iA/OJ58qjP6j27uyW4kUF4jl/jd6sw==}
+    dependencies:
+      '@babel/runtime': 7.17.2
+    dev: false
 
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
