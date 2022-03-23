@@ -13,6 +13,7 @@ import './config/i18n';
 import { ShopProvider } from "./context/ShopContext";
 import { GlobalAlerts } from "./components/common";
 import AuthGraphQLProvider from './context/AuthGraphQLContext';
+import DevProvider from "./context/DevContext";
 
 const Login = lazy(() => import("./components/auth/Login"));
 const Signup = lazy(() => import("./components/auth/Signup"));
@@ -27,37 +28,39 @@ const App: FC = () => {
               <SnackbarProvider anchorOrigin={snackbarPosition} maxSnack={3}>
                 <AuthProvider>
                   <ShopProvider>
-                    <GlobalAlerts />
-                    <Routes>
-                      {globalRoutesDefinitions.map((
-                        {
-                          title,
-                          Component,
-                          authenticated,
-                          ...props
-                        }, index) => (
-                        <Route
-                          key={index}
-                          {...props}
-                          element={(
-                            <GlobalRoute
-                              title={title}
-                              authenticated={authenticated}
-                              children={<Component />}
-                            />
-                          )} />
-                      ))}
-                      <Route path="login" element={
-                        <Suspense fallback={<></>}>
-                          <Login />
-                        </Suspense>
-                      } />
-                      <Route path="signup" element={
-                        <Suspense fallback={<></>}>
-                          <Signup />
-                        </Suspense>
-                      } />
-                    </Routes>
+                    <DevProvider>
+                      <GlobalAlerts />
+                      <Routes>
+                        {globalRoutesDefinitions.map((
+                          {
+                            title,
+                            Component,
+                            authenticated,
+                            ...props
+                          }, index) => (
+                          <Route
+                            key={index}
+                            {...props}
+                            element={(
+                              <GlobalRoute
+                                title={title}
+                                authenticated={authenticated}
+                                children={<Component />}
+                              />
+                            )} />
+                        ))}
+                        <Route path="login" element={
+                          <Suspense fallback={<></>}>
+                            <Login />
+                          </Suspense>
+                        } />
+                        <Route path="signup" element={
+                          <Suspense fallback={<></>}>
+                            <Signup />
+                          </Suspense>
+                        } />
+                      </Routes>
+                    </DevProvider>
                   </ShopProvider>
                 </AuthProvider>
               </SnackbarProvider>

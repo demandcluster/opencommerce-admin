@@ -1,18 +1,22 @@
-import {Box, Button} from "@mui/material";
+import {Box} from "@mui/material";
 import {Routes, Route} from "react-router-dom";
 
 import useUI from "platform/hooks/useUI";
 import ProductVariantTree from "./ProductVariantTree";
 import ProductEdit from "./ProductEdit";
 import VariantEdit from "./VariantEdit";
-import {sidebarWidthExpanded, sidebarWidthCollapsed} from "platform/components/layout";
+import ProductVariantTreeMobileButton from "./ProductVariantTreeMobileButton";
+import ProductTitle from "./ProductTitle";
+import VariantTitle from "./VariantTitle";
 
-type Props = {}
-
-const Product = (props: Props) => {
-  const {isTablet, openDetailDrawer, isPrimarySidebarOpen} = useUI();
+const Product = () => {
+  const {isTablet} = useUI();
   return (
     <Box>
+      <Routes>
+        <Route path="/" element={<ProductTitle/>}/>
+        <Route path=":variantId" element={<VariantTitle/>}/>
+      </Routes>
       <Box
         display="grid"
         gap={2}
@@ -29,37 +33,11 @@ const Product = (props: Props) => {
           <Route path=":variantId" element={<VariantEdit/>}/>
         </Routes>
         {
-          !isTablet && (
-            <Box pt={6.5}>
-              <ProductVariantTree/>
-            </Box>
-          )
+          !isTablet && <ProductVariantTree/>
         }
       </Box>
       {
-        isTablet && (
-          <Box
-            position="fixed"
-            bottom={0}
-            right="auto"
-            width={{
-              xs: `calc(100% - 32px)`,
-              sm: `calc(100% - ${isPrimarySidebarOpen ? sidebarWidthExpanded : sidebarWidthCollapsed}px - 48px)`
-            }}
-            bgcolor="background.paper"
-            boxShadow={10}
-            borderRadius="12px 12px 0 0"
-          >
-            <Button
-              fullWidth
-              onClick={() => {
-                openDetailDrawer(<ProductVariantTree/>)
-              }}
-            >
-              See Variants
-            </Button>
-          </Box>
-        )
+        isTablet && <ProductVariantTreeMobileButton/>
       }
     </Box>
   )

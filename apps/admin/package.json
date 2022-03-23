@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development vite --host",
+    "dev": "vite --host --mode development",
     "build": "NODE_ENV=production vite build",
     "build:dev": "NODE_ENV=development vite build --mode development",
     "start": "NODE_ENV=production vite preview --host",

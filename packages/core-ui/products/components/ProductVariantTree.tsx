@@ -1,5 +1,5 @@
 import {memo} from "react";
-import {Box, Card, CardContent, Divider, Fade, IconButton, List, Skeleton, Typography} from "@mui/material";
+import {Card, CardContent, Divider, Fade, IconButton, List, Skeleton} from "@mui/material";
 import MoreVert from "@mui/icons-material/MoreVert";
 
 import ListItemLink from "ui/ListItemLink";
@@ -73,4 +73,4 @@ const ProductVariantTree = () => {
   )
 }
 
-export default ProductVariantTree;
+export default memo(ProductVariantTree);
