@@ -19,9 +19,7 @@ import useProduct from '../hooks/useProduct';
 const ProductFormTags = () => {
   const { t } = useTranslation();
   const { productId } = useParams();
-  const { product, loading } = useProduct({
-    id: productId
-  });
+  const { product, loading } = useProduct();
 
   if (loading) {
     return (
@@ -49,7 +47,7 @@ const ProductFormTags = () => {
               <List>
                 {
                   product?.tags.nodes.map((tag, key) => (
-                    <ListItem>
+                    <ListItem key={key}>
                       <ListItemText
                         primary={tag.displayTitle}
                       />

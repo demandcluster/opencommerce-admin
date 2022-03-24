@@ -9,7 +9,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 export type DialogProps = {
   title: string,
-  content: string | ReactNode
+  content?: string | ReactNode
   closeTitle?: string
 } & ({
   onConfirm: () => void | Promise<void>,
@@ -39,7 +39,7 @@ const Dialog: FC<DialogProps & { onClose: () => void }> = ({
 }) => {
   const [internalLoading, setInternalLoading] = useState(false);
   return (
-    <MuiDialog open>
+    <MuiDialog open={true}>
       <DialogTitle>
         {title}
       </DialogTitle>

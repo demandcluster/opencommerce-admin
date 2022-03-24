@@ -49,12 +49,15 @@ export const DevProvider: FC = ({children}) => {
       {children}
       {isDev && (
         <Box
-          position="absolute"
+          position="fixed"
           bottom={0}
           right="2rem"
           display="flex"
           flexDirection="column"
           alignItems="end"
+          sx={{
+
+          }}
         >
           <ButtonBase
             onClick={() => setExpanded(!expanded)}
@@ -62,7 +65,9 @@ export const DevProvider: FC = ({children}) => {
               width: "fit-content",
               p: 1,
               borderRadius: "6px 6px 0 0",
-              bgcolor: (theme: Theme) => theme.palette.background.paper
+              bgcolor: (theme: Theme) => theme.palette.background.paper,
+              boxShadow: expanded ? 9 : 3,
+              zIndex: (theme: Theme) => theme.zIndex.modal
             }}>
             Devtools
             <KeyboardDoubleArrowUpRoundedIcon
@@ -72,10 +77,13 @@ export const DevProvider: FC = ({children}) => {
               }}
             />
           </ButtonBase>
-          <Collapse in={expanded}>
+          <Collapse in={expanded} sx={{
+            zIndex: (theme: Theme) => theme.zIndex.modal,
+            borderRadius: "12px 0 0 0",
+            boxShadow: 9
+          }}>
             <Box
               bgcolor="background.paper"
-              borderRadius="6px 0 0 0"
               maxWidth="350px"
             >
               <List>

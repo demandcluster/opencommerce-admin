@@ -6,10 +6,11 @@ import ListItemLink from "ui/ListItemLink";
 import VisibleStatus from "./common/VisibleStatus";
 import {useParams} from "react-router-dom";
 import useProduct from "../hooks/useProduct";
+import ProductTreeItem from "./ProductTreeItem";
 
 const ProductVariantTree = () => {
   const {productId} = useParams();
-  const {product, loading} = useProduct({id: productId});
+  const {product, loading} = useProduct();
 
   if (loading) {
     return (
@@ -23,26 +24,9 @@ const ProductVariantTree = () => {
 
   return (
     <Fade in>
-      <Card>
+      <Card sx={{height: "fit-content"}}>
         <CardContent>
-          <ListItemLink
-            to={`/products/${productId}`}
-            matchPathEnd={true}
-            secondaryAction={
-              <IconButton onClick={(e) => e.stopPropagation()}>
-                <MoreVert/>
-              </IconButton>
-            }
-            textProps={{
-              primary: product?.title,
-              secondary: (
-                <VisibleStatus isVisible={product?.isVisible || false} typographyProps={{
-                  variant: "body2",
-                  color: "text.secondary"
-                }}/>
-              )
-            }}
-          />
+          <ProductTreeItem/>
           <Divider sx={{my: 2}}/>
           <List>
             {product?.variants.map((variant, key) => (
@@ -51,12 +35,12 @@ const ProductVariantTree = () => {
                 to={`/products/${productId}/${variant._id}`}
                 matchPathEnd={true}
                 secondaryAction={
-                  <IconButton onClick={(e) => e.stopPropagation()}>
+                  <IconButton>
                     <MoreVert/>
                   </IconButton>
                 }
                 textProps={{
-                  primary: variant.optionTitle,
+                  primary: variant?.optionTitle || "Untitled",
                   secondary: (
                     <VisibleStatus isVisible={variant?.isVisible || false} typographyProps={{
                       variant: "body2",

@@ -1,10 +1,14 @@
 import React from 'react'
+import ProductFormMedia from "./ProductFormMedia";
+import ProductFormMetadata from "./ProductFormMetadata";
+import {Box} from "@mui/material";
 
-type Props = {}
-
-const VariantEdit = (props: Props) => {
+const VariantEdit = () => {
   return (
-    <div>VariantEdit</div>
+    <Box display="flex" flexDirection="column" gap={2}>
+      <ProductFormMedia type="variant"/>
+      <ProductFormMetadata type="variant"/>
+    </Box>
   )
 }
 

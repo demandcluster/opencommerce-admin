@@ -10,14 +10,15 @@ import {
   Skeleton,
   Button
 } from '@mui/material';
-import React, { useMemo } from 'react'
-import { useParams } from 'react-router-dom';
-import { useFieldArray, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import React, {FC, useMemo} from 'react'
+import {useParams} from 'react-router-dom';
+import {useFieldArray, useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
 import AddIcon from '@mui/icons-material/Add';
 
 import ControlledTextField from "ui/ControlledTextField";
 import useProduct from '../hooks/useProduct';
+import {ProductType} from "./Product";
 
 type ProductMetadataFieldValues = {
   metafields: {
@@ -25,13 +26,14 @@ type ProductMetadataFieldValues = {
     value: string
   }[]
 }
+type Props = {
+  type?: ProductType
+}
 
-const ProductFormMetadata = () => {
-  const { t } = useTranslation();
-  const { productId } = useParams();
-  const { product, loading } = useProduct({
-    id: productId
-  });
+const ProductFormMetadata: FC<Props> = ({type = "product"}) => {
+  const {t} = useTranslation();
+  const {productId} = useParams();
+  const {product, loading} = useProduct();
 
   const productMetadataFieldValues = useMemo(() => ({
     metafields: product?.metafields || []
@@ -44,7 +46,7 @@ const ProductFormMetadata = () => {
     defaultValues: productMetadataFieldValues
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {fields, append, remove} = useFieldArray({
     control,
     name: "metafields"
   })
@@ -91,11 +93,11 @@ const ProductFormMetadata = () => {
               ))
             }
             <ListItem
-            button
-            sx={{
-              display:"flex",
-              justifyContent: "center",
-              bgcolor: "background.lighten"
+              button
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                bgcolor: "background.lighten"
               }}>
               <AddIcon/>
             </ListItem>

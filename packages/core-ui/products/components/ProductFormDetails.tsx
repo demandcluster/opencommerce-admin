@@ -29,7 +29,7 @@ type ProductDetailsFieldValues = {
 const ProductDetailsForm = () => {
   const {t} = useTranslation();
   const {productId} = useParams();
-  const {product, loading} = useProduct({id: productId});
+  const {product, loading} = useProduct();
 
   const productFieldValues = useMemo<ProductDetailsFieldValues>(() => ({
     title: product?.title || "",
