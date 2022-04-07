@@ -7,7 +7,7 @@
     "build": "NODE_ENV=production vite build",
     "build:dev": "NODE_ENV=development vite build --mode development",
     "start": "NODE_ENV=production vite preview --host",
-    "start:dev": "NODE_ENV=development vite preview --host"
+    "start:dev": "NODE_ENV=development vite preview --host --mode development"
   },
   "dependencies": {
     "@demandcluster/core-ui": "workspace:*",
