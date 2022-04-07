@@ -25,6 +25,7 @@ const ControlledSelect: FC<ControlledSelectProps> = (
     defaultValue = "",
     items,
     hideLabel = false,
+    sx,
     ...props
   }) => {
   const theme = useTheme();
@@ -36,7 +37,7 @@ const ControlledSelect: FC<ControlledSelectProps> = (
       control={control}
       defaultValue={defaultValue || items[0].value}
       render={({field, fieldState}) => (
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={sx}>
           {!hideLabel && (
             <FormLabel htmlFor={`controlled-select-${name}`}>{label}</FormLabel>
           )}

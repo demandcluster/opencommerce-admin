@@ -31,7 +31,6 @@ const Order: FC = () => {
   return (
     <Box mb={4}>
       <OrderHeader />
-
       <Box
         display="grid"
         rowGap={2}

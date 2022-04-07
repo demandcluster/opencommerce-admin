@@ -1,4 +1,4 @@
-import { FC, useState, useRef, useCallback, useEffect } from 'react'
+import { FC, useState, useEffect } from 'react'
 import { FilterValue } from 'react-table'
 import { FormControl, OutlinedInput } from "@mui/material";
 
@@ -9,15 +9,15 @@ type Props = {
 
 const GlobalFilter: FC<Props> = ({globalFilter, setGlobalFilter}) => {
     const [value, setValue] = useState(globalFilter)
-  
+
     useEffect(() => {
       const delayDebounced = setTimeout(() => {
         setGlobalFilter(value || undefined)
     }, 200);
-    
-      return () => clearTimeout(delayDebounced)      
+
+      return () => clearTimeout(delayDebounced)
     }, [value])
-    
+
 
     return (
     <FormControl>

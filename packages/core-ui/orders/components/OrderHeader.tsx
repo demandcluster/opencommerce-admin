@@ -4,16 +4,13 @@ import { useTranslation } from "react-i18next";
 import { Box, Button, Skeleton, Typography } from "@mui/material";
 import OrderStatusChip from "./common/OrderStatusChip";
 import MoreVert from "@mui/icons-material/MoreVert";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import timeAgo from "../helpers/timeAgo";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useOrder from "../hooks/useOrder";
-import { useUI } from "platform/hooks";
 
 const OrderHeader: FC = () => {
   const { t } = useTranslation();
   const { orderId } = useParams();
-  const { setTooblarContent } = useUI();
   const { order, loading } = useOrder({ id: orderId! });
 
   return (
@@ -23,7 +20,7 @@ const OrderHeader: FC = () => {
           <Typography variant="h4" display="flex">
             {t("order.order", "Order")} {
               loading ? (
-                <Skeleton width="5ch" sx={{ display: "inline-block" }} />
+                <Skeleton width="5ch" sx={{ display: "inline-block", ml: 1 }} />
               ) : order?.referenceId
             }
           </Typography>

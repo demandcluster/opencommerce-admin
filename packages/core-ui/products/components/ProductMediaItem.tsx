@@ -95,8 +95,7 @@ const ProductMediaItem: FC<ProductMediaItemProps> = (
       data-handler-id={handlerId}
     >
       <DragIndicatorIcon
-        sx={{cursor: "pointer"}}
-        fontSize="large"
+        sx={{cursor: "grab"}}
       />
       <ControlledTextField
         control={control}
@@ -104,7 +103,7 @@ const ProductMediaItem: FC<ProductMediaItemProps> = (
         hideLabel={true}
         type="number"
         sx={{
-          width: "6ch"
+          width: "10ch"
         }}
         fullWidth={false}
       />
@@ -113,7 +112,7 @@ const ProductMediaItem: FC<ProductMediaItemProps> = (
       >
         <Box
           width="fit-content"
-          height="10rem"
+          height={{xs: "6rem", sm: "10rem"}}
           display="flex"
           borderRadius={1}
           overflow="hidden"

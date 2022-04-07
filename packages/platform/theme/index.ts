@@ -57,7 +57,7 @@ let theme = createTheme({
     }
   },
   shape: {
-    borderRadius: 12,
+    borderRadius: 8,
   },
   typography: {
     h1: {
@@ -169,7 +169,7 @@ theme = createTheme(theme, <ThemeOptions>{
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: "10px"
+          borderRadius: "8px"
         },
         input: {
           padding: `${theme.spacing(1.5)} ${theme.spacing(1.5)}`
@@ -182,6 +182,16 @@ theme = createTheme(theme, <ThemeOptions>{
         },
         sizeSmall: {
           backgroundColor: theme.palette.background.lighten
+        }
+      }
+    },
+    MuiCard: {
+      defaultProps: {
+        elevation: 10
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: "12px"
         }
       }
     },

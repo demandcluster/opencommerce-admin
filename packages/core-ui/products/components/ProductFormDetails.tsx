@@ -1,4 +1,3 @@
-import {useParams} from "react-router-dom";
 import {useEffect, useMemo} from "react";
 import {
   Card,
@@ -28,7 +27,6 @@ type ProductDetailsFieldValues = {
 
 const ProductDetailsForm = () => {
   const {t} = useTranslation();
-  const {productId} = useParams();
   const {product, loading} = useProduct();
 
   const productFieldValues = useMemo<ProductDetailsFieldValues>(() => ({
@@ -68,64 +66,66 @@ const ProductDetailsForm = () => {
   }
 
   return (
-    <Card>
-      <CardHeader title={t("admin.productAdmin.details", "Details")}/>
-      <CardContent>
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap={2}
-          onSubmit={handleSubmit(onSubmit)}
-          component="form"
-        >
-          <ControlledTextField
-            control={control}
-            name="title"
-            label={t("productDetailEdit.title", "Title")}
-          />
-          <ControlledTextField
-            control={control}
-            name="slug"
-            label={t("productDetailEdit.parmalink", "Slug")}
-          />
-          <ControlledTextField
-            control={control}
-            name="pageTitle"
-            label={t("productDetailEdit.pageTitle", "Page Title")}
-          />
-          <ControlledTextField
-            control={control}
-            name="vendor"
-            label={t("productDetailEdit.vendor", "Vendor")}
-          />
-          <ControlledTextField
-            control={control}
-            multiline
-            minRows={2}
-            name="description"
-            label={t("productDetailEdit.description", "Description")}
-          />
-          <ControlledSelect
-            control={control}
-            name="originCountry"
-            label={t("productDetailEdit.originCountry", "Country of origin")}
-            items={countryOptions}
-          />
-          <Button
-            color="primary"
-            disabled={!isDirty || isSubmitting}
-            variant="contained"
-            disableElevation
-            type="submit"
-            sx={{
-              width: "fit-content"
-            }}
+    <Fade in>
+      <Card>
+        <CardHeader title={t("admin.productAdmin.details", "Details")}/>
+        <CardContent>
+          <Box
+            display="flex"
+            flexDirection="column"
+            gap={2}
+            onSubmit={handleSubmit(onSubmit)}
+            component="form"
           >
-            {t("app.saveChanges", "Save")}
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+            <ControlledTextField
+              control={control}
+              name="title"
+              label={t("productDetailEdit.title", "Title")}
+            />
+            <ControlledTextField
+              control={control}
+              name="slug"
+              label={t("productDetailEdit.parmalink", "Slug")}
+            />
+            <ControlledTextField
+              control={control}
+              name="pageTitle"
+              label={t("productDetailEdit.pageTitle", "Page Title")}
+            />
+            <ControlledTextField
+              control={control}
+              name="vendor"
+              label={t("productDetailEdit.vendor", "Vendor")}
+            />
+            <ControlledTextField
+              control={control}
+              multiline
+              minRows={2}
+              name="description"
+              label={t("productDetailEdit.description", "Description")}
+            />
+            <ControlledSelect
+              control={control}
+              name="originCountry"
+              label={t("productDetailEdit.originCountry", "Country of origin")}
+              items={countryOptions}
+            />
+            <Button
+              color="primary"
+              disabled={!isDirty || isSubmitting}
+              variant="contained"
+              disableElevation
+              type="submit"
+              sx={{
+                width: "fit-content"
+              }}
+            >
+              {t("app.saveChanges", "Save")}
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Fade>
   )
 }
 

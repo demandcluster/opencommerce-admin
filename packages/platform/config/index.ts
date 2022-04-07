@@ -1,4 +1,4 @@
-import {cleanEnv, str} from "envalid";
+import {cleanEnv, str, bool} from "envalid";
 
 // @ts-ignore
 export default cleanEnv(import.meta.env, {
@@ -27,5 +27,9 @@ export default cleanEnv(import.meta.env, {
   VITE_ROOT_URL: str({
     desc: "The canonical root URL for the Reaction Admin server",
     example: "http://localhost:4080"
-  })
+  }),
+  VITE_MARKETPLACE_MODE: bool({
+    default: true,
+    desc: "Is admin running in marketplace mode"
+  }),
 });

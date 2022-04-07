@@ -3,10 +3,10 @@ import {
   Card,
   CardHeader,
   CardContent,
+  Fade,
   List,
   ListItem,
   ListItemText,
-  Typography,
   Skeleton,
   Button
 } from '@mui/material';
@@ -32,7 +32,6 @@ type Props = {
 
 const ProductFormMetadata: FC<Props> = ({type = "product"}) => {
   const {t} = useTranslation();
-  const {productId} = useParams();
   const {product, loading} = useProduct();
 
   const productMetadataFieldValues = useMemo(() => ({
@@ -62,60 +61,62 @@ const ProductFormMetadata: FC<Props> = ({type = "product"}) => {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title={t("admin.productAdmin.metadata", "Metadata")}
-      />
-      <CardContent>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <List disablePadding>
-            {
-              fields.length === 0 && (
-                <ListItem>
-                  <ListItemText
-                    primaryTypographyProps={{color: "text.secondary"}}
-                    primary={"No metadata fields"}
-                  />
-                </ListItem>
-              )
-            }
-            {
-              fields.map((field, index) => (
-                <ListItem>
-                  <ControlledTextField
-                    size="small"
-                    control={control}
-                    name={`metafields.${index}.key`}
-                    label={t("productDetailEdit.metafieldKey", "Key")}
-                    hideLabel={index !== 0}
-                  />
-                </ListItem>
-              ))
-            }
-            <ListItem
-              button
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                bgcolor: "background.lighten"
-              }}>
-              <AddIcon/>
-            </ListItem>
-          </List>
-          <Box>
-            <Button
-              color="primary"
-              disabled={!isDirty || isSubmitting}
-              variant="contained"
-              disableElevation
-              type="submit"
-            >
-              {t("app.saveChanges", "Save")}
-            </Button>
+    <Fade in>
+      <Card>
+        <CardHeader
+          title={t("admin.productAdmin.metadata", "Metadata")}
+        />
+        <CardContent>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <List disablePadding>
+              {
+                fields.length === 0 && (
+                  <ListItem>
+                    <ListItemText
+                      primaryTypographyProps={{color: "text.secondary"}}
+                      primary={"No metadata fields"}
+                    />
+                  </ListItem>
+                )
+              }
+              {
+                fields.map((field, index) => (
+                  <ListItem>
+                    <ControlledTextField
+                      size="small"
+                      control={control}
+                      name={`metafields.${index}.key`}
+                      label={t("productDetailEdit.metafieldKey", "Key")}
+                      hideLabel={index !== 0}
+                    />
+                  </ListItem>
+                ))
+              }
+              <ListItem
+                button
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  bgcolor: "background.lighten"
+                }}>
+                <AddIcon/>
+              </ListItem>
+            </List>
+            <Box>
+              <Button
+                color="primary"
+                disabled={!isDirty || isSubmitting}
+                variant="contained"
+                disableElevation
+                type="submit"
+              >
+                {t("app.saveChanges", "Save")}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Fade>
   )
 }
 

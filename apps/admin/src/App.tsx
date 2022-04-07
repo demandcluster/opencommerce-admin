@@ -1,22 +1,22 @@
-import { FC, lazy, Suspense } from 'react';
+import {FC, lazy, Suspense} from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from '@mui/material/styles';
-
 import { SnackbarProvider } from "notistack";
-import { UIProvider } from "./context/UIContext";
-import { AuthProvider } from "./context/AuthContext";
-import { GlobalRoute, globalRoutesDefinitions } from "./router";
-import theme from "./theme";
-import snackbarPosition from "./utils/getSnackbarPosition";
-import './config/i18n';
-import { ShopProvider } from "./context/ShopContext";
-import { GlobalAlerts } from "./components/common";
-import AuthGraphQLProvider from './context/AuthGraphQLContext';
-import DevProvider from "./context/DevContext";
+import {ThemeProvider} from "@mui/material/styles";
 
-const Login = lazy(() => import("./components/auth/Login"));
-const Signup = lazy(() => import("./components/auth/Signup"));
+import "platform/config/i18n";
+import theme from "platform/theme";
+import {UIProvider} from "platform/context/UIContext";
+import AuthGraphQLProvider from "platform/context/AuthGraphQLContext";
+import snackbarPosition from "platform/utils/getSnackbarPosition";
+import {AuthProvider} from "platform/context/AuthContext";
+import {ShopProvider} from "platform/context/ShopContext";
+import DevProvider from "platform/context/DevContext";
+import {GlobalAlerts} from "platform/components/common";
+import {GlobalRoute, globalRoutesDefinitions} from "platform/router";
+
+const Login = lazy(() => import("platform/components/auth/Login"));
+const Signup = lazy(() => import("platform/components/auth/Signup"));
 
 const App: FC = () => {
   return (
@@ -70,6 +70,6 @@ const App: FC = () => {
       </BrowserRouter>
     </ThemeProvider>
   );
-}
+};
 
-export default App;
+export default App

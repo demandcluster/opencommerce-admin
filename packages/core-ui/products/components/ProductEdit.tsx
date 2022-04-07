@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import { useTranslation } from "react-i18next";
 
 import ProductFormDetails from "./ProductFormDetails";
 import ProductFormTags from "./ProductFormTags";

@@ -4,6 +4,8 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import {registerOperatorRoute} from "platform/router";
 import {OperatorViewWideLayout, OperatorViewStandardLayout} from 'platform/components/layout';
 
+const Product = lazy(() => import("./components/Product"))
+
 registerOperatorRoute({
   group: "navigation",
   priority: 20,
@@ -16,8 +18,19 @@ registerOperatorRoute({
 
 registerOperatorRoute({
   path: "/products/:productId/*",
-  href: "/products/:productId",
-  Component: lazy(() => import("./components/Product")),
+  Component: Product,
+  LayoutComponent: OperatorViewStandardLayout
+});
+
+registerOperatorRoute({
+  path: "/products/:productId/:variantId/*",
+  Component: Product,
+  LayoutComponent: OperatorViewStandardLayout
+});
+
+registerOperatorRoute({
+  path: "/products/:productId/:variantId/:optionId/*",
+  Component: Product,
   LayoutComponent: OperatorViewStandardLayout
 });
 

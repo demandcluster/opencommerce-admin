@@ -1,16 +1,22 @@
-import {memo} from "react";
-import {Card, CardContent, Divider, Fade, IconButton, List, Skeleton} from "@mui/material";
-import MoreVert from "@mui/icons-material/MoreVert";
-
-import ListItemLink from "ui/ListItemLink";
-import VisibleStatus from "./common/VisibleStatus";
-import {useParams} from "react-router-dom";
+import {Fragment, useCallback, useMemo, useState} from "react";
+import {Card, CardContent, Collapse, Divider, Fade, List, Skeleton} from "@mui/material";
 import useProduct from "../hooks/useProduct";
 import ProductTreeItem from "./ProductTreeItem";
+import {ProductVariant} from "platform/types/gql-types";
 
 const ProductVariantTree = () => {
-  const {productId} = useParams();
   const {product, loading} = useProduct();
+  const [variantExpanded, setVariantExpanded] = useState<{[key: string]: boolean}>({});
+  const hasOptions = useCallback((variant: ProductVariant) => variant?.options?.length > 0, []);
+
+  const handleExpand = (variantId: string, isExpanded: boolean) => {
+    setVariantExpanded((variantExpanded) => {
+      return {
+        ...variantExpanded,
+        [variantId]: isExpanded
+      }
+    });
+  };
 
   if (loading) {
     return (
@@ -26,30 +32,37 @@ const ProductVariantTree = () => {
     <Fade in>
       <Card sx={{height: "fit-content"}}>
         <CardContent>
-          <ProductTreeItem/>
+          <ProductTreeItem product={product!}/>
           <Divider sx={{my: 2}}/>
-          <List>
+          <List disablePadding>
             {product?.variants.map((variant, key) => (
-              <ListItemLink
-                key={key}
-                to={`/products/${productId}/${variant._id}`}
-                matchPathEnd={true}
-                secondaryAction={
-                  <IconButton>
-                    <MoreVert/>
-                  </IconButton>
-                }
-                textProps={{
-                  primary: variant?.optionTitle || "Untitled",
-                  secondary: (
-                    <VisibleStatus isVisible={variant?.isVisible || false} typographyProps={{
-                      variant: "body2",
-                      color: "text.secondary"
-                    }}/>
+              <Fragment key={key}>
+                <ProductTreeItem
+                  type="variant"
+                  product={variant!}
+                  onExpand={(isExpanded) => handleExpand(variant._id, isExpanded)}
+                />
+                {
+                  hasOptions(variant) && (
+                    <Collapse in={variantExpanded[variant?._id]} timeout="auto">
+                      <List sx={{pl: 6, py: 0}}>
+                        {
+                          variant.options.map((option, key) => (
+                            <ProductTreeItem
+                              key={key}
+                              type="option"
+                              product={option!}
+                              parentId={variant!._id}
+                            />
+                          ))
+                        }
+                      </List>
+                    </Collapse>
                   )
-                }}
-              />
+                }
+              </Fragment>
             ))}
+
           </List>
         </CardContent>
       </Card>
@@ -57,4 +70,4 @@ const ProductVariantTree = () => {
   )
 }
 
-export default memo(ProductVariantTree);
+export default ProductVariantTree;

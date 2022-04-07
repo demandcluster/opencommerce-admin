@@ -4,14 +4,16 @@ import {
   useLocation,
   useResolvedPath
 } from 'react-router-dom';
-import { FC, forwardRef, MouseEventHandler, useMemo } from "react";
+import {FC, forwardRef, MouseEventHandler, ReactNode, useMemo} from "react";
 import ListItem, { ListItemProps } from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText, { ListItemTextProps } from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import ListItemButton from '@mui/material/ListItemButton';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {Box, IconButton} from "@mui/material";
 
-type ListItemLinkProps = {
+export type ListItemLinkProps = {
   NavigationIcon?: FC;
   onClick?: MouseEventHandler;
   to: To;
@@ -19,6 +21,7 @@ type ListItemLinkProps = {
   hideTooltip?: boolean;
   textProps?: ListItemTextProps;
   matchPathEnd?: boolean;
+  primaryAction?: ReactNode;
 } & Omit<ListItemProps, "selected" | "component" | "button">;
 
 const ListItemLink: FC<ListItemLinkProps> = (
@@ -30,6 +33,7 @@ const ListItemLink: FC<ListItemLinkProps> = (
     tooltipTitle = "",
     textProps,
     matchPathEnd = false,
+    primaryAction,
     ...listItemProps
   }) => {
   const resolved = useResolvedPath(to);
@@ -68,6 +72,11 @@ const ListItemLink: FC<ListItemLinkProps> = (
         <ListItemButton
           selected={Boolean(match)}
           component={renderLink}
+          sx={{
+            ...(primaryAction && {
+              pl: 6
+            })
+          }}
         >
           {NavigationIcon && (
             <ListItemIcon>
@@ -82,6 +91,16 @@ const ListItemLink: FC<ListItemLinkProps> = (
             }}
           />
         </ListItemButton>
+        {primaryAction && (
+          <Box sx={{
+            position: "absolute",
+            top: "50%",
+            pl: 1,
+            transform: "translateY(-50%)"
+          }}>
+            {primaryAction}
+          </Box>
+        )}
       </ListItem>
     </Tooltip>
   );

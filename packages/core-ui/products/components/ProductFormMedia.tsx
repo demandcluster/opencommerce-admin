@@ -1,16 +1,17 @@
 import {
   Box,
+  Button,
   Card,
   CardHeader,
   CardContent,
+  Fade,
   List,
   Skeleton,
-  Button
+  Typography
 } from '@mui/material';
 import {DndProvider} from 'react-dnd'
 import {HTML5Backend} from 'react-dnd-html5-backend'
 import {FC, useCallback, useEffect, useMemo, memo} from 'react'
-import {useParams} from 'react-router-dom';
 import {useFieldArray, useForm} from "react-hook-form";
 import {useTranslation} from "react-i18next";
 import useProduct from '../hooks/useProduct';
@@ -28,20 +29,16 @@ type Props = {
 
 const ProductFormMedia: FC<Props> = ({type = "product"}) => {
   const {t} = useTranslation();
-  const {productId, variantId, optionId} = useParams();
-  const {product, loading} = useProduct();
+  const {product, currentVariant, loading} = useProduct();
 
   const productMedia = useMemo(() => {
     if (type === "product") return product?.media;
-    const variant = product?.variants.find(variant => variant._id === variantId);
-    if (type === "variant") return variant?.media;
-    const option = variant?.options?.find(option => option._id === optionId);
-    return option?.media;
-    }, [product, productId, variantId, optionId]);
+    return currentVariant?.media;
+    }, [product, currentVariant]);
 
   const productMediaFieldValues = useMemo(() => ({
     media: productMedia || []
-  }), [product])
+  }), [product, currentVariant])
 
   const {
     control,
@@ -53,7 +50,7 @@ const ProductFormMedia: FC<Props> = ({type = "product"}) => {
 
   useEffect(() => {
     reset(productMediaFieldValues);
-  }, [product, productId, variantId, optionId]);
+  }, [product, currentVariant]);
 
   const { fields, swap } = useFieldArray({
     name: "media",
@@ -75,40 +72,48 @@ const ProductFormMedia: FC<Props> = ({type = "product"}) => {
   }
 
   return (
-    <Card>
-      <CardHeader
-        title={t("admin.productAdmin.mediaGallery", "Media Gallery")}
-      />
-      <CardContent>
-        <Box display="flex" flexDirection="column" gap={2}>
-          <DndProvider backend={HTML5Backend}>
-            <List>
-              {fields.map((media, key) => (
-                <ProductMediaItem
-                  media={media}
-                  key={key}
-                  index={key}
-                  moveItem={moveItem}
-                  control={control}
-                />
-              ))}
-            </List>
-          </DndProvider>
-          <Button
-            color="primary"
-            disabled={!isDirty || isSubmitting}
-            variant="contained"
-            type="submit"
-            disableElevation
-            sx={{
-              width: "fit-content"
-            }}
-          >
-            {t("app.saveChanges", "Save")}
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+    <Fade in>
+      <Card>
+        <CardHeader
+          title={t("admin.productAdmin.mediaGallery", "Media Gallery")}
+        />
+        <CardContent>
+          <Box display="flex" flexDirection="column" gap={2}>
+            {
+              (fields.length > 0) ? (
+                <DndProvider backend={HTML5Backend}>
+                  <List>
+                    {fields.map((media, key) => (
+                      <ProductMediaItem
+                        media={media}
+                        key={key}
+                        index={key}
+                        moveItem={moveItem}
+                        control={control}
+                      />
+                    ))}
+                  </List>
+                </DndProvider>
+              ) : (
+                <Typography color="text.secondary">{t("admin.productAdmin.noMedia", "No media")}</Typography>
+              )
+            }
+            <Button
+              color="primary"
+              disabled={!isDirty || isSubmitting}
+              variant="contained"
+              type="submit"
+              disableElevation
+              sx={{
+                width: "fit-content"
+              }}
+            >
+              {t("app.saveChanges", "Save")}
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Fade>
   )
 }
 

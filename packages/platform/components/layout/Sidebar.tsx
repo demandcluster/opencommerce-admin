@@ -19,19 +19,21 @@ import Button from "@mui/material/Button";
 const DesktopDrawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
   ({theme, open}) => ({
     '& .MuiDrawer-paper': {
-      position: 'relative',
+      height: "100vh",
+      alignSelf: 'flex-start',
+      position: "sticky",
       whiteSpace: 'nowrap',
       width: sidebarWidthExpanded,
       transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
+        easing: theme.transitions.easing.easeInOut,
+        duration: theme.transitions.duration.standard,
       }),
       boxSizing: 'border-box',
       ...(!open && {
         overflowX: 'hidden',
         transition: theme.transitions.create('width', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
+          easing: theme.transitions.easing.easeInOut,
+          duration: theme.transitions.duration.standard,
         }),
         width: sidebarWidthCollapsed
       }),

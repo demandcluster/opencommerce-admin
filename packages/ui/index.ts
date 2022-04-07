@@ -18,3 +18,6 @@ export * from "./ControlledPhoneInput";
 
 export {default as PhoneInput} from "./PhoneInput";
 export * from "./PhoneInput";
+
+export {default as PopperAutocomplete} from "./PopperAutocomplete";
+export * from "./PopperAutocomplete";

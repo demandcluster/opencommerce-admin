@@ -56,7 +56,7 @@ export const DevProvider: FC = ({children}) => {
           flexDirection="column"
           alignItems="end"
           sx={{
-
+            pointerEvents: "none"
           }}
         >
           <ButtonBase
@@ -67,7 +67,8 @@ export const DevProvider: FC = ({children}) => {
               borderRadius: "6px 6px 0 0",
               bgcolor: (theme: Theme) => theme.palette.background.paper,
               boxShadow: expanded ? 9 : 3,
-              zIndex: (theme: Theme) => theme.zIndex.modal
+              zIndex: (theme: Theme) => theme.zIndex.modal,
+              pointerEvents: "auto"
             }}>
             Devtools
             <KeyboardDoubleArrowUpRoundedIcon
