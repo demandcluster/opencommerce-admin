@@ -10,7 +10,9 @@ import {
   IconButton,
   Skeleton,
   Typography,
-  Popper
+  Popper,
+  CircularProgress,
+  LinearProgress
 } from '@mui/material';
 import React, {useCallback, useEffect, useState} from 'react'
 import {useLazyQuery} from "@apollo/client";
@@ -34,8 +36,9 @@ const ProductFormTags = () => {
   const [getPrimaryShopId] = usePrimaryShopId();
   const [tags, setTags] = useState<Tag[]>([]);
   const [loadingTags, setLoadingTags] = useState(true);
+  const [loadingSaving, setLoadingSaving] = useState(false);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
-
+  const [deletingTags, setDeletingTags] = useState<string[]>([]);
   const [getTags] = useLazyQuery<{ tags: TagConnection },
     QueryTagsArgs>(getTagsQuery);
 
@@ -67,23 +70,28 @@ const ProductFormTags = () => {
     setLoadingTags(false);
   }, [shopId]);
 
+  useEffect(() => {
+    setDeletingTags([])
+  }, [selectedTags]);
+
   const handleValueChange = useCallback((value: Tag[]) => {
     setSelectedTags(value);
   }, [setSelectedTags]);
 
   const handleSaveTags = useCallback(async () => {
+    setLoadingSaving(true);
     await updateProductTags(
       product?._id || "",
       selectedTags.map(tag => tag._id || "")
-    );
+    ).finally(() => setLoadingSaving(false));
   }, [selectedTags, updateProductTags]);
 
   const handleDeleteTag = useCallback(async (tag: Tag) => {
+    setDeletingTags([...deletingTags, tag._id!]);
     await removeTagFromProduct(
       product?._id || "",
       tag._id || ""
     );
-    setSelectedTags(selectedTags.filter(t => t._id !== tag._id));
   }, [selectedTags, removeTagFromProduct]);
 
   const handleSaveAndClose = useCallback(async () => {
@@ -104,14 +112,14 @@ const ProductFormTags = () => {
   return (
     <>
       <Fade in>
-        <Card>
+        <Card sx={{position: "relative"}}>
           <CardHeader
             title={t("productDetail.tags", "Tags")}
             action={
               <IconButton
                 onClick={handleClick}
                 size="small">
-              <AddIcon/>
+                <AddIcon/>
               </IconButton>
             }
           />
@@ -122,14 +130,18 @@ const ProductFormTags = () => {
                   No tags on product
                 </Typography>
               ) : (
-                <Box>
+                <Box display="flex" gap={1}>
                   {
                     product?.tags.nodes.map((tag, key) => (
                       <Chip
                         key={key}
                         label={tag.displayTitle || tag.name}
                         color="secondary"
-                        deleteIcon={<DeleteIcon/>}
+                        deleteIcon={deletingTags.includes(tag._id) ?
+                          <Box width={22} display="flex" justifyContent="end">
+                            <CircularProgress disableShrink color="inherit" size={16} thickness={6}/>
+                          </Box> :
+                          <DeleteIcon/>}
                         onDelete={() => handleDeleteTag(tag)}
                       />
                     ))
@@ -137,17 +149,24 @@ const ProductFormTags = () => {
                 </Box>
               )
             }
+            {
+              loadingSaving && (
+                <Box position="absolute" width="100%" top={0} left={0}>
+                  <LinearProgress/>
+                </Box>
+              )
+            }
           </CardContent>
         </Card>
       </Fade>
-        <Popper
-          open={open}
-          anchorEl={anchorEl}
-          transition
-          placement="bottom-end"
-        >
-          {({TransitionProps}) => (
-            <ClickAwayListener onClickAway={handleSaveAndClose}>
+      <Popper
+        open={open}
+        anchorEl={anchorEl}
+        transition
+        placement="bottom-end"
+      >
+        {({TransitionProps}) => (
+          <ClickAwayListener onClickAway={handleSaveAndClose}>
             <Grow {...TransitionProps}>
               <div>
                 <PopperAutocomplete
@@ -164,9 +183,9 @@ const ProductFormTags = () => {
                 />
               </div>
             </Grow>
-            </ClickAwayListener>
-          )}
-        </Popper>
+          </ClickAwayListener>
+        )}
+      </Popper>
     </>
   )
 }

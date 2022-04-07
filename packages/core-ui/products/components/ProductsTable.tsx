@@ -1,27 +1,34 @@
-import { useState, useMemo, useCallback, FC, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { useTranslation } from "react-i18next";
-import { CellProps, Column } from "react-table";
-import { useSnackbar } from "notistack";
-import { Button, Card, CardContent, Box, Typography, Fade } from "@mui/material";
+import {useState, useMemo, useCallback, FC, useEffect, useRef} from "react";
+import {useNavigate} from "react-router-dom";
+import {useLazyQuery, useMutation} from "@apollo/client";
+import {useTranslation} from "react-i18next";
+import {CellProps, Column} from "react-table";
+import {useSnackbar} from "notistack";
+import {Button, Card, CardContent, Box, Typography, Fade} from "@mui/material";
 
-import { useAuth, useShop } from "platform/hooks";
-import { Resetable, RowClickHandler, SelectColumnFilter, Table } from "ui";
+import {useAuth, useShop} from "platform/hooks";
+import {Resetable, RowClickHandler, SelectColumnFilter, Table} from "ui";
 import productsQuery from "../graphql/queries/products";
 import createProductMutation from "../graphql/mutations/createProduct";
-import { Product, ProductConnection, QueryProductsArgs } from "platform/types/gql-types";
+import {
+  CreateProductInput,
+  CreateProductPayload,
+  MutationCreateProductArgs,
+  Product,
+  ProductConnection,
+  QueryProductsArgs
+} from "platform/types/gql-types";
 import MediaCell from "./tableCells/MediaCell";
 import PublishedStatusCell from "./tableCells/PublishedStatusCell";
 import ShopLinkCell from "./tableCells/ShopLinkCell";
 import VisibleStatus from "./common/VisibleStatus";
 
 const ProductsTable: FC = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const navigate = useNavigate();
-  const { currentShop, isCurrentShopPrimary, changeShop } = useShop();
-  const { viewer } = useAuth();
-  const { enqueueSnackbar } = useSnackbar();
+  const {currentShop, isCurrentShopPrimary, changeShop} = useShop();
+  const {viewer} = useAuth();
+  const {enqueueSnackbar} = useSnackbar();
 
   const [initialLoad, setInitialLoad] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -30,10 +37,12 @@ const ProductsTable: FC = () => {
 
   const [getProducts] =
     useLazyQuery<{ products: ProductConnection }, Partial<QueryProductsArgs>>(productsQuery);
-  const [
-    createProduct,
-    { error: createProductError }
-  ] = useMutation(createProductMutation);
+  const [createProduct] = useMutation<{createProduct: CreateProductPayload},
+    MutationCreateProductArgs>(createProductMutation, {
+    onError: () => {
+      enqueueSnackbar(t("admin.productTable.bulkActions.error", "Could not create a product"), {variant: "error"});
+    }
+  });
 
   const tableRef = useRef<Resetable>(null);
 
@@ -41,7 +50,7 @@ const ProductsTable: FC = () => {
   const columns = useMemo<Column<Product>[]>(() => [
     {
       Header: "",
-      Cell: ({ row }: CellProps<Product, string>) => <MediaCell row={row} />,
+      Cell: ({row}: CellProps<Product, string>) => <MediaCell row={row}/>,
       id: "thumbnailURL"
     },
     {
@@ -58,25 +67,25 @@ const ProductsTable: FC = () => {
     },
     {
       Header: t("admin.productTable.header.published", "Published")!,
-      Cell: ({ row }: CellProps<Product, string>) => <PublishedStatusCell row={row} />,
+      Cell: ({row}: CellProps<Product, string>) => <PublishedStatusCell row={row}/>,
       id: "published"
     },
     {
       Header: t("admin.productTable.header.visible", "Visible")!,
-      Cell: ({ row }: CellProps<Product, string>) => <VisibleStatus isVisible={row?.original?.isVisible}/>,
+      Cell: ({row}: CellProps<Product, string>) => <VisibleStatus isVisible={row?.original?.isVisible}/>,
       accessor: (row) => row.isVisible,
       id: "isVisible",
       Filter: SelectColumnFilter,
       filterLabel: t("admin.productTable.header.visible", "Visible"),
       filterOptions: [
-        { label: t("admin.tags.visible", "Visible"), value: true },
-        { label: t("admin.product.publishStatus.unpublished", "Unpublished"), value: false }
+        {label: t("admin.tags.visible", "Visible"), value: true},
+        {label: t("admin.product.publishStatus.unpublished", "Unpublished"), value: false}
       ]
     },
     ...(isCurrentShopPrimary && [{
       Header: t("admin.productTable.header.shop", "Shop")!,
       accessor: (row) => row.shop.name,
-      Cell: ({ row }: CellProps<Product, string>) => <ShopLinkCell row={row} />,
+      Cell: ({row}: CellProps<Product, string>) => <ShopLinkCell row={row}/>,
       id: "shop",
       disableFilters: true
     } as Column<Product>] || []),
@@ -89,7 +98,7 @@ const ProductsTable: FC = () => {
     setInitialLoad(false);
   }, [currentShop]);
 
-  const onFetchData = useCallback(async ({ pageIndex, pageSize, filters }) => {
+  const onFetchData = useCallback(async ({pageIndex, pageSize, filters}) => {
     setLoading(true);
 
     const filtersByKey: { isVisible?: boolean } = {}
@@ -100,7 +109,7 @@ const ProductsTable: FC = () => {
       viewer?.adminUIShops.map(shop => shop._id) :
       [currentShop?._id || ""];
 
-    const { data } = await getProducts({
+    const {data} = await getProducts({
       variables: {
         shopIds,
         first: pageSize,
@@ -127,15 +136,16 @@ const ProductsTable: FC = () => {
   }), []);
 
   const handleCreateProduct = async () => {
-    const { data } = await createProduct({ variables: { input: { currentShop } } });
+    const {data} = await createProduct({
+      variables: {
+        input: {
+          shopId: currentShop?._id || ""
+        } as CreateProductInput
+      }
+    });
 
     if (data) {
-      const { createProduct: { product } } = data;
-      navigate(product._id);
-    }
-
-    if (createProductError) {
-      enqueueSnackbar(t("admin.productTable.bulkActions.error", { variant: "error" }));
+      navigate(data?.createProduct.product._id);
     }
   };
 

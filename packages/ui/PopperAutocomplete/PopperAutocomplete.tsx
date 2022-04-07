@@ -99,7 +99,8 @@ const PopperAutocomplete = <T extends Object>(
         return;
       }
 
-      onValueChange && onValueChange(newValue as T[] | T | null)
+      // @ts-ignore
+      onValueChange && onValueChange(newValue)
     },
     onClose: (_, reason) => {
       if (reason === 'escape') {
