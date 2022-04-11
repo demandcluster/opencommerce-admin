@@ -1,7 +1,7 @@
 import {Box, Tooltip} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import InfoIcon from '@mui/icons-material/Info';
-import {FC, useMemo, useState} from "react";
+import {FC, useMemo, useState, useEffect} from "react";
 import useProduct from "../hooks/useProduct";
 import {useTranslation} from "react-i18next";
 
@@ -15,7 +15,11 @@ const ProductPublish: FC = () => {
   const [saving, setSaving] = useState(false)
 
   const isPublished = useMemo(() =>
-    product?.currentProductHash === product?.publishedProductHash, [product])
+      product?.currentProductHash === product?.publishedProductHash,
+    [
+      product?.currentProductHash,
+      product?.publishedProductHash
+    ])
 
   const handlePublish = async () => {
     setSaving(true)
@@ -31,6 +35,7 @@ const ProductPublish: FC = () => {
       <LoadingButton
         variant="contained"
         disableElevation
+        loading={saving}
         disabled={isPublished}
         onClick={handlePublish}
       >

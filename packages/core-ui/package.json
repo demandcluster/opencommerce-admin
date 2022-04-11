@@ -10,6 +10,7 @@
     "@mui/lab": "^5.0.0-alpha.67",
     "@mui/material": "^5.4.2",
     "i18next": "^21.6.10",
+    "lodash": "^4.17.21",
     "luxon": "^2.3.0",
     "notistack": "^2.0.3",
     "platform": "workspace:*",

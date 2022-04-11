@@ -18,7 +18,10 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.25.3",
     "react-router-dom": "^6.2.1",
-    "react-table": "7.7.0"
+    "react-table": "7.7.0",
+    "react-virtualized-auto-sizer": "^1.0.6",
+    "react-window": "^1.8.6",
+    "react-window-infinite-loader": "^1.0.7"
   },
   "devDependencies": {
     "@babel/core": "7.17.4",
@@ -27,9 +30,11 @@
     "@storybook/addon-links": "^6.4.20",
     "@storybook/react": "^6.4.20",
     "@storybook/testing-library": "0.0.9",
-    "@types/react-table": "^7.7.9",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
+    "@types/react-table": "^7.7.9",
+    "@types/react-virtualized-auto-sizer": "^1.0.1",
+    "@types/react-window-infinite-loader": "^1.0.6",
     "@vitejs/plugin-react": "^1.0.7",
     "babel-loader": "^8.2.4",
     "tsconfig": "workspace:*",

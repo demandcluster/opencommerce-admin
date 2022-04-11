@@ -1,34 +1,31 @@
 import {KeyboardEvent, SyntheticEvent, useCallback, useEffect, useState} from "react";
 import {
   FormControl,
-  InputBase,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemButton,
+  FilledInput,
   Paper,
-  useAutocomplete,
-  AutocompleteInputChangeReason
+  AutocompleteInputChangeReason, useAutocomplete
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import InfiniteList from "../InfiniteList";
 
 type AutocompleteState = {
   inputValue: string,
   first: number,
   offset: number,
+  mode: "set" | "append"
 }
 
 export type AutocompleteFetchDataHandler = (state: AutocompleteState) => Promise<void>
 
 type PopperAutocompleteProps<T extends Object> = {
   onClose?: () => void
-  onFetchData: AutocompleteFetchDataHandler
+  onFetchData: AutocompleteFetchDataHandler,
   options: T[],
   loading: boolean,
   getOptionLabel: (option: T) => string
   isOptionEqualToValue: (option: T, value: T) => boolean
   inputPlaceholder: string
   initialItemsCount?: number
+  hasMore?: boolean
 } & (
   {
     multiple: true
@@ -53,13 +50,15 @@ const PopperAutocomplete = <T extends Object>(
     isOptionEqualToValue,
     inputPlaceholder,
     onFetchData,
-    initialItemsCount = 100
+    initialItemsCount = 20,
+    hasMore = false,
   }: PopperAutocompleteProps<T>
 ) => {
   const [inputValue, setInputValue] = useState('');
   const [debouncedInputValue, setDebouncedInputValue] = useState('');
 
   useEffect(() => {
+    console.log("Input value changed")
     const delayDebounced = setTimeout(() => {
       setDebouncedInputValue(inputValue)
     }, 200);
@@ -81,7 +80,7 @@ const PopperAutocomplete = <T extends Object>(
     getOptionProps,
     groupedOptions
   } = useAutocomplete({
-    id: "autocomplete-select",
+    id: "autocomplete-popper",
     options,
     value,
     isOptionEqualToValue,
@@ -98,7 +97,7 @@ const PopperAutocomplete = <T extends Object>(
       ) {
         return;
       }
-
+      console.log(newValue)
       // @ts-ignore
       onValueChange && onValueChange(newValue)
     },
@@ -111,14 +110,30 @@ const PopperAutocomplete = <T extends Object>(
     disableCloseOnSelect: true
   });
 
+  const handleLoadMore = useCallback((startIndex: number, endIndex: number) => {
+    console.log("Load more")
+    console.log(startIndex, endIndex)
+    return onFetchData({
+      inputValue,
+      first: options.length,
+      offset: options.length,
+      mode: 'append'
+    })
+  }, [onFetchData, inputValue, options.length])
+
   useEffect(() => {
+    console.log("Fetch data")
     onFetchData({
       inputValue: debouncedInputValue,
       first: initialItemsCount,
-      offset: 0
+      offset: 0,
+      mode: 'set'
     }).then()
-  }, [debouncedInputValue]);
+  }, [onFetchData, debouncedInputValue]);
 
+  console.log("[PopperAutocomplete] rendering autocomplete")
+  console.log("[PopperAutocomplete]", groupedOptions)
+  console.log("[PopperAutocomplete] More items are loading: ", loading);
   return (
     <Paper
       elevation={10}
@@ -129,47 +144,25 @@ const PopperAutocomplete = <T extends Object>(
       }}
       {...getRootProps()}
     >
-      <FormControl sx={{pt: 2, px: 1}}>
-        <InputBase
+      <FormControl sx={{pt: 2, px: 1, pb: 1}}>
+        <FilledInput
           placeholder={inputPlaceholder}
-          sx={{
-            backgroundColor: "background.lighten",
-            px: 2,
-            py: 0.5,
-            borderRadius: 0.5
-          }}
           size="small"
           inputProps={getInputProps()}
           autoFocus
         />
       </FormControl>
-      <List component="ul" {...getListboxProps()}>
-        {loading ? (
-          <ListItem component="li">
-            <ListItemText
-              primaryTypographyProps={{color: "text.disabled"}}
-              primary={"Loading..."}
-            />
-          </ListItem>
-        ) : (
-          (groupedOptions as T[]).map((option, index) => {
-            const optionProps = getOptionProps({option, index});
-            const selected = !!optionProps["aria-selected"];
-            return (
-              <ListItemButton
-                component="li"
-                selected={selected}
-                {...optionProps}
-              >
-                <ListItemText
-                  primary={getOptionLabel(option)}
-                />
-                {selected && <CloseIcon sx={{color: "text.secondary"}} fontSize="small"/>}
-              </ListItemButton>
-            );
-          })
-        )}
-      </List>
+      <InfiniteList
+        items={groupedOptions as T[]}
+        getItemProps={({ item, index }) =>
+          getOptionProps({ option: item, index })
+        }
+        getItemLabel={getOptionLabel}
+        hasMoreItems={hasMore}
+        areNextItemsLoading={loading}
+        loadMoreItems={handleLoadMore}
+        listProps={getListboxProps()}
+      />
     </Paper>
   );
 }

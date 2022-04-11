@@ -155,7 +155,7 @@ const ProductsTable: FC = () => {
         <Box
           display="flex"
         >
-          <Typography variant="h4" flex={1}>
+          <Typography color="text.primary" variant="h4" flex={1}>
             {t("admin.products", "Products")}
           </Typography>
           <Button

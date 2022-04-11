@@ -19,6 +19,7 @@ import {useLazyQuery} from "@apollo/client";
 import {useTranslation} from "react-i18next";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import isEqual from "lodash/isEqual"
 
 import {AutocompleteFetchDataHandler, PopperAutocomplete} from "ui";
 import {useMenu} from "ui/hooks";
@@ -28,17 +29,25 @@ import useProduct from '../hooks/useProduct';
 import getTagsQuery from '../graphql/queries/tags';
 import config from "platform/config";
 
+function tagsAreEqual(tags1: Tag[], tags2: Tag[]): boolean {
+  return isEqual(tags1.map(tag => tag._id), tags2.map(tag => tag._id));
+}
+
 const ProductFormTags = () => {
   const {t} = useTranslation();
   const {product, loading, updateProductTags, removeTagFromProduct} = useProduct();
   const {open, anchorEl, handleClose, handleClick} = useMenu();
   const shopId = useShopId();
   const [getPrimaryShopId] = usePrimaryShopId();
+
   const [tags, setTags] = useState<Tag[]>([]);
+  const [hasMoreTags, setHasMoreTags] = useState(false);
   const [loadingTags, setLoadingTags] = useState(true);
+
   const [loadingSaving, setLoadingSaving] = useState(false);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [deletingTags, setDeletingTags] = useState<string[]>([]);
+
   const [getTags] = useLazyQuery<{ tags: TagConnection },
     QueryTagsArgs>(getTagsQuery);
 
@@ -52,10 +61,10 @@ const ProductFormTags = () => {
     {
       inputValue,
       first,
-      offset
+      offset,
+      mode
     }) => {
     setLoadingTags(true);
-
     const inputShopId = config.VITE_MARKETPLACE_MODE ? await getPrimaryShopId() : shopId || '';
 
     const {data} = await getTags({
@@ -66,9 +75,25 @@ const ProductFormTags = () => {
         filter: inputValue
       } as QueryTagsArgs
     });
-    setTags(data?.tags?.nodes || []);
+
+    console.log("[ProductFormTags] Setting new tags")
+
+    if (mode === "set") {
+      setTags(data?.tags?.nodes || []);
+    }
+
+    if (mode === "append") {
+      setTags(tags =>
+        [...tags, ...(data?.tags?.nodes || [])]
+      );
+    }
+
+    console.log("[ProductFormTags] Setting has more tags: ", data?.tags?.pageInfo?.hasNextPage || false)
+    setHasMoreTags(data?.tags?.pageInfo?.hasNextPage || false);
+    console.log("[ProductFormTags] Setting tags loading: ", false)
     setLoadingTags(false);
   }, [shopId]);
+
 
   useEffect(() => {
     setDeletingTags([])
@@ -79,11 +104,13 @@ const ProductFormTags = () => {
   }, [setSelectedTags]);
 
   const handleSaveTags = useCallback(async () => {
-    setLoadingSaving(true);
-    await updateProductTags(
-      product?._id || "",
-      selectedTags.map(tag => tag._id || "")
-    ).finally(() => setLoadingSaving(false));
+    if (!tagsAreEqual(selectedTags, product?.tags?.nodes || [])) {
+      setLoadingSaving(true);
+      await updateProductTags(
+        product?._id || "",
+        selectedTags.map(tag => tag._id || "")
+      ).finally(() => setLoadingSaving(false));
+    }
   }, [selectedTags, updateProductTags]);
 
   const handleDeleteTag = useCallback(async (tag: Tag) => {
@@ -96,6 +123,8 @@ const ProductFormTags = () => {
 
   const handleSaveAndClose = useCallback(async () => {
     handleClose();
+    setLoadingTags(true);
+    setTags([]);
     return handleSaveTags();
   }, [handleSaveTags, handleClose]);
 
@@ -104,7 +133,7 @@ const ProductFormTags = () => {
       <Skeleton
         variant="rectangular"
         sx={{borderRadius: 1}}
-        height="7.65rem"
+        height="8.5rem"
       />
     )
   }
@@ -126,11 +155,11 @@ const ProductFormTags = () => {
           <CardContent sx={{display: "flex", flexDirection: "column", gap: 2}}>
             {
               product?.tags.nodes.length === 0 ? (
-                <Typography color="text.secondary">
+                <Typography color="text.secondary" lineHeight={2}>
                   No tags on product
                 </Typography>
               ) : (
-                <Box display="flex" gap={1}>
+                <Box display="flex" gap={1} flexWrap="wrap">
                   {
                     product?.tags.nodes.map((tag, key) => (
                       <Chip
@@ -180,6 +209,7 @@ const ProductFormTags = () => {
                   multiple={true}
                   onValueChange={handleValueChange}
                   onClose={handleSaveAndClose}
+                  hasMore={hasMoreTags}
                 />
               </div>
             </Grow>

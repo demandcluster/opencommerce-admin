@@ -1,12 +1,11 @@
 import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
 import hashPassword from "./utils/hashPassword";
 import { useLazyQuery } from "@apollo/client";
+import {Paper} from "@mui/material";
 import viewerQuery from "../graphql/queries/viewerQuery";
 import Container from "@mui/material/Container";
 import { Account } from "../types/gql-types";
-import useUI from "../hooks/useUI";
 import useAccountsClient from "../hooks/useAccountsClient";
-import { Fade } from "@mui/material";
 
 export type Permission = { shopId: string | null, permission: string }
 
@@ -125,11 +124,13 @@ export const AuthProvider: FC = ({ children }) => {
         justifyContent: "center",
         alignItems: "center"
       }}>
-        <img
-          src="/dc-logo-animated.svg"
-          alt="Loading..."
-          width="80px"
-        />
+        <Paper sx={{p: 2}} elevation={10}>
+          <img
+            src="/dc-logo-animated.svg"
+            alt="Loading..."
+            width="80px"
+          />
+        </Paper>
       </Container>
     )
   }

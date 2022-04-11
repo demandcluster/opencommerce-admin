@@ -102,6 +102,7 @@ const ProductMediaItem: FC<ProductMediaItemProps> = (
         name={`media.${index}.priority`}
         hideLabel={true}
         type="number"
+        size="small"
         sx={{
           width: "10ch"
         }}

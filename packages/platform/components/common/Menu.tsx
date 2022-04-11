@@ -26,7 +26,7 @@ const Menu: FC<MenuProps> = (
     if (action.confirmTitle) {
       return openDialog({
         title: action.confirmTitle,
-        content: action.details,
+        content: action.confirmMessage,
         onConfirm: () => action.onSelect && action.onSelect(),
         confirmTitle: "Agree"
       })

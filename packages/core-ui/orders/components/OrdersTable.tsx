@@ -171,7 +171,7 @@ const OrdersTable: FC = () => {
   return (
     <Fade in>
       <Box display="flex" flexDirection="column" gap={3}>
-        <Typography variant="h4">{t("admin.dashboard.ordersTitle", "Orders")}</Typography>
+        <Typography color="text.primary" variant="h4">{t("admin.dashboard.ordersTitle", "Orders")}</Typography>
         <Card>
           <CardContent>
             <Table

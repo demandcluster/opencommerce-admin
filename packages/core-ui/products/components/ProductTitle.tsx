@@ -22,7 +22,7 @@ const ProductTitle: FC = () => {
   }, [productId, variantId, optionId, product]);
 
   return (
-    <Typography flex={1} variant="h4">{
+    <Typography flex={1} color="text.primary" variant="h4">{
       loading ? (
         <Skeleton width="15ch" />
       ) : (

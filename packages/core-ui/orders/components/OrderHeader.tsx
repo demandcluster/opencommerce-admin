@@ -17,7 +17,7 @@ const OrderHeader: FC = () => {
     <Box pb={2}>
       <Box display="flex" alignItems="center">
         <Box display="flex" gap={1} flex={1}>
-          <Typography variant="h4" display="flex">
+          <Typography color="text.primary" variant="h4" display="flex">
             {t("order.order", "Order")} {
               loading ? (
                 <Skeleton width="5ch" sx={{ display: "inline-block", ml: 1 }} />
@@ -28,7 +28,7 @@ const OrderHeader: FC = () => {
         </Box>
         <Button><MoreVert /></Button>
       </Box>
-      <Typography variant="body1" display="inline">
+      <Typography color="text.primary" variant="body1" display="inline">
         {
           loading ? (<Skeleton width="25ch" />) : `${t("order.placed", "Placed")} ${timeAgo(order?.createdAt)}`
         }

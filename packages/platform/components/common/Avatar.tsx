@@ -1,4 +1,4 @@
-import {FC, MouseEvent, useState} from "react";
+import {FC} from "react";
 import MuiAvatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -7,15 +7,21 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
-import useAuth from "../../hooks/useAuth";
+import {useAuth, useTheme} from "../../hooks";
 import {useMenu} from "ui/hooks";
-import {alpha} from "@mui/material/styles";
-import theme from "../../theme";
+import {Theme} from "@mui/material/styles";
 
 const Avatar: FC = () => {
   const {open, handleClick, handleClose, anchorEl} = useMenu();
-  const {viewer, logout} = useAuth();
+  const {setMode, mode} = useTheme();
+  const {logout} = useAuth();
+
+  const handleThemeMode = () => {
+    setMode(mode === 'light' ? 'dark' : 'light');
+  };
 
   return (
     <>
@@ -23,14 +29,8 @@ const Avatar: FC = () => {
         <IconButton
           sx={{
             p: 0,
-            "&:active": {
-              backgroundColor: alpha(theme.palette.primary.light, theme.palette.action.selectedOpacity),
-            },
-            "&:hover": {
-              boxShadow: theme.outline.focus
-            },
-            "&:focus": {
-              boxShadow: theme.outline.focus
+            "&:hover, &:focus": {
+              boxShadow: (theme: Theme) => theme.palette.outline.focus,
             },
           }}
           onClick={handleClick}
@@ -46,7 +46,6 @@ const Avatar: FC = () => {
         id="account-menu"
         open={open}
         onClose={handleClose}
-        onClick={handleClose}
         PaperProps={{
           elevation: 10,
           sx: {
@@ -69,11 +68,20 @@ const Avatar: FC = () => {
         transformOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
       >
-        <MenuItem onClick={() => logout()}>
+        <MenuItem onClick={() => {
+          handleClose()
+          return logout()
+        }}>
           <ListItemIcon>
             <Logout fontSize="small"/>
           </ListItemIcon>
           Logout
+        </MenuItem>
+        <MenuItem onClick={handleThemeMode}>
+          <ListItemIcon>
+            {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+          </ListItemIcon>
+          Mode
         </MenuItem>
       </Menu>
     </>

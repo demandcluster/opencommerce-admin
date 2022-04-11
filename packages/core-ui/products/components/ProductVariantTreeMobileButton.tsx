@@ -4,9 +4,12 @@ import ProductVariantTree from "./ProductVariantTree";
 import useUI from "platform/hooks/useUI";
 import {useState} from "react";
 
+import {useTheme} from "platform/hooks";
+
 const ProductVariantTreeMobileButton = () => {
   const {isPrimarySidebarOpen} = useUI();
   const [isOpen, setIsOpen] = useState(false);
+  const {theme} = useTheme();
 
   return (
     <>
@@ -14,17 +17,22 @@ const ProductVariantTreeMobileButton = () => {
         position="fixed"
         bottom={0}
         right="auto"
+        borderRadius="12px 12px 0 0"
         width={{
           xs: `calc(100% - 32px)`,
-          sm: `calc(100% - ${isPrimarySidebarOpen ? sidebarWidthExpanded : sidebarWidthCollapsed}px - 48px)`
+          sm: `calc(100% - ${isPrimarySidebarOpen ? sidebarWidthExpanded : sidebarWidthCollapsed}px - 48px)`,
         }}
-        bgcolor="background.paper"
+        bgcolor={theme.palette.background.paper}
         boxShadow={10}
-        borderRadius="12px 12px 0 0"
       >
         <Button
           fullWidth
           onClick={() => setIsOpen(true)}
+          sx={{
+            bgcolor: "background.paper",
+            color: "text.primary",
+            borderRadius: "12px 12px 0 0"
+          }}
         >
           See Variants
         </Button>

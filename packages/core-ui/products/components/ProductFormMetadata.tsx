@@ -97,7 +97,6 @@ const ProductFormMetadata: FC<Props> = ({type = "product"}) => {
                 sx={{
                   display: "flex",
                   justifyContent: "center",
-                  bgcolor: "background.lighten"
                 }}>
                 <AddIcon/>
               </ListItem>

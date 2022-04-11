@@ -82,6 +82,7 @@ importers:
       '@types/luxon': ^2.0.9
       '@types/react-table': ^7.7.9
       i18next: ^21.6.10
+      lodash: ^4.17.21
       luxon: ^2.3.0
       notistack: ^2.0.3
       platform: workspace:*
@@ -107,6 +108,7 @@ importers:
       '@mui/lab': 5.0.0-alpha.68_24eb3a37714d4b4feb921c868383aaaf
       '@mui/material': 5.4.2_c84e354a724f4213aa6539fdea9d08aa
       i18next: 21.6.11
+      lodash: 4.17.21
       luxon: 2.3.0
       notistack: 2.0.3_3bffd08b967165f57931a6a4fa352453
       platform: link:../platform
@@ -358,6 +360,8 @@ importers:
       '@types/react': ^17.0.33
       '@types/react-dom': ^17.0.10
       '@types/react-table': ^7.7.9
+      '@types/react-virtualized-auto-sizer': ^1.0.1
+      '@types/react-window-infinite-loader': ^1.0.6
       '@vitejs/plugin-react': ^1.0.7
       babel-loader: ^8.2.4
       react: ^17.0.2
@@ -365,6 +369,9 @@ importers:
       react-hook-form: ^7.25.3
       react-router-dom: ^6.2.1
       react-table: 7.7.0
+      react-virtualized-auto-sizer: ^1.0.6
+      react-window: ^1.8.6
+      react-window-infinite-loader: ^1.0.7
       tsconfig: workspace:*
       typescript: ^4.5.5
       vite: ^2.9.0
@@ -378,6 +385,9 @@ importers:
       react-hook-form: 7.26.1_react@17.0.2
       react-router-dom: 6.2.1_react-dom@17.0.2+react@17.0.2
       react-table: 7.7.0_react@17.0.2
+      react-virtualized-auto-sizer: 1.0.6_react-dom@17.0.2+react@17.0.2
+      react-window: 1.8.6_react-dom@17.0.2+react@17.0.2
+      react-window-infinite-loader: 1.0.7_react-dom@17.0.2+react@17.0.2
     devDependencies:
       '@babel/core': 7.17.4
       '@storybook/addon-actions': 6.4.20_b8fdba992ce7d797017dc07106486496
@@ -388,6 +398,8 @@ importers:
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.11
       '@types/react-table': 7.7.9
+      '@types/react-virtualized-auto-sizer': 1.0.1
+      '@types/react-window-infinite-loader': 1.0.6
       '@vitejs/plugin-react': 1.2.0
       babel-loader: 8.2.4_@babel+core@7.17.4
       tsconfig: link:../tsconfig
@@ -2615,7 +2627,7 @@ packages:
       '@babel/core': 7.17.4
       '@babel/helper-module-imports': 7.16.7
       '@babel/plugin-syntax-jsx': 7.16.7_@babel+core@7.17.4
-      '@babel/runtime': 7.17.2
+      '@babel/runtime': 7.17.8
       '@emotion/hash': 0.8.0
       '@emotion/memoize': 0.7.5
       '@emotion/serialize': 1.0.2
@@ -5666,6 +5678,19 @@ packages:
     dependencies:
       '@types/react': 17.0.39
     dev: false
+
+  /@types/react-virtualized-auto-sizer/1.0.1:
+    resolution: {integrity: sha512-GH8sAnBEM5GV9LTeiz56r4ZhMOUSrP43tAQNSRVxNexDjcNKLCEtnxusAItg1owFUFE6k0NslV26gqVClVvong==}
+    dependencies:
+      '@types/react': 17.0.39
+    dev: true
+
+  /@types/react-window-infinite-loader/1.0.6:
+    resolution: {integrity: sha512-V8g8sBDLVeJJAfEENJS7VXZK+DRJ+jzPNtk8jpj2G+obhf+iqGNUDGwNWCbBhLiD+KpHhf3kWQlKBRi0tAeU4Q==}
+    dependencies:
+      '@types/react': 17.0.39
+      '@types/react-window': 1.8.5
+    dev: true
 
   /@types/react-window/1.8.5:
     resolution: {integrity: sha512-V9q3CvhC9Jk9bWBOysPGaWy/Z0lxYcTXLtLipkt2cnRj1JOSFNF7wqGpkScSXMgBwC+fnVRg/7shwgddBG5ICw==}
@@ -11541,9 +11566,9 @@ packages:
       '@emotion/styled':
         optional: true
     dependencies:
-      '@emotion/react': 11.7.1_7130fa07c3a1bb7b3330cbeb9c0159ca
-      '@emotion/styled': 11.6.0_aad1131320234161e5b30a4e5adebbe0
-      '@mui/material': 5.4.2_6226f8758b5b21b5515ad844c1caeb22
+      '@emotion/react': 11.7.1_@babel+core@7.17.4+react@17.0.2
+      '@emotion/styled': 11.6.0_2f5e3aad4ccc2f648f3f047fad493f05
+      '@mui/material': 5.4.2_c84e354a724f4213aa6539fdea9d08aa
       clsx: 1.1.1
       hoist-non-react-statics: 3.3.2
       react: 17.0.2
@@ -12571,7 +12596,7 @@ packages:
       react: ^16.6.0 || ^17.0.0
       react-dom: ^16.6.0 || ^17.0.0
     dependencies:
-      '@babel/runtime': 7.17.2
+      '@babel/runtime': 7.17.8
       invariant: 2.2.4
       prop-types: 15.8.1
       react: 17.0.2
@@ -12733,6 +12758,28 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
+  /react-virtualized-auto-sizer/1.0.6_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-7tQ0BmZqfVF6YYEWcIGuoR3OdYe8I/ZFbNclFlGOC3pMqunkYF/oL30NCjSGl9sMEb17AnzixDz98Kqc3N76HQ==}
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0
+      react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /react-window-infinite-loader/1.0.7_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-wg3LWkUpG21lhv+cZvNy+p0+vtclZw+9nP2vO6T9PKT50EN1cUq37Dq6FzcM38h/c2domE0gsUhb6jHXtGogAA==}
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0
+      react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
   /react-window/1.8.6_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==}
     engines: {node: '>8.0.0'}
@@ -12740,7 +12787,7 @@ packages:
       react: ^15.0.0 || ^16.0.0 || ^17.0.0
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
-      '@babel/runtime': 7.17.2
+      '@babel/runtime': 7.17.8
       memoize-one: 5.2.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2

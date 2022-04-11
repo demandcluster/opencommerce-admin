@@ -15,6 +15,7 @@ import countryOptions from "platform/utils/countryOptions";
 import ControlledTextField from "ui/ControlledTextField";
 import ControlledSelect from "ui/ControlledSelect";
 import useProduct from "../hooks/useProduct";
+import {ProductInput} from "platform/types/gql-types";
 
 type ProductDetailsFieldValues = {
   title: string,
@@ -27,7 +28,7 @@ type ProductDetailsFieldValues = {
 
 const ProductDetailsForm = () => {
   const {t} = useTranslation();
-  const {product, loading} = useProduct();
+  const {product, loading, updateProduct} = useProduct();
 
   const productFieldValues = useMemo<ProductDetailsFieldValues>(() => ({
     title: product?.title || "",
@@ -52,7 +53,11 @@ const ProductDetailsForm = () => {
   }, [product]);
 
   const onSubmit = (data: ProductDetailsFieldValues) => {
-    console.log(data);
+    console.log(product)
+    return updateProduct(
+      product?._id || "",
+      data as ProductInput
+    );
   }
 
   if (loading) {
@@ -60,7 +65,7 @@ const ProductDetailsForm = () => {
       <Skeleton
         variant="rectangular"
         sx={{borderRadius: 1}}
-        height={"40.2rem"}
+        height={"42.5rem"}
       />
     )
   }

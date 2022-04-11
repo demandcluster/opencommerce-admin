@@ -53,6 +53,8 @@ export type ProductVariantDetails = {
 interface State {
   product: Product | undefined;
   loading: boolean;
+  updateProduct: (productId: string, product: ProductInput) =>
+    Promise<FetchResult<{updateProduct: UpdateProductPayload}>>;
   createVariant: (productId: string) =>
     Promise<FetchResult<{ createProductVariant: CreateProductVariantPayload }>>;
   toggleProductVisibility: (product: Product) =>
@@ -106,6 +108,7 @@ export const ProductProvider: FC = ({children}) => {
   const [_updateProduct] = useMutation<{ updateProduct: UpdateProductPayload },
     MutationUpdateProductArgs>(updateProductMutation, {
     update: (cache, {data}) => {
+      console.log(data)
       cache.writeQuery({
         query: productQuery,
         data: {
@@ -159,6 +162,31 @@ export const ProductProvider: FC = ({children}) => {
       setProduct(undefined);
     }
   }, [id])
+
+  // const archiveProduct = async () => {
+  //   return archiveProductVariants({
+  //     variables: {
+  //       input: {
+  //         shopId: shopIdLocal,
+  //         variantIds: variantIdsLocal
+  //       }
+  //     }
+  //   });
+  // }
+
+  const updateProduct = useCallback(async (productId: string, product: ProductInput) => {
+      return _updateProduct({
+        variables: {
+          input: {
+            shopId: shopId!,
+            productId: productId,
+            product: product
+          }
+        }
+      });
+    },
+    [shopId, _updateProduct]
+  );
 
   const createVariant = useCallback((productId: string) => {
       return _createVariant({
@@ -288,6 +316,7 @@ export const ProductProvider: FC = ({children}) => {
     () => ({
       product,
       loading,
+      updateProduct,
       createVariant,
       toggleProductVisibility,
       toggleProductVariantVisibility,
@@ -303,6 +332,7 @@ export const ProductProvider: FC = ({children}) => {
     [
       product,
       loading,
+      updateProduct,
       createVariant,
       toggleProductVisibility,
       toggleProductVariantVisibility,

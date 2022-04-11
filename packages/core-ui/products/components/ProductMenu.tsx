@@ -26,7 +26,7 @@ const ProductMenu: FC<ProductMenuProps> = (
   const shopId = useShopId();
   const {viewerHasPermission, viewer} = useAuth();
   const {
-    // archiveProduct,
+    archiveProduct,
     createVariant,
     toggleProductVisibility,
     toggleProductVariantVisibility,
@@ -54,14 +54,17 @@ const ProductMenu: FC<ProductMenuProps> = (
           toggleProductVisibility(product as Product)
       }
     },
-    ...(viewerHasPermission([{permission: "reaction:legacy:products/archive", shopId: shopId || null}]) ? [{
+    {
       key: "archiveProduct",
-      label: t("admin.productTable.bulkActions.archiveTitle"),
-      confirmTitle: t("admin.productTable.bulkActions.archiveTitle"),
+      label: t("admin.productTable.bulkActions.archiveTitle", "Archive"),
+      confirmTitle: t("admin.productTable.bulkActions.archiveTitle", "Archive Product"),
       confirmMessage: t("productDetailEdit.archiveThisProduct", "Are you sure you want to archive this product?"),
       onSelect: () => {
+        return !isVariant(product) ?
+          archiveProduct(product as Product) :
+          null
       }
-    }] : [])
+    }
   ], [t, viewer, product, type])
 
   return (

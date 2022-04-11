@@ -1,5 +1,5 @@
 import {createContext, FC, useEffect, useState} from "react"
-import {Box, ButtonBase, Collapse, List, ListItem, ListItemButton, Tooltip, Typography, Theme} from "@mui/material";
+import {Box, ButtonBase, Collapse, List, ListItem, ListItemButton, Paper, Tooltip, Typography, Theme} from "@mui/material";
 import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 
@@ -65,7 +65,8 @@ export const DevProvider: FC = ({children}) => {
               width: "fit-content",
               p: 1,
               borderRadius: "6px 6px 0 0",
-              bgcolor: (theme: Theme) => theme.palette.background.paper,
+              color: "text.primary",
+              bgcolor: "background.paper",
               boxShadow: expanded ? 9 : 3,
               zIndex: (theme: Theme) => theme.zIndex.modal,
               pointerEvents: "auto"
@@ -84,7 +85,7 @@ export const DevProvider: FC = ({children}) => {
             boxShadow: 9
           }}>
             <Box
-              bgcolor="background.paper"
+              component={Paper}
               maxWidth="350px"
             >
               <List>

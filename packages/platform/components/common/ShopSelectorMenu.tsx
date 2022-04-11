@@ -3,7 +3,7 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import MenuItem from '@mui/material/MenuItem';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
+import FilledInput from "@mui/material/FilledInput";
 import { alpha, Theme } from "@mui/material/styles";
 import FormControl from "@mui/material/FormControl";
 import Menu from "@mui/material/Menu";
@@ -28,7 +28,7 @@ type VirtualizedShopListData = {
 
 const sortByShopType = (shops: Shop[]) => {
   const sortedShops = [...shops];
-  
+
   const primaryShopIndex = sortedShops.findIndex(shop => shop.shopType === "primary");
   const tempShop = sortedShops[0];
   sortedShops[0] = sortedShops[primaryShopIndex];
@@ -71,7 +71,7 @@ export const ShopSelectorMenu: FC<ShopSelectorMenuProps> = (
       selectShopHandler: (shopId: string) => {
         onSelectShop(shopId);
         setFilteredShops(sortedShops);
-      } 
+      }
   })),
     [filteredShops]
   );
@@ -104,15 +104,10 @@ export const ShopSelectorMenu: FC<ShopSelectorMenuProps> = (
     >
       <Box component="li" py={1} px={2}>
         <FormControl fullWidth>
-          <InputBase
+          <FilledInput
             placeholder={"Search Merchant..."}
-            sx={{
-              backgroundColor: (theme: Theme) => alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-              px: 2,
-              py: 0.5,
-              borderRadius: 0.5
-            }}
             autoFocus
+            size="small"
             onClick={e => e.stopPropagation()}
             onChange={handleShopFilter}
           />
