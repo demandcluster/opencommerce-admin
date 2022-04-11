@@ -39,7 +39,8 @@ const ShopSelector = () => {
           "&:hover, &:focus": {
             boxShadow: (theme: Theme) => theme.palette.outline.focus,
           },
-          py: 0.75
+          py: 0.75,
+          px: 1
         }}
         disableElevation
         aria-controls={open ? 'shop-selector-menu' : undefined}

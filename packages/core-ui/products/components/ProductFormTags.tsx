@@ -76,8 +76,6 @@ const ProductFormTags = () => {
       } as QueryTagsArgs
     });
 
-    console.log("[ProductFormTags] Setting new tags")
-
     if (mode === "set") {
       setTags(data?.tags?.nodes || []);
     }
@@ -88,9 +86,7 @@ const ProductFormTags = () => {
       );
     }
 
-    console.log("[ProductFormTags] Setting has more tags: ", data?.tags?.pageInfo?.hasNextPage || false)
     setHasMoreTags(data?.tags?.pageInfo?.hasNextPage || false);
-    console.log("[ProductFormTags] Setting tags loading: ", false)
     setLoadingTags(false);
   }, [shopId]);
 

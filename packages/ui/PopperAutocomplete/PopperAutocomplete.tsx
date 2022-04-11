@@ -1,9 +1,10 @@
 import {KeyboardEvent, SyntheticEvent, useCallback, useEffect, useState} from "react";
 import {
+  CircularProgress,
   FormControl,
   FilledInput,
   Paper,
-  AutocompleteInputChangeReason, useAutocomplete
+  AutocompleteInputChangeReason, useAutocomplete, Box
 } from "@mui/material";
 import InfiniteList from "../InfiniteList";
 
@@ -58,7 +59,6 @@ const PopperAutocomplete = <T extends Object>(
   const [debouncedInputValue, setDebouncedInputValue] = useState('');
 
   useEffect(() => {
-    console.log("Input value changed")
     const delayDebounced = setTimeout(() => {
       setDebouncedInputValue(inputValue)
     }, 200);
@@ -97,7 +97,6 @@ const PopperAutocomplete = <T extends Object>(
       ) {
         return;
       }
-      console.log(newValue)
       // @ts-ignore
       onValueChange && onValueChange(newValue)
     },
@@ -111,8 +110,6 @@ const PopperAutocomplete = <T extends Object>(
   });
 
   const handleLoadMore = useCallback((startIndex: number, endIndex: number) => {
-    console.log("Load more")
-    console.log(startIndex, endIndex)
     return onFetchData({
       inputValue,
       first: options.length,
@@ -122,7 +119,6 @@ const PopperAutocomplete = <T extends Object>(
   }, [onFetchData, inputValue, options.length])
 
   useEffect(() => {
-    console.log("Fetch data")
     onFetchData({
       inputValue: debouncedInputValue,
       first: initialItemsCount,
@@ -131,9 +127,6 @@ const PopperAutocomplete = <T extends Object>(
     }).then()
   }, [onFetchData, debouncedInputValue]);
 
-  console.log("[PopperAutocomplete] rendering autocomplete")
-  console.log("[PopperAutocomplete]", groupedOptions)
-  console.log("[PopperAutocomplete] More items are loading: ", loading);
   return (
     <Paper
       elevation={10}
@@ -150,6 +143,9 @@ const PopperAutocomplete = <T extends Object>(
           size="small"
           inputProps={getInputProps()}
           autoFocus
+          endAdornment={ loading && (
+            <Box pt={1}><CircularProgress color="inherit" size={20} /></Box>
+          )}
         />
       </FormControl>
       <InfiniteList

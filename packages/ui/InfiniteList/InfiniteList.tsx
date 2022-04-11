@@ -32,10 +32,6 @@ const InfiniteList = <T extends Object>(
   const itemCount = useMemo(() => hasMoreItems ? items.length + 1 : items.length, [hasMoreItems, items]);
   const isItemLoaded = (index: number) => !hasMoreItems || index < items.length;
 
-  console.log("===========")
-  console.log("[InfiniteList] rendered")
-  console.log("===========")
-
   const Item = ({index, style}: ListChildComponentProps) => {
     if (!isItemLoaded(index)) {
       return (
