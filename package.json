@@ -2,6 +2,10 @@
   "name": "opencommerce-admin",
   "version": "0.0.1-dev",
   "private": true,
+  "description": "Admin UI for Mailchimp Open Commerce",
+  "keywords":["moc","open commerce","reaction"],
+  "license": "GPL-3.0",
+  "author": "DemandCluster <devops@demandcluster.com>",
   "workspaces": [
     "packages/*",
     "apps/*"
