@@ -3,7 +3,11 @@
   "version": "0.0.1-dev",
   "private": true,
   "description": "Admin UI for Mailchimp Open Commerce",
-  "keywords":["moc","open commerce","reaction"],
+  "keywords": [
+    "moc",
+    "open commerce",
+    "reaction"
+  ],
   "license": "GPL-3.0",
   "author": "DemandCluster <devops@demandcluster.com>",
   "workspaces": [
@@ -21,12 +25,38 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "prettier": "^2.5.1",
-    "turbo": "^1.1.2"
+    "prettier": "^2.8.1",
+    "turbo": "^1.6.3"
+  },
+  "peerDependencies": {
+    "subscriptions-transport-ws": "^0.11.0"
   },
   "engines": {
     "npm": ">=7.0.0",
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
+    "pnpm": {
+      "peerDependencyRules": {
+        "allowedVersions": {
+          "react": "17.0.2"
+        }
+      },
+      "overrides": {
+        "@apollo/client": "^3.7.2",
+        "@types/react": "^17.0.2",
+        "@types/react-dom": "^17.0.2",
+        "@types/react-helmet": "^6.1.5",
+        "@types/react-table": "^7.7.9",
+        "@types/react-window": "^1.8.5",
+        "@emotion/react": "^11.10.5",
+        "@emotion/styled": "^11.10.5",
+        "@hookform/resolvers": "^2.9.10",
+        "@mui/icons-material": "^5.11.0",
+        "@mui/lab": "^5.0.0-alpha.112",
+        "@mui/material": "^5.11.0",
+        "graphql": "^16.6.0",
+        "subscriptions-transport-ws": "^0.9.0 || ^0.11.0"
+      }
+    },
   "packageManager": "pnpm@6.30.0"
 }

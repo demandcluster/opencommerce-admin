@@ -8,6 +8,7 @@ dist-ssr
 *.local
 .env
 .cache
+.pnpm-store
 server/dist
 public/dist
 **/.idea
